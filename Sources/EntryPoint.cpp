@@ -1,6 +1,9 @@
 #include <iostream>
 
+#include <memory>
+
 #include <Core/Logger.hpp>
+#include <Application/Application.hpp>
 
 int main()
 {
@@ -12,7 +15,12 @@ int main()
     gir::Logger::Info("Build mode: Debug");
 #endif
 
+    auto application = new gir::Application();
+
     gir::Logger::Info("GIR-Engine: Initialized");
+
+    application->Run();
+    delete application;
 
     gir::Logger::Info("GIR-Engine: Shutdown");
 
