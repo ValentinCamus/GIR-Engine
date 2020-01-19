@@ -25,8 +25,6 @@ elseif (APPLE) #osx icon ressource file, provided from /Packaging directory
     set(ICON_RESOURCE "${PROJECT_SOURCE_DIR}/Packaging/GIR_Engine.icns")
 endif ()
 
-
-
 set(ENGINE_SRCS EntryPoint.cpp)
 
 add_executable(GIR_Engine
@@ -56,9 +54,11 @@ add_custom_target(run DEPENDS GIR_Engine-run)
 #-------------------------------------------------------------------------------
 # Target link libraries
 
-#target_link_libraries(GIR_Engine spdlog)
-#target_link_libraries(GIR_Engine assimp)
-#target_link_libraries(GIR_Engine glfw)
+target_link_libraries (GIR_Engine glfw)
+target_link_libraries (GIR_Engine glad)
+target_link_libraries (GIR_Engine stb)
+target_link_libraries (GIR_Engine glm)
+target_link_libraries (GIR_Engine spdlog)
 
 target_link_libraries(GIR_Engine ${OPENGL_gl_LIBRARY})
 target_link_libraries(GIR_Engine ${OPENGL_glu_LIBRARY})
@@ -86,7 +86,6 @@ ${GCC_PATH}/libstdc++-6.dll
 DESTINATION ./bin/
 )
 endif(MINGW)
-
 
 #------------------------------------------------------------------------------
 # Other MISC targets

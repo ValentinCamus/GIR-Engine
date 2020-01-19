@@ -1,8 +1,11 @@
 Build/*
+
 .idea/*
 tags/
+
 External/*
 !External/CMakeLists.txt
+
 *.sublime-workspace
 *.tags
 *.pyc
