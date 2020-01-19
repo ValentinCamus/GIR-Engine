@@ -25,7 +25,7 @@ elseif (APPLE) #osx icon ressource file, provided from /Packaging directory
     set(ICON_RESOURCE "${PROJECT_SOURCE_DIR}/Packaging/GIR_Engine.icns")
 endif ()
 
-set(ENGINE_SRCS EntryPoint.cpp)
+set(ENGINE_SRCS EntryPoint.cpp Core/Logger.hpp)
 
 add_executable(GIR_Engine
         MACOSX_BUNDLE
