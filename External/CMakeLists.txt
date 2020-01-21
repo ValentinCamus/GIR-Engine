@@ -36,6 +36,19 @@ add_library(glad STATIC ${CMAKE_CURRENT_SOURCE_DIR}/glad/src/glad.c)
 target_include_directories(glad SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/glad/include)
 
 #------------------------------------------------------------------------------
+# imgui
+add_library(imgui STATIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui_demo.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui_draw.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui_widgets.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui_impl_gl3.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui_impl_glfw.cpp)
+target_include_directories(imgui SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/imgui/include)
+target_link_libraries (imgui glad)
+target_link_libraries (imgui glfw)
+
+#------------------------------------------------------------------------------
 # Assimp
 # ExternalDownloadNowGit(assimp "https://github.com/assimp/assimp.git" "origin/master")
 # add_subdirectory(assimp/src/assimp_download)

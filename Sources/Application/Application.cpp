@@ -26,6 +26,8 @@ namespace gir
         // Logger::Info("\tVersion: {0}", glGetString(GL_VERSION));
         // Logger::Info("\tRenderer: {0}", glGetString(GL_RENDERER));
 
+        m_gui.Init(m_window);
+
         SetupEventsCallback();
         Setup();
     }
@@ -40,21 +42,22 @@ namespace gir
 
             Prepare();
             Draw();
+
+            m_gui.BeginFrame();
             ImGuiDraw();
+            m_gui.EndFrame();
 
             glfwSwapBuffers(m_window);
         }
+
+        m_gui.Shutdown();
+        glfwDestroyWindow(m_window);
+        glfwTerminate();
     }
 
     void Application::Stop()
     {
-        if (m_window)
-        {
-            m_isRunning = false;
-
-            glfwDestroyWindow(m_window);
-            glfwTerminate();
-        }
+        if (m_window) m_isRunning = false;
     }
 
     void Application::SetupEventsCallback()
@@ -153,7 +156,8 @@ namespace gir
 
     void Application::ImGuiDraw()
     {
-
+        static bool b = true;
+        ImGui::ShowDemoWindow(&b);
     }
 
     void Application::OnWindowClosed()

@@ -7,6 +7,7 @@ External/*
 !External/CMakeLists.txt
 !External/glad
 !External/stb
+!External/imgui
 
 *.sublime-workspace
 *.tags

@@ -25,7 +25,14 @@ elseif (APPLE) #osx icon ressource file, provided from /Packaging directory
     set(ICON_RESOURCE "${PROJECT_SOURCE_DIR}/Packaging/GIR_Engine.icns")
 endif ()
 
-set(ENGINE_SRCS EntryPoint.cpp Core/Logger.hpp Application/Application.cpp Application/Application.hpp Core/Core.hpp Core/Math.hpp)
+set(ENGINE_SRCS EntryPoint.cpp
+        Core/Logger.hpp
+        Application/Application.cpp
+        Application/Application.hpp
+        Core/Core.hpp
+        Core/Math.hpp
+        ImGui/ImGuiController.cpp
+        ImGui/ImGuiController.hpp)
 
 add_executable(GIR_Engine
         MACOSX_BUNDLE
@@ -58,6 +65,7 @@ target_link_libraries (GIR_Engine glfw)
 target_link_libraries (GIR_Engine glad)
 target_link_libraries (GIR_Engine stb)
 target_link_libraries (GIR_Engine glm)
+target_link_libraries (GIR_Engine imgui)
 target_link_libraries (GIR_Engine spdlog)
 
 target_link_libraries(GIR_Engine ${OPENGL_gl_LIBRARY})

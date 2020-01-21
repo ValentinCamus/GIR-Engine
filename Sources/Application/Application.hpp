@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 
 #include <Core/Core.hpp>
+#include <ImGui/ImGuiController.hpp>
 
 #define DEFAULT_APP_NAME    "Application"
 #define DEFAULT_APP_WIDTH   800
@@ -79,6 +80,8 @@ namespace gir
         bool m_isRunning = false;
 
         GLFWwindow* m_window = nullptr;
+
+        ImGuiController m_gui;
     };
 }
 
