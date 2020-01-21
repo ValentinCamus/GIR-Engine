@@ -468,7 +468,7 @@ void ImGui::ShowDemoWindow(bool* p_open)
 
 static void ShowDemoWindowWidgets()
 {
-    if (!ImGui::CollapsingHeader("Widgets"))
+    if (!ImGui::CollapsingHeader("Widget"))
         return;
 
     if (ImGui::TreeNode("Basic"))
@@ -1099,8 +1099,8 @@ static void ShowDemoWindowWidgets()
     }
 
     // Plot/Graph widgets are currently fairly limited.
-    // Consider writing your own plotting widget, or using a third-party one (see "Wiki->Useful Widgets", or github.com/ocornut/imgui/issues/2747)
-    if (ImGui::TreeNode("Plots Widgets"))
+    // Consider writing your own plotting widget, or using a third-party one (see "Wiki->Useful Widget", or github.com/ocornut/imgui/issues/2747)
+    if (ImGui::TreeNode("Plots Widget"))
     {
         static bool animate = true;
         ImGui::Checkbox("Animate", &animate);
@@ -1177,7 +1177,7 @@ static void ShowDemoWindowWidgets()
         ImGui::TreePop();
     }
 
-    if (ImGui::TreeNode("Color/Picker Widgets"))
+    if (ImGui::TreeNode("Color/Picker Widget"))
     {
         static ImVec4 color = ImVec4(114.0f/255.0f, 144.0f/255.0f, 154.0f/255.0f, 200.0f/255.0f);
 
@@ -1331,7 +1331,7 @@ static void ShowDemoWindowWidgets()
         ImGui::TreePop();
     }
 
-    if (ImGui::TreeNode("Range Widgets"))
+    if (ImGui::TreeNode("Range Widget"))
     {
         static float begin = 10, end = 90;
         static int begin_i = 100, end_i = 1000;
@@ -1444,7 +1444,7 @@ static void ShowDemoWindowWidgets()
         ImGui::TreePop();
     }
 
-    if (ImGui::TreeNode("Multi-component Widgets"))
+    if (ImGui::TreeNode("Multi-component Widget"))
     {
         static float vec4f[4] = { 0.10f, 0.20f, 0.30f, 0.44f };
         static int vec4i[4] = { 1, 5, 100, 255 };
@@ -1818,7 +1818,7 @@ static void ShowDemoWindowLayout()
         // - Using SetCursorPos() to position the child window (because the child window is an item from the POV of the parent window)
         //   You can also call SetNextWindowPos() to position the child window. The parent window will effectively layout from this position.
         // - Using ImGui::GetItemRectMin/Max() to query the "item" state (because the child window is an item from the POV of the parent window)
-        //   See "Widgets" -> "Querying Status (Active/Focused/Hovered etc.)" section for more details about this.
+        //   See "Widget" -> "Querying Status (Active/Focused/Hovered etc.)" section for more details about this.
         {
             ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 10);
             ImGui::PushStyleColor(ImGuiCol_ChildBg, IM_COL32(255, 0, 0, 100));
@@ -1835,7 +1835,7 @@ static void ShowDemoWindowLayout()
         ImGui::TreePop();
     }
 
-    if (ImGui::TreeNode("Widgets Width"))
+    if (ImGui::TreeNode("Widget Width"))
     {
         // Use SetNextItemWidth() to set the width of a single upcoming item.
         // Use PushItemWidth()/PopItemWidth() to set the width of a group of items.

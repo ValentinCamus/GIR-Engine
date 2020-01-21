@@ -140,7 +140,6 @@ namespace gir
 
     void Application::Setup()
     {
-
     }
 
     void Application::Prepare()

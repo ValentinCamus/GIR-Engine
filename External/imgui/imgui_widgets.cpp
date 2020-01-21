@@ -6,25 +6,25 @@
 Index of this file:
 
 // [SECTION] Forward Declarations
-// [SECTION] Widgets: Text, etc.
-// [SECTION] Widgets: Main (Button, Image, Checkbox, RadioButton, ProgressBar, Bullet, etc.)
-// [SECTION] Widgets: Low-level Layout helpers (Spacing, Dummy, NewLine, Separator, etc.)
-// [SECTION] Widgets: ComboBox
+// [SECTION] Widget: Text, etc.
+// [SECTION] Widget: Main (Button, Image, Checkbox, RadioButton, ProgressBar, Bullet, etc.)
+// [SECTION] Widget: Low-level Layout helpers (Spacing, Dummy, NewLine, Separator, etc.)
+// [SECTION] Widget: ComboBox
 // [SECTION] Data Type and Data Formatting Helpers
-// [SECTION] Widgets: DragScalar, DragFloat, DragInt, etc.
-// [SECTION] Widgets: SliderScalar, SliderFloat, SliderInt, etc.
-// [SECTION] Widgets: InputScalar, InputFloat, InputInt, etc.
-// [SECTION] Widgets: InputText, InputTextMultiline
-// [SECTION] Widgets: ColorEdit, ColorPicker, ColorButton, etc.
-// [SECTION] Widgets: TreeNode, CollapsingHeader, etc.
-// [SECTION] Widgets: Selectable
-// [SECTION] Widgets: ListBox
-// [SECTION] Widgets: PlotLines, PlotHistogram
-// [SECTION] Widgets: Value helpers
-// [SECTION] Widgets: MenuItem, BeginMenu, EndMenu, etc.
-// [SECTION] Widgets: BeginTabBar, EndTabBar, etc.
-// [SECTION] Widgets: BeginTabItem, EndTabItem, etc.
-// [SECTION] Widgets: Columns, BeginColumns, EndColumns, etc.
+// [SECTION] Widget: DragScalar, DragFloat, DragInt, etc.
+// [SECTION] Widget: SliderScalar, SliderFloat, SliderInt, etc.
+// [SECTION] Widget: InputScalar, InputFloat, InputInt, etc.
+// [SECTION] Widget: InputText, InputTextMultiline
+// [SECTION] Widget: ColorEdit, ColorPicker, ColorButton, etc.
+// [SECTION] Widget: TreeNode, CollapsingHeader, etc.
+// [SECTION] Widget: Selectable
+// [SECTION] Widget: ListBox
+// [SECTION] Widget: PlotLines, PlotHistogram
+// [SECTION] Widget: Value helpers
+// [SECTION] Widget: MenuItem, BeginMenu, EndMenu, etc.
+// [SECTION] Widget: BeginTabBar, EndTabBar, etc.
+// [SECTION] Widget: BeginTabItem, EndTabItem, etc.
+// [SECTION] Widget: Columns, BeginColumns, EndColumns, etc.
 
 */
 
@@ -110,7 +110,7 @@ static int              InputTextCalcTextLenAndLineCount(const char* text_begin,
 static ImVec2           InputTextCalcTextSizeW(const ImWchar* text_begin, const ImWchar* text_end, const ImWchar** remaining = NULL, ImVec2* out_offset = NULL, bool stop_on_new_line = false);
 
 //-------------------------------------------------------------------------
-// [SECTION] Widgets: Text, etc.
+// [SECTION] Widget: Text, etc.
 //-------------------------------------------------------------------------
 // - TextUnformatted()
 // - Text()
@@ -372,7 +372,7 @@ void ImGui::BulletTextV(const char* fmt, va_list args)
 }
 
 //-------------------------------------------------------------------------
-// [SECTION] Widgets: Main
+// [SECTION] Widget: Main
 //-------------------------------------------------------------------------
 // - ButtonBehavior() [Internal]
 // - Button()
@@ -1165,7 +1165,7 @@ void ImGui::Bullet()
 }
 
 //-------------------------------------------------------------------------
-// [SECTION] Widgets: Low-level Layout helpers
+// [SECTION] Widget: Low-level Layout helpers
 //-------------------------------------------------------------------------
 // - Spacing()
 // - Dummy()
@@ -1402,7 +1402,7 @@ void ImGui::ShrinkWidths(ImGuiShrinkWidthItem* items, int count, float width_exc
 }
 
 //-------------------------------------------------------------------------
-// [SECTION] Widgets: ComboBox
+// [SECTION] Widget: ComboBox
 //-------------------------------------------------------------------------
 // - BeginCombo()
 // - EndCombo()
@@ -1898,7 +1898,7 @@ TYPE ImGui::RoundScalarWithFormatT(const char* format, ImGuiDataType data_type, 
 }
 
 //-------------------------------------------------------------------------
-// [SECTION] Widgets: DragScalar, DragFloat, DragInt, etc.
+// [SECTION] Widget: DragScalar, DragFloat, DragInt, etc.
 //-------------------------------------------------------------------------
 // - DragBehaviorT<>() [Internal]
 // - DragBehavior() [Internal]
@@ -2256,7 +2256,7 @@ bool ImGui::DragIntRange2(const char* label, int* v_current_min, int* v_current_
 }
 
 //-------------------------------------------------------------------------
-// [SECTION] Widgets: SliderScalar, SliderFloat, SliderInt, etc.
+// [SECTION] Widget: SliderScalar, SliderFloat, SliderInt, etc.
 //-------------------------------------------------------------------------
 // - SliderBehaviorT<>() [Internal]
 // - SliderBehavior() [Internal]
@@ -2740,7 +2740,7 @@ bool ImGui::VSliderInt(const char* label, const ImVec2& size, int* v, int v_min,
 }
 
 //-------------------------------------------------------------------------
-// [SECTION] Widgets: InputScalar, InputFloat, InputInt, etc.
+// [SECTION] Widget: InputScalar, InputFloat, InputInt, etc.
 //-------------------------------------------------------------------------
 // - ImParseFormatFindStart() [Internal]
 // - ImParseFormatFindEnd() [Internal]
@@ -3061,7 +3061,7 @@ bool ImGui::InputDouble(const char* label, double* v, double step, double step_f
 }
 
 //-------------------------------------------------------------------------
-// [SECTION] Widgets: InputText, InputTextMultiline, InputTextWithHint
+// [SECTION] Widget: InputText, InputTextMultiline, InputTextWithHint
 //-------------------------------------------------------------------------
 // - InputText()
 // - InputTextWithHint()
@@ -4136,7 +4136,7 @@ bool ImGui::InputTextEx(const char* label, const char* hint, char* buf, int buf_
 }
 
 //-------------------------------------------------------------------------
-// [SECTION] Widgets: ColorEdit, ColorPicker, ColorButton, etc.
+// [SECTION] Widget: ColorEdit, ColorPicker, ColorButton, etc.
 //-------------------------------------------------------------------------
 // - ColorEdit3()
 // - ColorEdit4()
@@ -5023,7 +5023,7 @@ void ImGui::ColorPickerOptionsPopup(const float* ref_col, ImGuiColorEditFlags fl
 }
 
 //-------------------------------------------------------------------------
-// [SECTION] Widgets: TreeNode, CollapsingHeader, etc.
+// [SECTION] Widget: TreeNode, CollapsingHeader, etc.
 //-------------------------------------------------------------------------
 // - TreeNode()
 // - TreeNodeV()
@@ -5433,7 +5433,7 @@ bool ImGui::CollapsingHeader(const char* label, bool* p_open, ImGuiTreeNodeFlags
 }
 
 //-------------------------------------------------------------------------
-// [SECTION] Widgets: Selectable
+// [SECTION] Widget: Selectable
 //-------------------------------------------------------------------------
 // - Selectable()
 //-------------------------------------------------------------------------
@@ -5572,7 +5572,7 @@ bool ImGui::Selectable(const char* label, bool* p_selected, ImGuiSelectableFlags
 }
 
 //-------------------------------------------------------------------------
-// [SECTION] Widgets: ListBox
+// [SECTION] Widget: ListBox
 //-------------------------------------------------------------------------
 // - ListBox()
 // - ListBoxHeader()
@@ -5696,7 +5696,7 @@ bool ImGui::ListBox(const char* label, int* current_item, bool (*items_getter)(v
 }
 
 //-------------------------------------------------------------------------
-// [SECTION] Widgets: PlotLines, PlotHistogram
+// [SECTION] Widget: PlotLines, PlotHistogram
 //-------------------------------------------------------------------------
 // - PlotEx() [Internal]
 // - PlotLines()
@@ -5855,7 +5855,7 @@ void ImGui::PlotHistogram(const char* label, float (*values_getter)(void* data, 
 }
 
 //-------------------------------------------------------------------------
-// [SECTION] Widgets: Value helpers
+// [SECTION] Widget: Value helpers
 // Those is not very useful, legacy API.
 //-------------------------------------------------------------------------
 // - Value()
@@ -6271,7 +6271,7 @@ bool ImGui::MenuItem(const char* label, const char* shortcut, bool* p_selected, 
 }
 
 //-------------------------------------------------------------------------
-// [SECTION] Widgets: BeginTabBar, EndTabBar, etc.
+// [SECTION] Widget: BeginTabBar, EndTabBar, etc.
 //-------------------------------------------------------------------------
 // [BETA API] API may evolve!
 //-------------------------------------------------------------------------
@@ -6830,7 +6830,7 @@ static ImGuiTabItem* ImGui::TabBarTabListPopupButton(ImGuiTabBar* tab_bar)
 }
 
 //-------------------------------------------------------------------------
-// [SECTION] Widgets: BeginTabItem, EndTabItem, etc.
+// [SECTION] Widget: BeginTabItem, EndTabItem, etc.
 //-------------------------------------------------------------------------
 // [BETA API] API may evolve!
 //-------------------------------------------------------------------------
@@ -7249,7 +7249,7 @@ bool ImGui::TabItemLabelAndCloseButton(ImDrawList* draw_list, const ImRect& bb, 
 
 
 //-------------------------------------------------------------------------
-// [SECTION] Widgets: Columns, BeginColumns, EndColumns, etc.
+// [SECTION] Widget: Columns, BeginColumns, EndColumns, etc.
 // In the current version, Columns are very weak. Needs to be replaced with a more full-featured system.
 //-------------------------------------------------------------------------
 // - GetColumnIndex()

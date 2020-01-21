@@ -34,11 +34,7 @@ namespace gir
         /// Update ImGui display size.
         void UpdateDisplaySize();
 
-        bool IsDockingEnable() const;
-
     private:
         GLFWwindow* m_window = nullptr;
-
-        bool m_useDocking = true;
     };
 }

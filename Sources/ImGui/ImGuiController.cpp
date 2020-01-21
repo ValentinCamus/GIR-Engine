@@ -94,12 +94,12 @@ namespace gir
         // We cannot preserve the docking relationship between an active window and an inactive docking, otherwise
         // any change of dock space/settings would lead to windows being stuck in limbo and never being visible.
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-        ImGui::Begin("Docker", &m_useDocking, windowFlags);
+        static bool isOpen = true;
+        ImGui::Begin("Docker", &isOpen, windowFlags);
         ImGui::PopStyleVar();
         ImGui::PopStyleVar(2);
 
         // DockSpace
-        GIR_ASSERT(IsDockingEnable(), "ImGui: Docking is not enabled");
         ImGuiID dockSpaceId = ImGui::GetID("Docker");
         ImGui::DockSpace(dockSpaceId, ImVec2(0.0f, 0.0f), dockSpaceFlags);
 
@@ -111,10 +111,5 @@ namespace gir
         int width, height;
         glfwGetWindowSize(m_window, &width, &height);
         ImGui::GetIO().DisplaySize = ImVec2(static_cast<float>(width), static_cast<float>(height));
-    }
-
-    bool ImGuiController::IsDockingEnable() const
-    {
-        return ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable;
     }
 }

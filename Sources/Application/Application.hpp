@@ -81,7 +81,7 @@ namespace gir
 
         GLFWwindow* m_window = nullptr;
 
-        ImGuiController m_gui;
+        ImGuiController m_gui = ImGuiController();
     };
 }
 
