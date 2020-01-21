@@ -1,9 +1,5 @@
 #include "Application.hpp"
 
-#include <cassert>
-
-#include <Core/Logger.hpp>
-
 namespace gir
 {
     Application::Application(const char* name, unsigned int width, unsigned int height)
@@ -16,24 +12,19 @@ namespace gir
 #ifdef __APPLE__
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // Required by on MacOs.
 #endif
-        // TODO: check if GLFW error code
-        glfwInit();
-
-        // TODO: check if m_window != nullptr
+        GIR_CHECK(glfwInit(), "Failed to initialize GLFW");
         m_window = glfwCreateWindow(width, height, name, nullptr, nullptr);
-
-        assert(m_window);
+        GIR_CHECK(m_window != nullptr, "Failed to create GLFW window");
 
         glfwMakeContextCurrent(m_window);
-        // TODO: check if gladLoadGLLoader
-        gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
+        GIR_CHECK(gladLoadGLLoader((GLADloadproc) glfwGetProcAddress), "Failed to initiaze GLAD");
 
         glfwSetWindowUserPointer(m_window, this);
 
-        Logger::Info("OpenGL renderer initialized: ");
-        Logger::Info("\tVendor:\t\t{0}", glGetString(GL_VENDOR));
-        Logger::Info("\tVersion:\t{0}", glGetString(GL_VERSION));
-        Logger::Info("\tRenderer:\t{0}", glGetString(GL_RENDERER));
+        Logger::Info("OpenGL renderer: Initialized");
+        // Logger::Info("\tVendor: {0}", glGetString(GL_VENDOR));
+        // Logger::Info("\tVersion: {0}", glGetString(GL_VERSION));
+        // Logger::Info("\tRenderer: {0}", glGetString(GL_RENDERER));
 
         SetupEventsCallback();
         Setup();

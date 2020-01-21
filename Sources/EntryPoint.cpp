@@ -1,8 +1,7 @@
 #include <iostream>
 
-#include <memory>
+#include <Core/Core.hpp>
 
-#include <Core/Logger.hpp>
 #include <Application/Application.hpp>
 
 int main()

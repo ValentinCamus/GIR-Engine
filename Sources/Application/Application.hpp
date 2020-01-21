@@ -3,6 +3,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <Core/Core.hpp>
+
 #define DEFAULT_APP_NAME    "Application"
 #define DEFAULT_APP_WIDTH   800
 #define DEFAULT_APP_HEIGHT  600
