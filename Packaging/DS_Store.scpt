@@ -31,7 +31,7 @@ on run argv
 
 				-- Move the icons; this is really finicky, the coordinates don't seem
 				-- to make much sense and if you go too far then ugly scrollbars will appear
-				set position of item "AlphaEngine.app" to {230, 115}
+				set position of item "GIR_Engine.app" to {230, 115}
 				set position of item "Applications" to {530, 115}
 
 				-- Move these out of the way for users with Finder configured to show all files
