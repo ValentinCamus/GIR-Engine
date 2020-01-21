@@ -58,8 +58,8 @@ namespace gir
         /// Check if an expression is valid.
         /// @expr: the expression to check.
         /// @exprStr: the expected expression.
-        /// @file: the file where the assertion was raised.
-        /// @line: the line where the assertion was raised.
+        /// @file: the file where the check was called.
+        /// @line: the line where the check was called.
         inline void Check(bool expr, const char* exprStr, const char* file, int line, const char* msg)
         {
             if (!expr)
