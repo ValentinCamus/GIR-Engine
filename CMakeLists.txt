@@ -25,7 +25,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
 
 # Use gold linker to speed up linking time, see cmake/UseGoldLinker.cmake
-include(useGoldLinker)
+include(UseGoldLinker)
 
 # Helpful option enable build profiling to identify slowly compiling files
 option(MEASURE_ALL "When enabled all commands will be passed through time command" OFF)

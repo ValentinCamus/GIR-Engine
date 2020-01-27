@@ -1,8 +1,8 @@
 # Adds convenience methods, see CMake/cleanCppExtensions.CMake
-include(cleanCppExtensions)
+include(CleanCppExtensions)
 
 # Creates options to turn on sanitizers, see CMake/sanitizers.CMake
-include(sanitizers)
+include(Sanitizers)
 
 # Enable helpfull warnings and C++14 for all files
 if (MSVC)
