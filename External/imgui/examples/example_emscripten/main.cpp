@@ -65,7 +65,7 @@ int main(int, char**)
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
 
-    // For an Emscripten build we are disabling file-system access, so let's not attempt to do a fopen() of the imgui.ini file.
+    // For an Emscripten build we are disabling file-system access, so let's not attempt to do a fopen() of the ImGui.ini file.
     // You may manually call LoadIniSettingsFromMemory() to load settings from your own storage.
     io.IniFilename = NULL;
 

@@ -24,6 +24,8 @@ namespace gir
         m_window = window;
         SetupPlatformBindings();
 
+        ImGui::GetIO().IniFilename = PROJECT_SOURCE_DIR"/Data/ImGui.ini";
+
         Logger::Info("ImGui: Initialized");
     }
 

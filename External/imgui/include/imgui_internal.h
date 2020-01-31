@@ -671,7 +671,7 @@ struct IMGUI_API ImGuiInputTextState
     void        SelectAll()                 { Stb.select_start = 0; Stb.cursor = Stb.select_end = CurLenW; Stb.has_preferred_x = 0; }
 };
 
-// Windows data saved in imgui.ini file
+// Windows data saved in ImGui.ini file
 struct ImGuiWindowSettings
 {
     char*       Name;

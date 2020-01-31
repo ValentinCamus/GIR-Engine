@@ -32,7 +32,18 @@ set(ENGINE_SRCS EntryPoint.cpp
         Core/Core.hpp
         Core/Math.hpp
         ImGui/ImGuiController.cpp
-        ImGui/ImGuiController.hpp ImGui/Widget/ImGuiWidget.hpp Application/Window.cpp Application/Window.hpp Application/WindowEventListener.hpp Engine/Bindable.hpp Engine/Texture2D.cpp Engine/Texture2D.hpp Engine/Framebuffer.cpp Engine/Framebuffer.hpp ImGui/Widget/ViewportWidget.cpp ImGui/Widget/ViewportWidget.hpp)
+        ImGui/ImGuiController.hpp
+        ImGui/Widget/ImGuiWidget.hpp
+        Application/Window.cpp
+        Application/Window.hpp
+        Application/WindowEventListener.hpp
+        Engine/Bindable.hpp
+        Engine/Texture2D.cpp
+        Engine/Texture2D.hpp
+        Engine/Framebuffer.cpp
+        Engine/Framebuffer.hpp
+        ImGui/Widget/ViewportWidget.cpp
+        ImGui/Widget/ViewportWidget.hpp)
 
 add_executable(GIR_Engine
         MACOSX_BUNDLE
@@ -57,6 +68,11 @@ addRunAndDebugTargets(GIR_Engine)
 
 # Short convenience target from CMake/CleanCpppExtensions.cpp
 add_custom_target(run DEPENDS GIR_Engine-run)
+
+#-------------------------------------------------------------------------------
+# Target compile definitions
+
+target_compile_definitions(GIR_Engine PUBLIC PROJECT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
 
 #-------------------------------------------------------------------------------
 # Target link libraries
