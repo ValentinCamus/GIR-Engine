@@ -84,8 +84,6 @@ namespace gir
         ImGuiController m_gui = ImGuiController();
 
         ViewportWidget m_viewport0 = ViewportWidget("Viewport 0");
-        ViewportWidget m_viewport1 = ViewportWidget("Viewport 1");
-        ViewportWidget m_viewport2 = ViewportWidget("Viewport 2");
     };
 }
 
