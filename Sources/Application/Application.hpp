@@ -6,7 +6,9 @@
 #include <Core/Core.hpp>
 #include <Application/Window.hpp>
 #include <ImGui/ImGuiController.hpp>
+#include <ImGui/Widget/ViewportWidget.hpp>
 #include <Application/WindowEventListener.hpp>
+#include <Engine/Texture2D.hpp>
 
 #define DEFAULT_APP_NAME    "Application"
 #define DEFAULT_APP_WIDTH   800
@@ -80,6 +82,10 @@ namespace gir
         Window m_window = Window();
 
         ImGuiController m_gui = ImGuiController();
+
+        ViewportWidget m_viewport0 = ViewportWidget("Viewport 0");
+        ViewportWidget m_viewport1 = ViewportWidget("Viewport 1");
+        ViewportWidget m_viewport2 = ViewportWidget("Viewport 2");
     };
 }
 

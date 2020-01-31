@@ -32,7 +32,7 @@ set(ENGINE_SRCS EntryPoint.cpp
         Core/Core.hpp
         Core/Math.hpp
         ImGui/ImGuiController.cpp
-        ImGui/ImGuiController.hpp ImGui/Widget/ImGuiWidget.hpp Application/Window.cpp Application/Window.hpp Application/WindowEventListener.hpp)
+        ImGui/ImGuiController.hpp ImGui/Widget/ImGuiWidget.hpp Application/Window.cpp Application/Window.hpp Application/WindowEventListener.hpp Engine/Bindable.hpp Engine/Texture2D.cpp Engine/Texture2D.hpp Engine/Framebuffer.cpp Engine/Framebuffer.hpp ImGui/Widget/ViewportWidget.cpp ImGui/Widget/ViewportWidget.hpp)
 
 add_executable(GIR_Engine
         MACOSX_BUNDLE

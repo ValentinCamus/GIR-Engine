@@ -5,14 +5,12 @@ namespace gir
     void Window::Init(const char *name, unsigned int width, unsigned int height)
     {
         m_name = name;
-        m_size = glm::vec2(width, height);
-         
         Logger::Info("Creating GLFW window: \"{0}\", Size=[w={1}, h={2}]", name, width, height);
 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#ifdef __listenerLE__
+#ifdef __APPLE__
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // Required by on MacOs.
 #endif
 
