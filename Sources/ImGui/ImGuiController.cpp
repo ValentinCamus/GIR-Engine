@@ -32,6 +32,8 @@ namespace gir
         ImGui_ImplGlfw_Shutdown();
         ImGui_ImplOpenGL3_Shutdown();
         ImGui::DestroyContext();
+
+        Logger::Info("ImGui: Shutdown");
     }
 
     void ImGuiController::BeginFrame()

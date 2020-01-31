@@ -4,7 +4,9 @@
 #include <GLFW/glfw3.h>
 
 #include <Core/Core.hpp>
+#include <Application/Window.hpp>
 #include <ImGui/ImGuiController.hpp>
+#include <Application/WindowEventListener.hpp>
 
 #define DEFAULT_APP_NAME    "Application"
 #define DEFAULT_APP_WIDTH   800
@@ -12,7 +14,7 @@
 
 namespace gir
 {
-    class Application
+    class Application : public WindowEventListener
     {
     public:
         /// Default constructor.
@@ -21,7 +23,7 @@ namespace gir
                              unsigned    height  = DEFAULT_APP_HEIGHT);
 
         /// Default destructor.
-        virtual ~Application() = default;
+        ~Application() override = default;
 
         /// Setup and start the draw loop.
         void Run();
@@ -49,37 +51,33 @@ namespace gir
         inline bool IsRunning() const { return m_isRunning; }
 
         /// Event called when the user attempts to close the window.
-        virtual void OnWindowClosed();
+        void OnWindowClosed() override;
 
         /// Event called when the size of the window has changed.
-        virtual void OnWindowResize(int width, int height);
+        void OnWindowResize(int width, int height) override;
 
         /// Event called when a key is pressed.
-        virtual void OnKeyPressed(int keyCode);
+        void OnKeyPressed(int keyCode) override;
 
         /// Event called when a key is released.
-        virtual void OnKeyReleased(int keyCode);
+        void OnKeyReleased(int keyCode) override;
 
         /// Event called when a mouse button is pressed.
-        virtual void OnMousePressed(int button);
+        void OnMousePressed(int button) override;
 
         /// Event called when a mouse button is released.
-        virtual void OnMouseReleased(int button);
+        void OnMouseReleased(int button) override;
 
         /// Event called when the mouse position changed.
-        virtual void OnMouseMoved(double xPos, double yPos);
+        void OnMouseMoved(double xPos, double yPos) override;
 
         /// Event called when a scrolling device is used.
-        virtual void OnMouseScrolled(double xOffset, double yOffset);
-
-    private:
-        /// Setup glfw events callback.
-        void SetupEventsCallback();
+        void OnMouseScrolled(double xOffset, double yOffset) override;
 
     private:
         bool m_isRunning = false;
 
-        GLFWwindow* m_window = nullptr;
+        Window m_window = Window();
 
         ImGuiController m_gui = ImGuiController();
     };

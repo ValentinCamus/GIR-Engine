@@ -4,31 +4,13 @@ namespace gir
 {
     Application::Application(const char* name, unsigned int width, unsigned int height)
     {
-        Logger::Info("Creating GLFW window: \"{0}\", Dimension = [w={1}, h={2}]", name, width, height);
+        // Initialize GLFW window
+        m_window.Init(name, width, height);
+        m_window.SetupEventsCallback(this);
 
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#ifdef __APPLE__
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // Required by on MacOs.
-#endif
-        GIR_CHECK(glfwInit(), "Failed to initialize GLFW");
-        m_window = glfwCreateWindow(width, height, name, nullptr, nullptr);
-        GIR_CHECK(m_window != nullptr, "Failed to create GLFW window");
+        // Initialize the GUI
+        m_gui.Init(m_window.Get());
 
-        glfwMakeContextCurrent(m_window);
-        GIR_CHECK(gladLoadGLLoader((GLADloadproc) glfwGetProcAddress), "Failed to initiaze GLAD");
-
-        glfwSetWindowUserPointer(m_window, this);
-
-        Logger::Info("OpenGL renderer: Initialized");
-        // Logger::Info("\tVendor: {0}", glGetString(GL_VENDOR));
-        // Logger::Info("\tVersion: {0}", glGetString(GL_VERSION));
-        // Logger::Info("\tRenderer: {0}", glGetString(GL_RENDERER));
-
-        m_gui.Init(m_window);
-
-        SetupEventsCallback();
         Setup();
     }
 
@@ -38,7 +20,7 @@ namespace gir
 
         while (m_isRunning)
         {
-            glfwPollEvents();
+            m_window.PollEvents();
 
             Prepare();
             Draw();
@@ -47,99 +29,21 @@ namespace gir
             ImGuiDraw();
             m_gui.EndFrame();
 
-            glfwSwapBuffers(m_window);
+            m_window.SwapBuffers();
         }
 
         m_gui.Shutdown();
-        glfwDestroyWindow(m_window);
-        glfwTerminate();
+        m_window.Shutdown();
     }
 
     void Application::Stop()
     {
-        if (m_window) m_isRunning = false;
-    }
-
-    void Application::SetupEventsCallback()
-    {
-        glfwSetWindowSizeCallback(m_window, [](GLFWwindow *window, int width, int height)
-        {
-            auto app = (Application*) glfwGetWindowUserPointer(window);
-
-            app->OnWindowResize(width, height);
-        });
-
-        glfwSetWindowCloseCallback(m_window, [](GLFWwindow *window)
-        {
-            auto app = (Application*) glfwGetWindowUserPointer(window);
-
-            app->OnWindowClosed();
-        });
-
-        glfwSetKeyCallback(m_window, [](GLFWwindow *window, int key, int scanCode, int action, int mods)
-        {
-            (void) mods;
-            (void) scanCode;
-
-            auto app = (Application*) glfwGetWindowUserPointer(window);
-
-            switch (action)
-            {
-                case GLFW_PRESS:
-                {
-                    app->OnKeyPressed(key);
-                    break;
-                }
-                case GLFW_RELEASE:
-                {
-                    app->OnKeyReleased(key);
-                    break;
-                }
-                default:
-                    break;
-            }
-        });
-
-        glfwSetMouseButtonCallback(m_window, [](GLFWwindow *window, int button, int action, int mods)
-        {
-            (void) mods;
-
-            auto app = (Application*) glfwGetWindowUserPointer(window);
-
-            switch (action)
-            {
-                case GLFW_PRESS:
-                {
-                    app->OnMousePressed(button);
-                    break;
-                }
-                case GLFW_RELEASE:
-                {
-                    app->OnMouseReleased(button);
-                    break;
-                }
-                default:
-                    break;
-            }
-        });
-
-        glfwSetScrollCallback(m_window, [](GLFWwindow *window, double xOffset, double yOffset)
-        {
-            auto app = (Application*) glfwGetWindowUserPointer(window);
-
-            app->OnMouseScrolled(xOffset, yOffset);
-        });
-
-        glfwSetCursorPosCallback(m_window, [](GLFWwindow *window, double xPos, double yPos)
-        {
-            auto app = (Application*) glfwGetWindowUserPointer(window);
-
-            app->OnMouseMoved(xPos, yPos);
-        });
+        m_isRunning = false;
     }
 
     void Application::Setup()
     {
+
     }
 
     void Application::Prepare()

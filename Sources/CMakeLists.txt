@@ -32,7 +32,7 @@ set(ENGINE_SRCS EntryPoint.cpp
         Core/Core.hpp
         Core/Math.hpp
         ImGui/ImGuiController.cpp
-        ImGui/ImGuiController.hpp ImGui/Widget/ImGuiWidget.hpp)
+        ImGui/ImGuiController.hpp ImGui/Widget/ImGuiWidget.hpp Application/Window.cpp Application/Window.hpp Application/WindowEventListener.hpp)
 
 add_executable(GIR_Engine
         MACOSX_BUNDLE
