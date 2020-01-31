@@ -61,9 +61,9 @@ namespace gir
 
     void Application::ImGuiDraw()
     {
-        static bool b = true;
-        ImGui::ShowDemoWindow(&b);
         m_viewport0.Draw();
+        m_lightingWidget.Draw();
+        m_statsWidget.Draw();
     }
 
     void Application::OnWindowClosed()

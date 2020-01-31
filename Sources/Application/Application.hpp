@@ -7,6 +7,8 @@
 #include <Application/Window.hpp>
 #include <ImGui/ImGuiController.hpp>
 #include <ImGui/Widget/ViewportWidget.hpp>
+#include <ImGui/Widget/LightingWidget.hpp>
+#include <ImGui/Widget/StatsWidget.hpp>
 #include <Application/WindowEventListener.hpp>
 #include <Engine/Texture2D.hpp>
 
@@ -83,7 +85,11 @@ namespace gir
 
         ImGuiController m_gui = ImGuiController();
 
+        LightingWidget m_lightingWidget = LightingWidget("Lighting");
+
         ViewportWidget m_viewport0 = ViewportWidget("Viewport 0");
+
+        StatsWidget m_statsWidget = StatsWidget("Statistics");
     };
 }
 

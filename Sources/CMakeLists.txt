@@ -43,7 +43,7 @@ set(ENGINE_SRCS EntryPoint.cpp
         Engine/Framebuffer.cpp
         Engine/Framebuffer.hpp
         ImGui/Widget/ViewportWidget.cpp
-        ImGui/Widget/ViewportWidget.hpp)
+        ImGui/Widget/ViewportWidget.hpp ImGui/Widget/LightingWidget.cpp ImGui/Widget/LightingWidget.hpp ImGui/Widget/StatsWidget.cpp ImGui/Widget/StatsWidget.hpp)
 
 add_executable(GIR_Engine
         MACOSX_BUNDLE
