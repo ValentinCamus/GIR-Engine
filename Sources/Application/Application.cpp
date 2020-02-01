@@ -43,7 +43,7 @@ namespace gir
 
     void Application::Setup()
     {
-        m_viewport0.Init(500, 500);
+        m_viewport.Init(500, 500);
     }
 
     void Application::Prepare()
@@ -53,15 +53,15 @@ namespace gir
 
     void Application::Draw()
     {
-        m_viewport0.GetFramebuffer()->Bind();
+        m_viewport.GetFramebuffer()->Bind();
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        m_viewport0.GetFramebuffer()->Unbind();
+        m_viewport.GetFramebuffer()->Unbind();
     }
 
     void Application::ImGuiDraw()
     {
-        m_viewport0.Draw();
+        m_viewport.Draw();
         m_lightingWidget.Draw();
         m_statsWidget.Draw();
     }

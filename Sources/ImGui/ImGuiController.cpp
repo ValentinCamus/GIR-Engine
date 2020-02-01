@@ -76,7 +76,7 @@ namespace gir
 
         // We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dock-able into,
         // because it would be confusing to have two docking targets within each others.
-        ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+        ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDocking;
 
         ImGuiViewport* viewport = ImGui::GetMainViewport();
         ImGui::SetNextWindowPos(viewport->Pos);

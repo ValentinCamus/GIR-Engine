@@ -21,6 +21,8 @@ namespace gir
         ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
         ImGui::SetNextWindowSize(GetFramebufferSize(), ImGuiCond_FirstUseEver);
 
+        if (!m_isVisible) return;
+
         // Main body of the Demo window starts here.
         if (!ImGui::Begin(GetName(), &m_isVisible))
         {

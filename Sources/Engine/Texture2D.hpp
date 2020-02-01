@@ -19,9 +19,9 @@ namespace gir
         /// Destructor.
         ~Texture2D() override;
 
-        /// Resize the texture with the given dimension.
+        /// Allocate the texture with the given dimension.
         /// @pixels: specifies a pointer to the image data in memory.
-        void Resize(unsigned width, unsigned height, unsigned char* pixels = nullptr);
+        void Allocate(unsigned width, unsigned height, unsigned char* pixels = nullptr);
 
         void Bind() override;
 

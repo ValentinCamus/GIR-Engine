@@ -17,7 +17,7 @@ namespace gir
         /// Destructor.
         ~ViewportWidget() override;
 
-        /// Initialize the viewport.
+        /// Initialize the widget.
         /// @warning: needs to be initialized after the renderer initialization (e.g glad).
         void Init(unsigned width, unsigned height);
 

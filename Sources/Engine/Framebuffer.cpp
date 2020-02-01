@@ -30,7 +30,7 @@ namespace gir
         if (m_texture)
         {
             m_texture->Bind();
-            m_texture->Resize(width, height);
+            m_texture->Allocate(width, height);
         }
     }
 

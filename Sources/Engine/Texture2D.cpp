@@ -25,7 +25,7 @@ namespace gir
         glDeleteTextures(1, &m_id);
     }
 
-    void Texture2D::Resize(unsigned width, unsigned height, unsigned char* pixels)
+    void Texture2D::Allocate(unsigned width, unsigned height, unsigned char* pixels)
     {
         GIR_ASSERT(IsBound(), "Texture2D::Resize: The texture needs to be bound to be resized");
         m_width = width;
