@@ -42,6 +42,4 @@ namespace gir
 
         Framebuffer* m_framebuffer = nullptr;
     };
-}
-
-
+} // namespace gir

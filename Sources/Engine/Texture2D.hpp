@@ -77,6 +77,4 @@ namespace gir
 
         bool m_isBound = false;
     };
-}
-
-
+} // namespace gir

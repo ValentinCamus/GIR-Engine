@@ -29,4 +29,4 @@ namespace gir
 
         ImGui::End();
     }
-}
+} // namespace gir

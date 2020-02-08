@@ -10,9 +10,9 @@
 #include <Application/WindowEventListener.hpp>
 #include <Engine/Texture2D.hpp>
 
-#define DEFAULT_APP_NAME    "Application"
-#define DEFAULT_APP_WIDTH   800
-#define DEFAULT_APP_HEIGHT  600
+#define DEFAULT_APP_NAME "Application"
+#define DEFAULT_APP_WIDTH 800
+#define DEFAULT_APP_HEIGHT 600
 
 namespace gir
 {
@@ -20,9 +20,9 @@ namespace gir
     {
     public:
         /// Default constructor.
-        explicit Application(const char* name    = DEFAULT_APP_NAME,
-                             unsigned    width   = DEFAULT_APP_WIDTH,
-                             unsigned    height  = DEFAULT_APP_HEIGHT);
+        explicit Application(const char* name = DEFAULT_APP_NAME,
+                             unsigned width   = DEFAULT_APP_WIDTH,
+                             unsigned height  = DEFAULT_APP_HEIGHT);
 
         /// Default destructor.
         ~Application() override = default;
@@ -84,9 +84,7 @@ namespace gir
         ImGuiController m_gui = ImGuiController();
 
         LightingWidget m_lightingWidget = LightingWidget("Lighting");
-        ViewportWidget m_viewport = ViewportWidget("Viewport");
-        StatsWidget m_statsWidget = StatsWidget("Statistics");
+        ViewportWidget m_viewport       = ViewportWidget("Viewport");
+        StatsWidget m_statsWidget       = StatsWidget("Statistics");
     };
-}
-
-
+} // namespace gir

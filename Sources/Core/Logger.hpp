@@ -6,10 +6,10 @@ namespace gir
 {
     enum class ELogLevel
     {
-        Debug = SPDLOG_LEVEL_DEBUG,
-        Info = SPDLOG_LEVEL_INFO,
-        Warn = SPDLOG_LEVEL_WARN,
-        Error = SPDLOG_LEVEL_ERROR,
+        Debug  = SPDLOG_LEVEL_DEBUG,
+        Info   = SPDLOG_LEVEL_INFO,
+        Warn   = SPDLOG_LEVEL_WARN,
+        Error  = SPDLOG_LEVEL_ERROR,
         Silent = SPDLOG_LEVEL_OFF,
     };
 
@@ -53,8 +53,8 @@ namespace gir
         ///        The format uses "{<index>}" to make a reference to the argument at the index <index>.
         ///        The argument index start with 0.
         /// @args : A list of arguments, can be empty.
-        template<typename ... Args>
-        static inline void Debug(const char * fmt, const Args&... args)
+        template<typename... Args>
+        static inline void Debug(const char* fmt, const Args&... args)
         {
             spdlog::debug(fmt, args...);
         }
@@ -64,8 +64,8 @@ namespace gir
         ///        The format uses "{<index>}" to make a reference to the argument at the index <index>.
         ///        The argument index start with 0.
         /// @args : A list of arguments, can be empty.
-        template<typename ... Args>
-        static inline void Info(const char * fmt, const Args&... args)
+        template<typename... Args>
+        static inline void Info(const char* fmt, const Args&... args)
         {
             spdlog::info(fmt, args...);
         }
@@ -75,8 +75,8 @@ namespace gir
         ///        The format uses "{<index>}" to make a reference to the argument at the index <index>.
         ///        The argument index start with 0.
         /// @args : A list of arguments, can be empty.
-        template<typename ... Args>
-        static inline void Warn(const char * fmt, const Args&... args)
+        template<typename... Args>
+        static inline void Warn(const char* fmt, const Args&... args)
         {
             spdlog::warn(fmt, args...);
         }
@@ -86,8 +86,8 @@ namespace gir
         ///        The format uses "{<index>}" to make a reference to the argument at the index <index>.
         ///        The argument index start with 0.
         /// @args : A list of arguments, can be empty.
-        template<typename ... Args>
-        static inline void Error(const char * fmt, const Args&... args)
+        template<typename... Args>
+        static inline void Error(const char* fmt, const Args&... args)
         {
             spdlog::error(fmt, args...);
         }
@@ -98,4 +98,4 @@ namespace gir
             spdlog::set_level(format);
         }
     };
-}
+} // namespace gir

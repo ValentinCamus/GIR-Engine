@@ -20,4 +20,4 @@ namespace gir
 
         virtual const char* GetName() const = 0;
     };
-}
+} // namespace gir

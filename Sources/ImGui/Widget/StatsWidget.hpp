@@ -7,7 +7,7 @@
 
 namespace gir
 {
-    constexpr unsigned FPS_LIMIT = 512;
+    constexpr unsigned FPS_LIMIT        = 512;
     constexpr unsigned MAX_HISTORY_SIZE = 512;
 
     class StatsWidget : public ImGuiWidget
@@ -25,7 +25,4 @@ namespace gir
 
         std::array<float, MAX_HISTORY_SIZE> m_fpsHistory;
     };
-}
-
-
-
+} // namespace gir

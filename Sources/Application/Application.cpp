@@ -36,20 +36,11 @@ namespace gir
         m_window.Shutdown();
     }
 
-    void Application::Stop()
-    {
-        m_isRunning = false;
-    }
+    void Application::Stop() { m_isRunning = false; }
 
-    void Application::Setup()
-    {
-        m_viewport.Init(500, 500);
-    }
+    void Application::Setup() { m_viewport.Init(500, 500); }
 
-    void Application::Prepare()
-    {
-
-    }
+    void Application::Prepare() {}
 
     void Application::Draw()
     {
@@ -66,46 +57,31 @@ namespace gir
         m_statsWidget.Draw();
     }
 
-    void Application::OnWindowClosed()
-    {
-        Stop();
-    }
+    void Application::OnWindowClosed() { Stop(); }
 
     void Application::OnWindowResize(int width, int height)
     {
-        (void) width;
-        (void) height;
+        (void)width;
+        (void)height;
     }
 
-    void Application::OnKeyPressed(int keyCode)
-    {
-        (void) keyCode;
-    }
+    void Application::OnKeyPressed(int keyCode) { (void)keyCode; }
 
-    void Application::OnKeyReleased(int keyCode)
-    {
-        (void) keyCode;
-    }
+    void Application::OnKeyReleased(int keyCode) { (void)keyCode; }
 
-    void Application::OnMousePressed(int button)
-    {
-        (void) button;
-    }
+    void Application::OnMousePressed(int button) { (void)button; }
 
-    void Application::OnMouseReleased(int button)
-    {
-        (void) button;
-    }
+    void Application::OnMouseReleased(int button) { (void)button; }
 
     void Application::OnMouseMoved(double xPos, double yPos)
     {
-        (void) xPos;
-        (void) yPos;
+        (void)xPos;
+        (void)yPos;
     }
 
     void Application::OnMouseScrolled(double xOffset, double yOffset)
     {
-        (void) xOffset;
-        (void) yOffset;
+        (void)xOffset;
+        (void)yOffset;
     }
-}
+} // namespace gir

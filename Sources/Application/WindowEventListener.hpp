@@ -33,4 +33,4 @@ namespace gir
         /// Event called when a scrolling device is used.
         virtual void OnMouseScrolled(double xOffset, double yOffset) {}
     };
-}
+} // namespace gir

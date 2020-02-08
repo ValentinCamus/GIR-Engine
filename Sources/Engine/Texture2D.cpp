@@ -2,7 +2,7 @@
 
 namespace gir
 {
-    Texture2D::Texture2D(const char *name, int format, int type)
+    Texture2D::Texture2D(const char* name, int format, int type)
         : m_name(name)
         , m_format(format)
         , m_type(type)
@@ -20,15 +20,12 @@ namespace gir
         Unbind();
     }
 
-    Texture2D::~Texture2D()
-    {
-        glDeleteTextures(1, &m_id);
-    }
+    Texture2D::~Texture2D() { glDeleteTextures(1, &m_id); }
 
     void Texture2D::Allocate(unsigned width, unsigned height, unsigned char* pixels)
     {
         GIR_ASSERT(IsBound(), "Texture2D::Resize: The texture needs to be bound to be resized");
-        m_width = width;
+        m_width  = width;
         m_height = height;
         glTexImage2D(GL_TEXTURE_2D, 0, m_format, width, height, 0, m_format, m_type, pixels);
     }
@@ -45,10 +42,7 @@ namespace gir
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    bool Texture2D::IsBound() const
-    {
-        return m_isBound;
-    }
+    bool Texture2D::IsBound() const { return m_isBound; }
 
     void Texture2D::Bind(int slot)
     {
@@ -68,4 +62,4 @@ namespace gir
         GIR_ASSERT(IsBound(), "Texture2D::SetParameter (float): To set a parameter, the texture needs to be bound");
         glTexParameterf(GL_TEXTURE_2D, name, value);
     }
-}
+} // namespace gir

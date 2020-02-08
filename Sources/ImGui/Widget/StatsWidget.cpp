@@ -19,7 +19,7 @@ namespace gir
             return;
         }
 
-        float fps = ImGui::GetIO().Framerate;
+        float fps                                     = ImGui::GetIO().Framerate;
         m_fpsHistory[(m_cursor++) % MAX_HISTORY_SIZE] = fps;
 
         ImGui::Text("Framerate: %f", fps);
@@ -36,4 +36,4 @@ namespace gir
 
         ImGui::End();
     }
-}
+} // namespace gir

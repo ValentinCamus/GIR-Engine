@@ -10,19 +10,19 @@
 
 #include "Shader.hpp"
 
+namespace gir
+{
+    class ShaderManager
+    {
+    public:
+        ShaderManager() = default;
+        ShaderManager(const std::vector<std::pair<EShaderType, ProgramSources>> &sources);
 
-namespace gir {
+        inline Shader *Program(EShaderType type);
 
-class ShaderManager {
-public:
-    ShaderManager() = default;
-    ShaderManager(const std::vector<std::pair<EShaderType, ProgramSources>> &sources);
-
-    inline Shader *Program(EShaderType type);
-
-private:
-    std::vector<Shader> m_shaders;
-};
+    private:
+        std::vector<Shader> m_shaders;
+    };
 
 } // namespace gir
 

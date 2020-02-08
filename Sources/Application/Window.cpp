@@ -19,7 +19,7 @@ namespace gir
         GIR_CHECK(m_window != nullptr, "Failed to create GLFW window");
 
         glfwMakeContextCurrent(m_window);
-        GIR_CHECK(gladLoadGLLoader((GLADloadproc) glfwGetProcAddress), "Failed to initialize GLAD");
+        GIR_CHECK(gladLoadGLLoader((GLADloadproc)glfwGetProcAddress), "Failed to initialize GLAD");
     }
 
     void Window::Shutdown()
@@ -50,24 +50,21 @@ namespace gir
 
         glfwSetWindowUserPointer(m_window, listener);
 
-        glfwSetWindowSizeCallback(m_window, [](GLFWwindow *window, int width, int height)
-        {
-            auto listener = (WindowEventListener*) glfwGetWindowUserPointer(window);
+        glfwSetWindowSizeCallback(m_window, [](GLFWwindow *window, int width, int height) {
+            auto listener = (WindowEventListener *)glfwGetWindowUserPointer(window);
             listener->OnWindowResize(width, height);
         });
 
-        glfwSetWindowCloseCallback(m_window, [](GLFWwindow *window)
-        {
-            auto listener = (WindowEventListener*) glfwGetWindowUserPointer(window);
+        glfwSetWindowCloseCallback(m_window, [](GLFWwindow *window) {
+            auto listener = (WindowEventListener *)glfwGetWindowUserPointer(window);
             listener->OnWindowClosed();
         });
 
-        glfwSetKeyCallback(m_window, [](GLFWwindow *window, int key, int scanCode, int action, int mods)
-        {
-            (void) mods;
-            (void) scanCode;
+        glfwSetKeyCallback(m_window, [](GLFWwindow *window, int key, int scanCode, int action, int mods) {
+            (void)mods;
+            (void)scanCode;
 
-            auto listener = (WindowEventListener*) glfwGetWindowUserPointer(window);
+            auto listener = (WindowEventListener *)glfwGetWindowUserPointer(window);
 
             switch (action)
             {
@@ -82,11 +79,10 @@ namespace gir
             }
         });
 
-        glfwSetMouseButtonCallback(m_window, [](GLFWwindow *window, int button, int action, int mods)
-        {
-            (void) mods;
+        glfwSetMouseButtonCallback(m_window, [](GLFWwindow *window, int button, int action, int mods) {
+            (void)mods;
 
-            auto listener = (WindowEventListener*) glfwGetWindowUserPointer(window);
+            auto listener = (WindowEventListener *)glfwGetWindowUserPointer(window);
 
             switch (action)
             {
@@ -101,17 +97,14 @@ namespace gir
             }
         });
 
-        glfwSetScrollCallback(m_window, [](GLFWwindow *window, double xOffset, double yOffset)
-        {
-            auto listener = (WindowEventListener*) glfwGetWindowUserPointer(window);
+        glfwSetScrollCallback(m_window, [](GLFWwindow *window, double xOffset, double yOffset) {
+            auto listener = (WindowEventListener *)glfwGetWindowUserPointer(window);
             listener->OnMouseScrolled(xOffset, yOffset);
         });
 
-        glfwSetCursorPosCallback(m_window, [](GLFWwindow *window, double xPos, double yPos)
-        {
-            auto listener = (WindowEventListener*) glfwGetWindowUserPointer(window);
+        glfwSetCursorPosCallback(m_window, [](GLFWwindow *window, double xPos, double yPos) {
+            auto listener = (WindowEventListener *)glfwGetWindowUserPointer(window);
             listener->OnMouseMoved(xPos, yPos);
         });
     }
-}
-
+} // namespace gir

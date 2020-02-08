@@ -42,7 +42,4 @@ namespace gir
 
         GLFWwindow* m_window = nullptr;
     };
-}
-
-
-
+} // namespace gir

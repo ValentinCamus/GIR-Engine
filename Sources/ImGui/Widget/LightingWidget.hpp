@@ -9,7 +9,7 @@ namespace gir
 {
     enum class ELightingMode
     {
-        Unlit = 0,
+        Unlit  = 0,
         Direct = 1,
         Global = 2
     };
@@ -34,6 +34,4 @@ namespace gir
 
         int m_selectedLightingMode = 1;
     };
-}
-
-
+} // namespace gir

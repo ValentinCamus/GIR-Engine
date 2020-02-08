@@ -10,14 +10,11 @@ namespace gir
         glGenFramebuffers(1, &m_fbo);
     }
 
-    Framebuffer::~Framebuffer()
-    {
-        glDeleteFramebuffers(1, &m_fbo);
-    }
+    Framebuffer::~Framebuffer() { glDeleteFramebuffers(1, &m_fbo); }
 
     void Framebuffer::Resize(unsigned width, unsigned height)
     {
-        m_width = width;
+        m_width  = width;
         m_height = height;
         glViewport(0, 0, width, height);
 
@@ -42,15 +39,9 @@ namespace gir
         glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
     }
 
-    void Framebuffer::Unbind()
-    {
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    }
+    void Framebuffer::Unbind() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
 
-    float Framebuffer::GetAspectRatio() const
-    {
-        return float(m_width) / float(m_height);
-    }
+    float Framebuffer::GetAspectRatio() const { return float(m_width) / float(m_height); }
 
     void Framebuffer::AttachRenderbuffer(int format, int attachment)
     {
@@ -67,7 +58,7 @@ namespace gir
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, m_rbo);
     }
 
-    void Framebuffer::AttachTexture(Texture2D *texture, int attachment)
+    void Framebuffer::AttachTexture(Texture2D* texture, int attachment)
     {
         GIR_ASSERT(m_texture == nullptr, "A texture is already attached");
 
@@ -75,8 +66,5 @@ namespace gir
         glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, texture->GetId(), 0);
     }
 
-    bool Framebuffer::IsComplete() const
-    {
-        return glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
-    }
-}
+    bool Framebuffer::IsComplete() const { return glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE; }
+} // namespace gir

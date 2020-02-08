@@ -40,7 +40,7 @@
 #ifdef GIR_WARN_UNUSED
 #define GIR_UNUSED(_var_) gir::Logger::Warn("Unused variable {0}", #var);
 #else
-#define GIR_UNUSED(_var_) (void) var;
+#define GIR_UNUSED(_var_) (void)var;
 #endif
 
 #define GIR_CHECK(_expr_, _msg_) gir::core::Check(_expr_, #_expr_, __FILE__, __LINE__, _msg_)
@@ -84,5 +84,5 @@ namespace gir
                 exit(EXIT_FAILURE);
             }
         }
-    }
-}
+    } // namespace core
+} // namespace gir

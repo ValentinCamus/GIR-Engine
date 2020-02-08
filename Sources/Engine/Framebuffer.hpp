@@ -59,11 +59,11 @@ namespace gir
         /// Renderbuffer's id.
         unsigned m_rbo = 0;
 
-        unsigned m_width = 0;
+        unsigned m_width  = 0;
         unsigned m_height = 0;
 
         bool m_isBound = false;
 
         Texture2D* m_texture = nullptr;
     };
-}
+} // namespace gir

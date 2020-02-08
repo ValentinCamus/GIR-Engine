@@ -4,7 +4,7 @@ namespace gir
 {
     void ViewportWidget::Init(unsigned width, unsigned height)
     {
-        m_texture = new Texture2D("Texture", GL_RGB, GL_UNSIGNED_INT);
+        m_texture     = new Texture2D("Texture", GL_RGB, GL_UNSIGNED_INT);
         m_framebuffer = new Framebuffer("Framebuffer");
 
         m_framebuffer->Bind();
@@ -31,10 +31,7 @@ namespace gir
             return;
         }
 
-        if (ShouldResizeFramebuffer())
-        {
-            ResizeFramebuffer();
-        }
+        if (ShouldResizeFramebuffer()) { ResizeFramebuffer(); }
         else
         {
             DrawFramebuffer();
@@ -51,23 +48,23 @@ namespace gir
 
     ImVec2 ViewportWidget::GetFramebufferSize() const
     {
-        auto fbWidth = (float) m_framebuffer->GetTexture()->GetWidth();
-        auto fbHeight = (float) m_framebuffer->GetTexture()->GetHeight();
+        auto fbWidth  = (float)m_framebuffer->GetTexture()->GetWidth();
+        auto fbHeight = (float)m_framebuffer->GetTexture()->GetHeight();
         return {fbWidth, fbHeight};
     }
 
     bool ViewportWidget::ShouldResizeFramebuffer() const
     {
         ImVec2 winSize = ImGui::GetWindowSize();
-        ImVec2 fbSize = GetFramebufferSize();
+        ImVec2 fbSize  = GetFramebufferSize();
         return winSize.x != fbSize.x || winSize.y != fbSize.y;
     }
 
     void ViewportWidget::ResizeFramebuffer()
     {
         ImVec2 winSize = ImGui::GetWindowSize();
-        auto width = (unsigned) winSize.x;
-        auto height = (unsigned) winSize.y;
+        auto width     = (unsigned)winSize.x;
+        auto height    = (unsigned)winSize.y;
 
         m_framebuffer->Bind();
         m_framebuffer->Resize(width, height);
@@ -78,8 +75,8 @@ namespace gir
     {
         ImVec2 winSize = ImGui::GetWindowSize();
         m_framebuffer->Bind();
-        void* id = (void*)(uintptr_t) m_framebuffer->GetTexture()->GetId();
+        void* id = (void*)(uintptr_t)m_framebuffer->GetTexture()->GetId();
         ImGui::Image(id, winSize, ImVec2(0, 1), ImVec2(1, 0));
         m_framebuffer->Unbind();
     }
-}
+} // namespace gir

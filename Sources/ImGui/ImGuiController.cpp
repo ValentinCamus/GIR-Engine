@@ -13,18 +13,18 @@ namespace gir
         ImGui::CreateContext();
 
         ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
-        ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable; // Enable Docking
-        ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; // Enable Multi-Viewport
+        ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;     // Enable Docking
+        ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;   // Enable Multi-Viewport
 
         // Setup Dear ImGui style
         ImGui::StyleColorsDark();
-        ImGui::GetStyle().WindowRounding = 0.0f;
+        ImGui::GetStyle().WindowRounding              = 0.0f;
         ImGui::GetStyle().Colors[ImGuiCol_WindowBg].w = 1.0f;
 
         m_window = window;
         SetupPlatformBindings();
 
-        ImGui::GetIO().IniFilename = PROJECT_SOURCE_DIR"/Data/ImGui.ini";
+        ImGui::GetIO().IniFilename = PROJECT_SOURCE_DIR "/Data/ImGui.ini";
 
         Logger::Info("ImGui: Initialized");
     }
@@ -116,4 +116,4 @@ namespace gir
         glfwGetWindowSize(m_window, &width, &height);
         ImGui::GetIO().DisplaySize = ImVec2(static_cast<float>(width), static_cast<float>(height));
     }
-}
+} // namespace gir

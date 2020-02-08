@@ -6,10 +6,9 @@ namespace gir
     {
     public:
         explicit ImGuiWidget(const char* name, bool isVisible = true)
-                : m_name(name)
-                , m_isVisible(isVisible)
+            : m_name(name)
+            , m_isVisible(isVisible)
         {
-
         }
 
         /// Default destructor.
@@ -32,4 +31,4 @@ namespace gir
         /// Is the widget visible ?
         bool m_isVisible;
     };
-}
+} // namespace gir

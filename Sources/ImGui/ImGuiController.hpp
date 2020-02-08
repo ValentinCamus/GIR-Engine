@@ -37,4 +37,4 @@ namespace gir
     private:
         GLFWwindow* m_window = nullptr;
     };
-}
+} // namespace gir

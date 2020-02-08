@@ -9,49 +9,56 @@
 #include <string>
 #include <unordered_map>
 
+namespace gir
+{
+    enum class EShaderType
+    {
+        GBUFFER           = 0,
+        DEFERRED_LIGHTING = 1,
+        SHADOW_MAPPING    = 2,
+        DEBUG             = 3,
+        COUNT             = 4
+    };
 
-namespace gir {
+    using ProgramSources = std::vector<std::pair<GLenum, std::string>>;
 
-enum class EShaderType { GBUFFER = 0, DEFERRED_LIGHTING = 1, SHADOW_MAPPING = 2, DEBUG = 3, COUNT = 4 };
+    class Shader : public Bindable
+    {
+    public:
+        Shader()               = delete;
+        Shader(const Shader &) = delete;
+        void operator=(const Shader &) = delete;
 
-using ProgramSources = std::vector<std::pair<GLenum, std::string>>;
+        Shader(const ProgramSources &sources);
+        Shader(Shader &&shader) noexcept;
+        ~Shader();
 
-class Shader : public Bindable {
-public:
-    Shader() = delete;
-    Shader(const Shader &) = delete;
-    void operator=(const Shader &) = delete;
+        void Bind() override;
 
-    Shader(const ProgramSources& sources);
-    Shader(Shader &&shader) noexcept;
-    ~Shader();
+        void Unbind() override;
 
-    void Bind() override;
+        bool IsBound() override;
 
-    void Unbind() override;
+        unsigned GetId() override;
 
-    bool IsBound() override;
+        inline void SetUniform(const std::string &name, int value);
+        inline void SetUniform(const std::string &name, unsigned value);
+        inline void SetUniform(const std::string &name, float value);
+        inline void SetUniform(const std::string &name, bool value);
+        inline void SetUniform(const std::string &name, const Vec3 &value);
+        // inline void SetUniform(const std::string &name, const Vec4 &value);
+        inline void SetUniform(const std::string &name, const Mat4 &value);
 
-    unsigned GetId() override;
+        static const char *prefix;
 
-    inline void SetUniform(const std::string &name, int value);
-    inline void SetUniform(const std::string &name, unsigned value);
-    inline void SetUniform(const std::string &name, float value);
-    inline void SetUniform(const std::string &name, bool value);
-    inline void SetUniform(const std::string &name, const Vec3 &value);
-    // inline void SetUniform(const std::string &name, const Vec4 &value);
-    inline void SetUniform(const std::string &name, const Mat4 &value);
+    private:
+        GLuint ParseGLSL(GLenum shaderType, const std::string &filename, std::vector<std::string> &uniforms);
+        void ParseIncludes(std::string &src) const;
 
-    static const char *prefix;
-
-private:
-    GLuint ParseGLSL(GLenum shaderType, const std::string &filename, std::vector<std::string> &uniforms);
-    void ParseIncludes(std::string &src) const;
-
-    GLuint m_programID;
-    std::unordered_map<std::string, GLint> m_uniforms;
-    bool m_bound = false;
-};
+        GLuint m_programID;
+        std::unordered_map<std::string, GLint> m_uniforms;
+        bool m_bound = false;
+    };
 
 } // namespace gir
 
