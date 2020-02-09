@@ -11,10 +11,9 @@ namespace gir
     {
     public:
         /// Constructor.
-        /// @name: the texture's name.
         /// @format: specifies the number of color components in the texture.
         /// @type: specifies the data type of the pixel data.
-        explicit Texture2D(const char* name, int format, int type);
+        explicit Texture2D(int format, int type);
 
         /// Destructor.
         ~Texture2D() override;
@@ -34,8 +33,6 @@ namespace gir
         void Bind(int slot);
 
         inline unsigned GetId() const override { return m_id; }
-
-        inline const char* GetName() const override { return m_name; }
 
         /// The index of the texture unit.
         inline int GetSlot() const { return m_slot; }
@@ -58,8 +55,6 @@ namespace gir
 
     private:
         unsigned m_id = 0;
-
-        const char* m_name;
 
         /// The index of the texture unit.
         /// @note: -1 is the null/invalid texture index.

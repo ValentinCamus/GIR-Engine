@@ -18,11 +18,11 @@ BinPackArguments: 'false'
 BinPackParameters: 'false'
 BreakBeforeBinaryOperators: None
 BreakBeforeBraces: Allman
-BreakConstructorInitializers: BeforeComma
+BreakConstructorInitializers: AfterColon
 BreakInheritanceList: BeforeComma
 ColumnLimit: '120'
 CommentPragmas: suppress
-ConstructorInitializerAllOnOneLineOrOnePerLine: 'false'
+ConstructorInitializerAllOnOneLineOrOnePerLine: 'true'
 ConstructorInitializerIndentWidth: '4'
 ContinuationIndentWidth: '4'
 Cpp11BracedListStyle: 'true'

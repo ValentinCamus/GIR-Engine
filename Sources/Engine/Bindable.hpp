@@ -17,7 +17,5 @@ namespace gir
 
         /// A bindable is represented with an unique identifier.
         virtual unsigned GetId() const = 0;
-
-        virtual const char* GetName() const = 0;
     };
 } // namespace gir

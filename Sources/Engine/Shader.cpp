@@ -12,9 +12,7 @@ namespace gir
     // TODO: Find the right path
     const char *Shader::prefix = "../../Sources/GLSL/";
 
-    Shader::Shader(const ProgramSources &sources)
-        : Bindable {}
-        , m_programID {glCreateProgram()}
+    Shader::Shader(const ProgramSources &sources) : Bindable {}, m_programID {glCreateProgram()}
     {
         std::vector<std::string> uniforms;
 
@@ -47,8 +45,7 @@ namespace gir
         for (const auto &name : uniforms) { m_uniforms.emplace(name, glGetUniformLocation(m_programID, name.c_str())); }
     }
 
-    Shader::Shader(Shader &&shader) noexcept
-        : Bindable {}
+    Shader::Shader(Shader &&shader) noexcept : Bindable {}
     {
         m_programID        = shader.m_programID;
         shader.m_programID = 0;

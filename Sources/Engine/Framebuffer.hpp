@@ -10,8 +10,7 @@ namespace gir
     {
     public:
         /// Constructor.
-        /// @name: the framebuffer's name.
-        explicit Framebuffer(const char* name);
+        explicit Framebuffer();
 
         /// Destructor.
         ~Framebuffer() override;
@@ -37,8 +36,6 @@ namespace gir
 
         inline unsigned GetId() const override { return m_fbo; }
 
-        inline const char* GetName() const override { return m_name; }
-
         /// @return: true if the framebuffer is complete.
         bool IsComplete() const;
 
@@ -51,8 +48,6 @@ namespace gir
         float GetAspectRatio() const;
 
     private:
-        const char* m_name;
-
         /// Framebuffer's id.
         unsigned m_fbo = 0;
 

@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include <RenderSystem.hpp>
+
 namespace gir
 {
     class Light;
@@ -13,16 +15,20 @@ namespace gir
     class Scene
     {
     public:
-        Scene()  = default;
+        Scene(const Camera &camera, std::vector<Light> &&lights, std::vector<Entity> &&entities);
         ~Scene() = default;
 
-        const Camera &camera() const;
+        void draw();
 
-        const std::vector<Light> &lights() const;
+        const Camera &GetCamera() const;
 
-        const std::vector<Entity> &entities() const;
+        const std::vector<Light> &GetLights() const;
+
+        const std::vector<Entity> &GetEntities() const;
 
     private:
+        RenderSystem m_renderSystem;
+
         Camera m_camera;
 
         std::vector<Light> m_lights;

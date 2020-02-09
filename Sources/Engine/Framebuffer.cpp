@@ -4,11 +4,7 @@
 
 namespace gir
 {
-    Framebuffer::Framebuffer(const char* name)
-        : m_name(name)
-    {
-        glGenFramebuffers(1, &m_fbo);
-    }
+    Framebuffer::Framebuffer() { glGenFramebuffers(1, &m_fbo); }
 
     Framebuffer::~Framebuffer() { glDeleteFramebuffers(1, &m_fbo); }
 

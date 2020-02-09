@@ -2,10 +2,7 @@
 
 namespace gir
 {
-    Texture2D::Texture2D(const char* name, int format, int type)
-        : m_name(name)
-        , m_format(format)
-        , m_type(type)
+    Texture2D::Texture2D(int format, int type) : m_format(format), m_type(type)
     {
         glGenTextures(1, &m_id);
 
