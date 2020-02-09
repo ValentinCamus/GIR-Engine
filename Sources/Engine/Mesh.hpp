@@ -3,6 +3,7 @@
 
 #include <Core/Core.hpp>
 #include "Component.hpp"
+#include "Material.hpp"
 #include "VertexArrayObjectManager.hpp"
 
 namespace gir
@@ -11,12 +12,15 @@ namespace gir
     {
     public:
         Mesh(const std::string &name,
+             Material *material,
              std::vector<unsigned> &&indices,
              std::vector<Vec3f> &&vertices,
              std::vector<Vec3f> &&normals,
              std::vector<Vec2f> &&textureCoordinates);
 
         ~Mesh();
+
+        const Material *GetMaterial() const;
 
         const std::vector<unsigned> &GetIndices() const;
 
@@ -26,11 +30,8 @@ namespace gir
 
         const std::vector<Vec2f> &GetTextureCoordinates() const;
 
-        static VertexArrayObjectManager m_vaoManager;
-
     private:
-
-        const VertexArrayObject &m_vao;
+        Material *m_material;
 
         std::vector<unsigned> m_indices;
 

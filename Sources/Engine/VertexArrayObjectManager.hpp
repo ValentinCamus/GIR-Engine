@@ -3,6 +3,7 @@
 
 #include <Core/Core.hpp>
 #include "VertexArrayObject.hpp"
+#include "Material.hpp"
 
 namespace gir
 {
@@ -11,20 +12,18 @@ namespace gir
     class VertexArrayObjectManager
     {
     public:
-        VertexArrayObjectManager() = default;
+        static void AddVertexArrayObject(const Mesh& mesh);
 
-        ~VertexArrayObjectManager() = default;
+        static void DeleteVertexArrayObject(const VertexArrayObject& vao);
 
-        void AddVertexArrayObject(const Mesh& mesh);
+        static inline void BindVAO(int i);
 
-        void DeleteVertexArrayObject(const VertexArrayObject& vao);
-
-        inline void BindVAO(int i);
-
-        inline unsigned VAOCount();
+        static inline unsigned VAOCount();
 
     private:
-        std::vector<VertexArrayObject> m_vaos;
+        static std::vector<std::pair<Material*, VertexArrayObject>> m_vaosByMaterial;
+
+        VertexArrayObjectManager() = default;
     };
 
 } // namespace gir

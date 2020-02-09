@@ -4,7 +4,7 @@
 
 namespace gir
 {
-    const char *Shader::prefix = "../../Sources/GLSL/";
+    const char *Shader::prefix = "../../Sources/Engine/GLSL/";
 
     Shader::Shader(const ProgramSources &sources) : Bindable {}, m_programID {glCreateProgram()}
     {
