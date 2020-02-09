@@ -26,8 +26,9 @@ namespace gir
 
         const std::vector<Vec2f> &GetTextureCoordinates() const;
 
-    private:
         static VertexArrayObjectManager m_vaoManager;
+
+    private:
 
         const VertexArrayObject &m_vao;
 

@@ -4,21 +4,31 @@
 #include <Core/Core.hpp>
 #include "VertexArrayObject.hpp"
 
-// If performance is an issue:
-//      --> TODO: VAO packing + everything it implies (bindless textures ? UBOs ?)
-class VertexArrayObjectManager
+namespace gir
 {
-public:
-    VertexArrayObjectManager() = default;
+    // If performance is an issue:
+    //      --> TODO: VAO packing + everything it implies (bindless textures ? UBOs ?)
+    class VertexArrayObjectManager
+    {
+    public:
+        VertexArrayObjectManager() = default;
 
-    ~VertexArrayObjectManager() = default;
+        ~VertexArrayObjectManager() = default;
 
-    void AddVertexArrayObject(const Mesh& mesh);
+        void AddVertexArrayObject(const Mesh& mesh);
 
-    void DeleteVertexArrayObject(const VertexArrayObject& vao);
+        void DeleteVertexArrayObject(const VertexArrayObject& vao);
 
-private:
-    std::vector<VertexArrayObject> m_vaos;
-};
+        inline void BindVAO(int i);
+
+        inline unsigned VAOCount();
+
+    private:
+        std::vector<VertexArrayObject> m_vaos;
+    };
+
+} // namespace gir
+
+#include "VertexArrayObjectManager.inl"
 
 #endif

@@ -3,14 +3,12 @@
 
 #include <Core/Core.hpp>
 #include "RenderSystem.hpp"
+#include "Camera.hpp"
+#include "Light.hpp"
+#include "Entity.hpp"
 
 namespace gir
 {
-    class Light;
-    class Entity;
-    class Camera;
-
-    // TODO: do
     class Scene
     {
     public:

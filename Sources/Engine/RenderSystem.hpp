@@ -12,7 +12,6 @@ namespace gir
         RSM
     };
 
-    // TODO: do
     class RenderSystem
     {
     public:
@@ -31,7 +30,7 @@ namespace gir
 
         Framebuffer m_GBuffer;
 
-        RenderMode mode;
+        RenderMode m_renderMode = RenderMode::DEBUG;
     };
 
 } // namespace gir
