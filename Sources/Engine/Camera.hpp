@@ -1,16 +1,15 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
-#include "SceneComponent.hpp"
-
 #include <Core/Core.hpp>
+#include "SceneComponent.hpp"
 
 namespace gir
 {
     class Camera : public SceneComponent
     {
     public:
-        Camera(const Mat4f &transform, int width, int height, float vfov = PI / 3);
+        Camera(const std::string &name, const Mat4f &transform, int width, int height, float vfov = PI / 3);
 
         ~Camera() = default;
 
@@ -29,9 +28,9 @@ namespace gir
 
         float m_vfov;
 
-        int m_width;
+        unsigned m_width;
 
-        int m_height;
+        unsigned m_height;
 
         bool m_dirtyProj = false;
 

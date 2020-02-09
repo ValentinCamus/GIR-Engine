@@ -1,7 +1,6 @@
 #pragma once
 
 #include <glad/glad.h>
-
 #include <Core/Core.hpp>
 #include <Engine/Bindable.hpp>
 

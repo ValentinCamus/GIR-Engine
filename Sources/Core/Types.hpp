@@ -6,6 +6,8 @@
 
 namespace gir {
 
+using Vec2f = glm::vec2;
+
 using Vec3f = glm::vec3;
 
 using Vec3i = glm::ivec3;

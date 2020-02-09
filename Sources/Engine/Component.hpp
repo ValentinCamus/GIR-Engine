@@ -1,7 +1,7 @@
 #ifndef COMPONENT_HPP
 #define COMPONENT_HPP
 
-#include <string>
+#include <Core/Core.hpp>
 
 namespace gir
 {

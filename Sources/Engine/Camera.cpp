@@ -2,8 +2,8 @@
 
 namespace gir
 {
-    Camera::Camera(const Mat4f &transform, int width, int height, float vfov) :
-        SceneComponent {transform},
+    Camera::Camera(const std::string &name, const Mat4f &transform, int width, int height, float vfov) :
+        SceneComponent {name, transform},
         m_vfov {vfov},
         m_width {width},
         m_height {height}
@@ -11,9 +11,9 @@ namespace gir
         m_projection = perspective(hfov, static_cast<float>(m_width) / m_height, nearZ, farZ);
     }
 
-    void Camera::SetWidth(int width);
+    void Camera::SetWidth(unsigned width);
 
-    void Camera::SetHeight(int height);
+    void Camera::SetHeight(unsigned height);
 
     void Camera::SetVerticalFOV(float vfov);
 

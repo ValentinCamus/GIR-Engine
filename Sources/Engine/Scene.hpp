@@ -1,9 +1,8 @@
 #ifndef SCENE_HPP
 #define SCENE_HPP
 
-#include <vector>
-
-#include <RenderSystem.hpp>
+#include <Core/Core.hpp>
+#include "RenderSystem.hpp"
 
 namespace gir
 {
@@ -16,6 +15,7 @@ namespace gir
     {
     public:
         Scene(const Camera &camera, std::vector<Light> &&lights, std::vector<Entity> &&entities);
+
         ~Scene() = default;
 
         void draw();

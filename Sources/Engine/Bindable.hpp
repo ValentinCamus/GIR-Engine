@@ -4,6 +4,7 @@
 
 namespace gir
 {
+    // TODO: Add the "bound" boolean to the interface
     class Bindable
     {
     public:

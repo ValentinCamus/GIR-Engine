@@ -1,15 +1,9 @@
 #include "Shader.hpp"
-
 #include <Core/Logger.hpp>
-
-#include <fstream>
-#include <sstream>
-#include <regex>
-#include <vector>
+#include <Core/Core.hpp>
 
 namespace gir
 {
-    // TODO: Find the right path
     const char *Shader::prefix = "../../Sources/GLSL/";
 
     Shader::Shader(const ProgramSources &sources) : Bindable {}, m_programID {glCreateProgram()}
@@ -38,7 +32,7 @@ namespace gir
             glGetProgramiv(m_programID, GL_INFO_LOG_LENGTH, &length);
             std::string log(length, ' ');
             glGetProgramInfoLog(m_programID, length, nullptr, &log[0]);
-            Logger().Error("[ERROR]: shader program linking failed with the following:\n" + log);
+            Logger::Error("[ERROR]: shader program linking failed with the following:\n" + log);
         }
 
         m_uniforms.reserve(uniforms.size());
@@ -54,15 +48,25 @@ namespace gir
 
     Shader::~Shader() { glDeleteProgram(m_programID); }
 
-    void Shader::Bind() override { glUseProgram(m_programID); }
+    void Shader::Bind() override
+    {
+        GIR_ASSERT(m_programID > 0, "Invalid program ID");
 
-    void Shader::Unbind() override { glUseProgram(0); }
+        glUseProgram(m_programID);
+        m_bound = true;
+    }
+
+    void Shader::Unbind() override
+    {
+        glUseProgram(0);
+        m_bound = false;
+    }
 
     bool Shader::IsBound() override { return m_bound; }
 
-    unsigned Shader::GetId() override { return static_cast<unsigned>(m_programID); }
+    unsigned Shader::GetId() override { return m_programID; }
 
-    GLuint Shader::parseGLSL(GLenum shaderType, const std::string &filename, std::vector<std::string> &uniforms)
+    unsigned Shader::parseGLSL(GLenum shaderType, const std::string &filename, std::vector<std::string> &uniforms)
     {
         std::ifstream file {filename};
         GLuint id = glCreateShader(shaderType);
