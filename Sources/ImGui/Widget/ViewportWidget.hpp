@@ -4,7 +4,7 @@
 
 #include <Core/Core.hpp>
 #include <ImGui/Widget/ImGuiWidget.hpp>
-#include <Engine/Framebuffer.hpp>
+#include <Engine/Framebuffer/Framebuffer.hpp>
 
 namespace gir
 {

@@ -8,7 +8,7 @@
 #include <ImGui/ImGuiController.hpp>
 #include <ImGui/Widget/Widget.hpp>
 #include <Application/WindowEventListener.hpp>
-#include <Engine/Texture2D.hpp>
+#include <Engine/Texture/Texture2D.hpp>
 
 #define DEFAULT_APP_NAME "Application"
 #define DEFAULT_APP_WIDTH 800

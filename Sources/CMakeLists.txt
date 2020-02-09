@@ -25,30 +25,9 @@ elseif (APPLE) #osx icon ressource file, provided from /Packaging directory
     set(ICON_RESOURCE "${PROJECT_SOURCE_DIR}/Packaging/GIR_Engine.icns")
 endif ()
 
-set(ENGINE_SRCS EntryPoint.cpp
-        Core/Logger.hpp
-        Application/Application.cpp
-        Application/Application.hpp
-        Core/Core.hpp
-        Core/Math.hpp
-        ImGui/ImGuiController.cpp
-        ImGui/ImGuiController.hpp
-        ImGui/Widget/ImGuiWidget.hpp
-        Application/Window.cpp
-        Application/Window.hpp
-        Application/WindowEventListener.hpp
-        Engine/Bindable.hpp
-        Engine/Texture2D.cpp
-        Engine/Texture2D.hpp
-        Engine/Framebuffer.cpp
-        Engine/Framebuffer.hpp
-        ImGui/Widget/ViewportWidget.cpp
-        ImGui/Widget/ViewportWidget.hpp ImGui/Widget/LightingWidget.cpp ImGui/Widget/LightingWidget.hpp ImGui/Widget/StatsWidget.cpp ImGui/Widget/StatsWidget.hpp ImGui/Widget/Widget.hpp)
+file(GLOB_RECURSE ENGINE_SRCS "*.cpp" "*.hpp" ".inl")
 
-add_executable(GIR_Engine
-        MACOSX_BUNDLE
-        ${ICON_RESOURCE}
-        ${ENGINE_SRCS})
+add_executable(GIR_Engine MACOSX_BUNDLE ${ICON_RESOURCE} ${ENGINE_SRCS})
 
 target_include_directories(GIR_Engine PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 

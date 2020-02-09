@@ -56,6 +56,4 @@ namespace gir
     {
         return (value - rangeMin) * (newRangeMax - newRangeMin) / (rangeMax - rangeMin + newRangeMin);
     }
-
-    using glm::perspective;
 } // namespace gir

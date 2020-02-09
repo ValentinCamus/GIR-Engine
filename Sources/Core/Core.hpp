@@ -8,6 +8,9 @@
 #include <cassert>
 #include <cstdlib>
 #include <cstdint>
+#include <regex>
+#include <fstream>
+#include <sstream>
 
 // Default C++ headers
 #include <map>
@@ -22,6 +25,7 @@
 #include <functional>
 
 // Default GIR headers
+#include <Core/Type.hpp>
 #include <Core/Math.hpp>
 #include <Core/Logger.hpp>
 
