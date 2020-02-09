@@ -10,7 +10,7 @@ namespace gir
     public:
         explicit SceneComponent(const std::string& name, const Mat4f& transform = Mat4f {1.f});
 
-        ~SceneComponent() = default;
+        ~SceneComponent() override = default;
 
         inline const Mat4f& GetTransform() const { return m_transform; }
 

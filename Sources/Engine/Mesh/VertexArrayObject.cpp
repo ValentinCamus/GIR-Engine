@@ -2,63 +2,19 @@
 
 namespace gir
 {
-    /*
-    VertexArrayObject::VertexArrayObject(const Mesh& mesh) : Bindable {}
+    VertexArrayObject::VertexArrayObject()
+        : OpenGLComponent()
     {
         glGenVertexArrays(1, &m_id);
-        glGenBuffers(bufferCount, m_buffers);
-        glBindVertexArray(m_vaoID);
-
-        const auto& indices = mesh.GetIndices();
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_buffers[0]);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned) * indices.size(), indices.data(), GL_STATIC_DRAW);
-
-        const auto& vertices = mesh.GetVertices();
-        glBindBuffer(GL_ARRAY_BUFFER, m_buffers[1]);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(unsigned) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
-        glEnableVertexAttribArray(0);
-
-        const auto& normals = mesh.GetNormals();
-        glBindBuffer(GL_ARRAY_BUFFER, m_buffers[2]);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(unsigned) * normals.size(), normals.data(), GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
-        glEnableVertexAttribArray(1);
-
-        const auto& textureCoordinates = mesh.GetTextureCoordinates();
-        glBindBuffer(GL_ARRAY_BUFFER, m_buffers[3]);
-        glBufferData(
-            GL_ARRAY_BUFFER, sizeof(unsigned) * textureCoordinates.size(), textureCoordinates.data(), GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
-        glEnableVertexAttribArray(2);
-
-        glBindVertexArray(0);
     }
-    */
-
-    /*
-    VertexArrayObject::VertexArrayObject(VertexArrayObject&& vao) noexcept : OpenGLComponent {}
-    {
-        m_id = vao.m_id;
-        vao.m_id = 0;
-
-        m_isBound = vao.m_isBound;
-
-        for (int i = 0; i < bufferCount; ++i)
-        {
-            m_buffers[i]     = vao.m_buffers[i];
-            vao.m_buffers[i] = 0;
-        }
-    }
-    */
 
     VertexArrayObject::~VertexArrayObject()
     {
-        // glDeleteBuffers(bufferCount, m_buffers);
+        if (m_isIndexed) glDeleteBuffers(1, &m_ibo);
+        for (unsigned buffer : m_attributeBuffers) glDeleteBuffers(1, &buffer);
+
         glDeleteVertexArrays(1, &m_id);
     }
-
-    bool VertexArrayObject::operator==(const VertexArrayObject& vao) const { return m_id == vao.m_id; }
 
     void VertexArrayObject::Bind()
     {
@@ -70,6 +26,51 @@ namespace gir
     {
         OpenGLComponent::Unbind();
         glBindVertexArray(0);
+    }
+
+    /*
+    template<typename T>
+    void VertexArrayObject::AddIntBuffer(const std::vector<T>& buffer, unsigned size)
+    {
+        unsigned layout = GenerateVBO();
+        glBufferData(GL_ARRAY_BUFFER, size * sizeof(int) * buffer.size(), buffer.data(), GL_STATIC_DRAW);
+        glEnableVertexAttribArray(layout);
+        glVertexAttribPointer(layout, size, GL_FLOAT, GL_FALSE, size * sizeof(int), 0);
+    }
+    */
+
+    /*
+    template<typename T>
+    void VertexArrayObject::AddFloatBuffer(const std::vector<T>& buffer, unsigned size)
+    {
+        unsigned layout = GenerateVBO();
+        glBufferData(GL_ARRAY_BUFFER, size * sizeof(float) * buffer.size(), buffer.data(), GL_STATIC_DRAW);
+        glEnableVertexAttribArray(layout);
+        glVertexAttribPointer(layout, size, GL_FLOAT, GL_FALSE, size * sizeof(float), 0);
+    }
+    */
+    
+    void VertexArrayObject::AddIndexBuffer(const std::vector<unsigned>& buffer)
+    {
+        if (!m_isIndexed)
+        {
+            glGenBuffers(1, &m_ibo);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned) * buffer.size(), buffer.data(), GL_STATIC_DRAW);
+        }
+        else Logger::Warn("[VAO={0}] The buffer is already indexed", m_id);
+    }
+
+    unsigned VertexArrayObject::GenerateVBO()
+    {
+        unsigned vbo = 0;
+
+        glGenBuffers(1, &vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+        m_attributeBuffers.push_back(vbo);
+
+        return m_attributeBuffers.size() - 1;
     }
 
 } // namespace gir

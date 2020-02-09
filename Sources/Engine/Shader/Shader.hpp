@@ -22,7 +22,7 @@ namespace gir
     public:
         explicit Shader() : OpenGLComponent() {}
 
-        Shader(const std::unordered_map<GLenum, std::string> &sources);
+        explicit Shader(const std::unordered_map<GLenum, std::string> &sources);
 
         ~Shader() override;
 

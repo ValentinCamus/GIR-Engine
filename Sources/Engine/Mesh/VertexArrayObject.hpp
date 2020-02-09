@@ -7,28 +7,47 @@
 
 namespace gir
 {
-    constexpr unsigned bufferCount = 4;
-
     class VertexArrayObject : public OpenGLComponent
     {
     public:
-        explicit VertexArrayObject() : OpenGLComponent() {}
+        explicit VertexArrayObject();
 
-        //explicit VertexArrayObject(const Mesh& mesh);
+        ~VertexArrayObject() override;
 
-        // VertexArrayObject(VertexArrayObject&& vao) noexcept;
+        template<typename T>
+        inline void AddIntBuffer(const std::vector<T>& buffer, unsigned size)
+        {
+            unsigned layout = GenerateVBO();
+            glBufferData(GL_ARRAY_BUFFER, size * sizeof(int) * buffer.size(), buffer.data(), GL_STATIC_DRAW);
+            glEnableVertexAttribArray(layout);
+            glVertexAttribPointer(layout, size, GL_FLOAT, GL_FALSE, size * sizeof(int), 0);
+        }
 
-        ~VertexArrayObject();
+        template<typename T>
+        inline void AddFloatBuffer(const std::vector<T>& buffer, unsigned size)
+        {
+            unsigned layout = GenerateVBO();
+            glBufferData(GL_ARRAY_BUFFER, size * sizeof(float) * buffer.size(), buffer.data(), GL_STATIC_DRAW);
+            glEnableVertexAttribArray(layout);
+            glVertexAttribPointer(layout, size, GL_FLOAT, GL_FALSE, size * sizeof(float), 0);
+        }
 
-        bool operator==(const VertexArrayObject& vao) const;
+        void AddIndexBuffer(const std::vector<unsigned>& buffer);
 
         void Bind() override;
 
         void Unbind() override;
 
+        inline bool operator==(const VertexArrayObject& vao) const { return m_id == vao.m_id; }
+
     private:
-        // TOTRY: heap allocate and compare cpu times
-        // unsigned buffers[bufferCount];
+        unsigned GenerateVBO();
+
+    private:
+        std::vector<unsigned> m_attributeBuffers;
+
+        unsigned m_ibo = 0;
+        bool m_isIndexed = false;
     };
 
 } // namespace gir
