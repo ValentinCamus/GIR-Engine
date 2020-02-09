@@ -51,6 +51,9 @@ namespace gir
 
         void ParseIncludes(std::string &src) const;
 
+        int GetUniformLocation(const std::string& name);
+
+    private:
         std::unordered_map<std::string, GLint> m_uniforms;
     };
 
