@@ -9,11 +9,10 @@ namespace gir
     class Model : public Component
     {
     public:
-
+        Model(const std::string& name);
 
     private:
-        // FIXME: Mesh or Mesh& or Mesh* ?
-        std::vector<Mesh*> m_meshes;
+        std::vector<std::pair<Material*, Mesh>> m_meshesByMaterial;
     };
 
 } // namespace gir

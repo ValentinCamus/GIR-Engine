@@ -2,8 +2,7 @@
 
 namespace gir
 {
-    VertexArrayObject::VertexArrayObject()
-        : OpenGLComponent()
+    VertexArrayObject::VertexArrayObject() : OpenGLComponent {"VAO"}
     {
         glGenVertexArrays(1, &m_id);
     }
@@ -28,28 +27,6 @@ namespace gir
         glBindVertexArray(0);
     }
 
-    /*
-    template<typename T>
-    void VertexArrayObject::AddIntBuffer(const std::vector<T>& buffer, unsigned size)
-    {
-        unsigned layout = GenerateVBO();
-        glBufferData(GL_ARRAY_BUFFER, size * sizeof(int) * buffer.size(), buffer.data(), GL_STATIC_DRAW);
-        glEnableVertexAttribArray(layout);
-        glVertexAttribPointer(layout, size, GL_FLOAT, GL_FALSE, size * sizeof(int), 0);
-    }
-    */
-
-    /*
-    template<typename T>
-    void VertexArrayObject::AddFloatBuffer(const std::vector<T>& buffer, unsigned size)
-    {
-        unsigned layout = GenerateVBO();
-        glBufferData(GL_ARRAY_BUFFER, size * sizeof(float) * buffer.size(), buffer.data(), GL_STATIC_DRAW);
-        glEnableVertexAttribArray(layout);
-        glVertexAttribPointer(layout, size, GL_FLOAT, GL_FALSE, size * sizeof(float), 0);
-    }
-    */
-    
     void VertexArrayObject::AddIndexBuffer(const std::vector<unsigned>& buffer)
     {
         if (!m_isIndexed)

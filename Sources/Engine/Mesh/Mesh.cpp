@@ -14,7 +14,12 @@ namespace gir
         m_normals(std::move(normals)),
         m_textureCoordinates(std::move(textureCoordinates))
     {
-        // TODO: create VAO
+        m_vao.Bind();
+        m_vao.AddFloatBuffer(m_vertices, 3);
+        m_vao.AddFloatBuffer(m_normals, 3);
+        m_vao.AddFloatBuffer(m_textureCoordinates, 2);
+        m_vao.AddIndexBuffer(m_indices);
+        m_vao.Unbind();
     }
 
     const Material *Mesh::GetMaterial() const { return m_material; }

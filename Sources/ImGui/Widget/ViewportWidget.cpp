@@ -4,8 +4,8 @@ namespace gir
 {
     void ViewportWidget::Init(unsigned width, unsigned height)
     {
-        m_texture     = new Texture2D(GL_RGB, GL_UNSIGNED_INT);
-        m_framebuffer = new Framebuffer();
+        m_texture     = new Texture2D("Default texture", GL_RGB, GL_UNSIGNED_INT);
+        m_framebuffer = new Framebuffer("Default framebuffer");
 
         m_framebuffer->Bind();
         m_framebuffer->AttachTexture(m_texture, GL_COLOR_ATTACHMENT0);

@@ -4,6 +4,8 @@
 
 namespace gir
 {
+    inline OpenGLComponent::OpenGLComponent(const std::string& name) : Component {name} {}
+
     inline void OpenGLComponent::Bind() { m_isBound = true; };
 
     inline void OpenGLComponent::Unbind() { m_isBound = false; };

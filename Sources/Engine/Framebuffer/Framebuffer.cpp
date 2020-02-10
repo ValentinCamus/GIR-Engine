@@ -4,10 +4,7 @@
 
 namespace gir
 {
-    Framebuffer::Framebuffer()
-    {
-        glGenFramebuffers(1, &m_id);
-    }
+    Framebuffer::Framebuffer(const std::string& name) : OpenGLComponent {name} { glGenFramebuffers(1, &m_id); }
 
     Framebuffer::~Framebuffer() { glDeleteFramebuffers(1, &m_id); }
 

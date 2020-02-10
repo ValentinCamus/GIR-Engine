@@ -10,7 +10,7 @@ namespace gir
     {
     public:
         /// Constructor.
-        explicit Framebuffer();
+        explicit Framebuffer(const std::string& name);
 
         /// Destructor.
         ~Framebuffer() override;

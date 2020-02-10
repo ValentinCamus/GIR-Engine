@@ -5,7 +5,7 @@ namespace gir
     Renderer::Renderer(const Scene& scene)
         : m_scene {scene}
         , m_shaderManager {{}}
-        , m_gBuffer {}
+        , m_gBuffer {"GBuffer"}
     {
         // TODO: add textures to the framebuffer and fill the shader manager initializer
     }

@@ -20,7 +20,7 @@ namespace gir
     class Shader : public OpenGLComponent
     {
     public:
-        explicit Shader() : OpenGLComponent() {}
+        explicit Shader() : OpenGLComponent {""} {}
 
         explicit Shader(const std::unordered_map<GLenum, std::string> &sources);
 
@@ -51,7 +51,7 @@ namespace gir
 
         void ParseIncludes(std::string &src) const;
 
-        int GetUniformLocation(const std::string& name);
+        int GetUniformLocation(const std::string &name);
 
     private:
         std::unordered_map<std::string, GLint> m_uniforms;

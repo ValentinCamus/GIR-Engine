@@ -2,7 +2,10 @@
 
 namespace gir
 {
-    Texture2D::Texture2D(int format, int type) : m_format(format), m_type(type)
+    Texture2D::Texture2D(const std::string& name, int format, int type) :
+        OpenGLComponent {name},
+        m_format(format),
+        m_type(type)
     {
         glGenTextures(1, &m_id);
 

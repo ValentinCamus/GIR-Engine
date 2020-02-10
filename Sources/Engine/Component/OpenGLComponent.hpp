@@ -1,12 +1,15 @@
 #pragma once
 
 #include <Core/Core.hpp>
+#include <Engine/Component/Component.hpp>
 
 namespace gir
 {
-    class OpenGLComponent
+    class OpenGLComponent : public Component
     {
     public:
+        OpenGLComponent(const std::string& name);
+
         virtual ~OpenGLComponent() = default;
 
         virtual inline void Bind();

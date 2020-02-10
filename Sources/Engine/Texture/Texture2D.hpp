@@ -10,9 +10,10 @@ namespace gir
     {
     public:
         /// Constructor.
+        /// @name: specifies the name of the component.
         /// @format: specifies the number of color components in the texture.
         /// @type: specifies the data type of the pixel data.
-        explicit Texture2D(int format, int type);
+        explicit Texture2D(const std::string& name, int format, int type);
 
         /// Destructor.
         ~Texture2D() override;

@@ -5,7 +5,7 @@ namespace gir
     const char *Shader::prefix = "../../Sources/Engine/GLSL/";
 
     Shader::Shader(const std::unordered_map<GLenum, std::string> &sources)
-        : OpenGLComponent {}
+        : OpenGLComponent {"Shader"}
     {
         std::vector<GLuint> stages;
         std::vector<std::string> uniforms;
