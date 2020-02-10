@@ -2,6 +2,8 @@
 
 #include <Engine/Shader/Shader.hpp>
 #include <Engine/Mesh/VertexArrayObject.hpp>
+#include <IO/TextureLoader.hpp>
+#include <Engine/Texture/Texture2D.hpp>
 
 namespace gir
 {
@@ -43,6 +45,8 @@ namespace gir
 
     Shader* shader = nullptr;
     VertexArrayObject* vao = nullptr;
+    Texture2D* texture0 = nullptr;
+    Texture2D* texture1 = nullptr;
 
     void Application::Setup()
     {
@@ -53,17 +57,25 @@ namespace gir
             {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR"/Shaders/Debug.fs.glsl"}
         });
 
-        std::vector<Vec3f> vertices = {
-            {0.5f,  0.5f, 0.0f},  // top right
-            {0.5f, -0.5f, 0.0f},  // bottom right
-            {-0.5f, -0.5f, 0.0f},  // bottom left
-            {-0.5f,  0.5f, 0.0f}   // top left
+        std::vector<float> vertices = {
+             0.5f,  0.5f, 0.0f,  // top right
+             0.5f, -0.5f, 0.0f,  // bottom right
+            -0.5f, -0.5f, 0.0f,  // bottom left
+            -0.5f,  0.5f, 0.0f   // top left
         };
 
         std::vector<float> colors = {
-                1.0f, 0.0f, 0.0f,
-                0.0f, 1.0f, 0.0f,
-                0.0f, 0.0f, 1.0f
+            1.0f, 0.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 0.0f, 1.0f,
+            1.0f, 1.0f, 0.0f
+        };
+
+        std::vector<float> texCoords {
+            1.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 0.0f,
+            0.0f, 1.0f
         };
 
         std::vector<unsigned> indices = {
@@ -72,12 +84,15 @@ namespace gir
         };
 
         vao = new VertexArrayObject();
-
         vao->Bind();
         vao->AddFloatBuffer(vertices, 3);
         vao->AddFloatBuffer(colors, 3);
+        vao->AddFloatBuffer(texCoords, 2);
         vao->AddIndexBuffer(indices);
         vao->Unbind();
+
+        texture0 = TextureLoader::Load(PROJECT_SOURCE_DIR"/Assets/AwesomeFace.png");
+        texture1 = TextureLoader::Load(PROJECT_SOURCE_DIR"/Assets/WoodenContainer.jpg");
     }
 
     void Application::Prepare() {}
@@ -88,22 +103,21 @@ namespace gir
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
         shader->Bind();
-
-        static float grad = 0.01;
-
-        shader->SetUniform("uColor", {0, grad, 1, 1});
-
-        if (grad > 1.0) grad = 0.01;
-        else grad += 0.001;
-
         vao->Bind();
 
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        texture0->Bind(0);
+        texture1->Bind(1);
 
+        shader->SetUniform("texture0", texture1->GetSlot());
+        shader->SetUniform("texture1", texture0->GetSlot());
+
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
         vao->Unbind();
-
         shader->Unbind();
+        texture0->Unbind();
+        texture1->Unbind();
 
         m_viewport.GetFramebuffer()->Unbind();
     }

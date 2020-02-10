@@ -5,7 +5,27 @@ namespace gir
     Texture2D::Texture2D(const std::string& name, int format, int type) :
         OpenGLComponent {name},
         m_format(format),
+        m_internalFormat(format),
         m_type(type)
+    {
+        glGenTextures(1, &m_id);
+
+        Bind();
+
+        // Default parameters:
+        SetParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        SetParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        SetParameter(GL_TEXTURE_WRAP_S, GL_REPEAT);
+        SetParameter(GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+        Unbind();
+    }
+
+    Texture2D::Texture2D(const std::string& name, int format, int internalFormat, int type) :
+            OpenGLComponent {name},
+            m_format(format),
+            m_internalFormat(internalFormat),
+            m_type(type)
     {
         glGenTextures(1, &m_id);
 
@@ -22,12 +42,12 @@ namespace gir
 
     Texture2D::~Texture2D() { glDeleteTextures(1, &m_id); }
 
-    void Texture2D::Allocate(unsigned width, unsigned height, unsigned char* pixels)
+    void Texture2D::Allocate(unsigned width, unsigned height, const unsigned char* pixels)
     {
         GIR_ASSERT(IsBound(), "Texture2D::Resize: The texture needs to be bound to be resized");
         m_width  = width;
         m_height = height;
-        glTexImage2D(GL_TEXTURE_2D, 0, m_format, width, height, 0, m_format, m_type, pixels);
+        glTexImage2D(GL_TEXTURE_2D, 0, m_format, width, height, 0, m_internalFormat, m_type, pixels);
     }
 
     void Texture2D::Bind()

@@ -22,7 +22,7 @@ set(ICON_RESOURCE "")
 if (WIN32) #windows icon resource file, provided from /Packaging directory
     set(ICON_RESOURCE "${PROJECT_BINARY_DIR}/GIR_Engine.icon.rc")
 elseif (APPLE) #osx icon ressource file, provided from /Packaging directory
-    set(ICON_RESOURCE "${PROJECT_SOURCE_DIR}/Packaging/GIR_Engine.icns")
+    set(ICON_RESOURCE "${PROJECT_SOURCE_DIR}/Packaging/GIR_Engine.icns" IO/TextureLoader.cpp IO/TextureLoader.hpp)
 endif ()
 
 file(GLOB_RECURSE ENGINE_SRCS "*.cpp" "*.hpp" ".inl")
