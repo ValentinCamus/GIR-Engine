@@ -6,8 +6,6 @@ namespace gir
 {
     Texture2D* TextureLoader::Load(const std::string &filename, bool flipYAxis)
     {
-        Logger::Info("Loading image \"{0}\"...", filename);
-
         stbi_set_flip_vertically_on_load(flipYAxis);
 
         int width = 0;
@@ -23,7 +21,7 @@ namespace gir
         texture->Allocate(width, height, pixels);
         texture->Unbind();
 
-        Logger::Info("Image \"{0}\" was correctly loaded", filename);
+        Logger::Info("Texture \"{0}\": Loaded", filename);
 
         return texture;
     }

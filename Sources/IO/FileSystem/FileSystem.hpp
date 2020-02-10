@@ -3,7 +3,7 @@
 #include <Core/Core.hpp>
 
 namespace gir
-{
+    {
     class FileSystem
     {
     public:

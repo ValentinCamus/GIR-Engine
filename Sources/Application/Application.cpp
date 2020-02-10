@@ -17,7 +17,8 @@ namespace gir
         // Initialize the GUI
         m_gui.Init(m_window.Get());
 
-        Setup();
+        // Link the input controller with the window system.
+        m_input.Init(m_window.Get());
     }
 
     void Application::Run()
@@ -132,29 +133,4 @@ namespace gir
 
     void Application::OnWindowClosed() { Stop(); }
 
-    void Application::OnWindowResize(int width, int height)
-    {
-        (void)width;
-        (void)height;
-    }
-
-    void Application::OnKeyPressed(int keyCode) { (void)keyCode; }
-
-    void Application::OnKeyReleased(int keyCode) { (void)keyCode; }
-
-    void Application::OnMousePressed(int button) { (void)button; }
-
-    void Application::OnMouseReleased(int button) { (void)button; }
-
-    void Application::OnMouseMoved(double xPos, double yPos)
-    {
-        (void)xPos;
-        (void)yPos;
-    }
-
-    void Application::OnMouseScrolled(double xOffset, double yOffset)
-    {
-        (void)xOffset;
-        (void)yOffset;
-    }
 } // namespace gir
