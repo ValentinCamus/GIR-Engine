@@ -10,6 +10,7 @@ namespace gir
                std::vector<Vec2f> textureCoordinates) :
         Component(name),
         m_material(material),
+        m_indices(std::move(indices)),
         m_vertices(std::move(vertices)),
         m_normals(std::move(normals)),
         m_textureCoordinates(std::move(textureCoordinates))
