@@ -9,10 +9,31 @@ namespace gir
     class Model : public Component
     {
     public:
-        Model(const std::string& name);
+        struct Element
+        {
+            Mesh mesh;
+            Material* material = nullptr;
+        };
+
+    public:
+        explicit Model(const std::string& name);
+
+        inline void AddMaterial(unsigned index, Material* material)
+        {
+            GIR_ASSERT(index < m_elements.size(), "Invalid element index");
+            m_elements[index].material = material;
+        }
+
+        inline Material* GetMaterial(unsigned index) const
+        {
+            GIR_ASSERT(index < m_elements.size(), "Invalid element index");
+            return m_elements[index].material;
+        }
+
+        inline const std::vector<Element>& GetElements() const { return m_elements; }
 
     private:
-        std::vector<std::pair<Material*, Mesh>> m_meshesByMaterial;
+        std::vector<Element> m_elements = {};
     };
 
 } // namespace gir
