@@ -2,8 +2,9 @@
 
 #include <Engine/Shader/Shader.hpp>
 #include <Engine/Mesh/VertexArrayObject.hpp>
-#include <IO/TextureLoader.hpp>
+#include <IO/Loader/TextureLoader.hpp>
 #include <Engine/Texture/Texture2D.hpp>
+#include <IO/FileSystem/FileSystem.hpp>
 
 namespace gir
 {
@@ -53,8 +54,8 @@ namespace gir
         m_viewport.Init(500, 500);
 
         shader = new Shader({
-            {GL_VERTEX_SHADER, PROJECT_SOURCE_DIR"/Shaders/Debug.vs.glsl"},
-            {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR"/Shaders/Debug.fs.glsl"}
+            {GL_VERTEX_SHADER, FileSystem::GetShadersDir() + "Debug.vs.glsl"},
+            {GL_FRAGMENT_SHADER, FileSystem::GetShadersDir() + "Debug.fs.glsl"}
         });
 
         std::vector<float> vertices = {
@@ -91,8 +92,8 @@ namespace gir
         vao->AddIndexBuffer(indices);
         vao->Unbind();
 
-        texture0 = TextureLoader::Load(PROJECT_SOURCE_DIR"/Assets/AwesomeFace.png");
-        texture1 = TextureLoader::Load(PROJECT_SOURCE_DIR"/Assets/WoodenContainer.jpg");
+        texture0 = TextureLoader::Load(FileSystem::GetAssetsDir() + "AwesomeFace.png");
+        texture1 = TextureLoader::Load(FileSystem::GetAssetsDir() + "WoodenContainer.jpg");
     }
 
     void Application::Prepare() {}
