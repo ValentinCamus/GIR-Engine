@@ -1,6 +1,5 @@
 #pragma once
 
-// TODO: Handle the collision with the include in the application
 #include <glad/glad.h>
 
 #include <Core/Core.hpp>

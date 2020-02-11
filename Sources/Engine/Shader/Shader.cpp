@@ -2,20 +2,16 @@
 
 namespace gir
 {
-    const char *Shader::prefix = "../../Sources/Engine/GLSL/";
-
-    Shader::Shader(const std::unordered_map<GLenum, std::string> &sources)
-        : OpenGLComponent {"Shader"}
+    Shader::Shader(const std::unordered_map<GLenum, std::string> &sources) : OpenGLComponent("Shader")
     {
         std::vector<GLuint> stages;
-        std::vector<std::string> uniforms;
 
         m_id = glCreateProgram();
 
         stages.reserve(sources.size());
         for (const auto &src : sources)
         {
-            GLuint id = ParseGLSL(src.first, src.second, uniforms);
+            GLuint id = ParseGLSL(src.first, src.second);
             stages.push_back(id);
             glAttachShader(m_id, id);
         }
@@ -34,12 +30,18 @@ namespace gir
             glGetProgramInfoLog(m_id, length, nullptr, &log[0]);
             Logger::Error("Shader program linking failed with the following: {}", log);
         }
-
-        m_uniforms.reserve(uniforms.size());
-        for (const auto &name : uniforms) { m_uniforms.emplace(name, glGetUniformLocation(m_id, name.c_str())); }
     }
 
-    Shader::~Shader() { glDeleteProgram(m_id); }
+    void Shader::operator=(Shader &&shader) noexcept
+    {
+        m_name      = shader.m_name;
+        m_id        = shader.m_id;
+        m_isBound   = shader.m_isBound;
+        shader.m_id = 0;
+    }
+
+    Shader::~Shader() { 
+        glDeleteProgram(m_id); }
 
     void Shader::Bind()
     {
@@ -55,7 +57,7 @@ namespace gir
         glUseProgram(0);
     }
 
-    unsigned Shader::ParseGLSL(GLenum shaderType, const std::string &filename, std::vector<std::string> &uniforms)
+    unsigned Shader::ParseGLSL(GLenum shaderType, const std::string &filename)
     {
         std::ifstream file {filename};
         GLuint id = glCreateShader(shaderType);
@@ -68,7 +70,7 @@ namespace gir
 
             ParseIncludes(src);
 
-            const char* cSource = src.c_str();
+            const char *cSource = src.c_str();
             glShaderSource(id, 1, &cSource, nullptr);
             glCompileShader(id);
 
@@ -100,7 +102,7 @@ namespace gir
         auto begin = src.cbegin();
         while (regex_search(begin, src.cend(), match, pattern))
         {
-            std::ifstream file {prefix + match[2].str()};
+            std::ifstream file {PROJECT_SOURCE_DIR + std::string("/Shaders/") + match[2].str()};
 
             std::stringstream stream;
             stream << file.rdbuf();
@@ -110,24 +112,20 @@ namespace gir
         }
     }
 
-    int Shader::GetUniformLocation(const std::string& name)
+    int Shader::GetUniformLocation(const std::string &name)
     {
         GLint location = -1;
-        auto iterator = m_uniforms.find(name);
+        auto iterator  = m_uniforms.find(name);
 
-        if (iterator != m_uniforms.end())
-        {
-            location = iterator->second;
-        }
+        if (iterator != m_uniforms.end()) { location = iterator->second; }
         else
         {
             location = glGetUniformLocation(m_id, name.c_str());
-            if (location != -1) m_uniforms.insert({name, location});
-        }
 
-        if (location == -1)
-        {
-            Logger::Error("[Program ID={0}] Invalid uniform name: {1}", m_id, name);
+            if (location != -1)
+                m_uniforms.emplace(name, location);
+            else
+                Logger::Error("[Program ID={0}] Invalid uniform name: {1}", m_id, name);
         }
 
         return location;

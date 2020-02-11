@@ -12,7 +12,7 @@ namespace gir
         static const T* Get(const std::string& name);
 
         template<class... Ts>
-        static void Add(Ts... args);
+        static T* Add(Ts&&... args);
 
         static void Remove(const std::string& name);
 
@@ -45,9 +45,10 @@ namespace gir
 
     template<class T>
     template<class... Ts>
-    void Manager<T>::Add(Ts... args)
+    T* Manager<T>::Add(Ts&&... args)
     {
-        m_elements.emplace_back(std::move(std::make_unique<T>(args...)));
+        m_elements.emplace_back(std::move(std::make_unique<T>(std::forward<Ts>(args)...)));
+        return m_elements.back().get();
     }
 
     template<class T>

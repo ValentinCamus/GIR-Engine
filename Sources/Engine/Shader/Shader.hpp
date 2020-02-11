@@ -20,9 +20,13 @@ namespace gir
     class Shader : public OpenGLComponent
     {
     public:
-        explicit Shader() : OpenGLComponent {""} {}
+        Shader(const Shader &) = delete;
+
+        explicit Shader() : OpenGLComponent("Default constructed shader") {}
 
         explicit Shader(const std::unordered_map<GLenum, std::string> &sources);
+
+        void operator=(Shader &&shader) noexcept;
 
         ~Shader() override;
 
@@ -47,7 +51,7 @@ namespace gir
         static const char *prefix;
 
     private:
-        unsigned ParseGLSL(GLenum shaderType, const std::string &filename, std::vector<std::string> &uniforms);
+        unsigned ParseGLSL(GLenum shaderType, const std::string &filename);
 
         void ParseIncludes(std::string &src) const;
 

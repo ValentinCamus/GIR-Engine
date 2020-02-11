@@ -14,7 +14,7 @@ namespace gir
 
         inline const std::string& GetName() const { return m_name; };
 
-    private:
+    protected:
         std::string m_name;
     };
 

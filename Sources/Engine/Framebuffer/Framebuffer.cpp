@@ -4,7 +4,7 @@
 
 namespace gir
 {
-    Framebuffer::Framebuffer(const std::string& name) : OpenGLComponent {name} { glGenFramebuffers(1, &m_id); }
+    Framebuffer::Framebuffer(const std::string& name) : OpenGLComponent(name) { glGenFramebuffers(1, &m_id); }
 
     Framebuffer::~Framebuffer() { glDeleteFramebuffers(1, &m_id); }
 
@@ -60,6 +60,7 @@ namespace gir
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, m_rbo);
     }
 
+    // TODO: make it possible to attach multiple textures to a framebuffer
     void Framebuffer::AttachTexture(Texture2D* texture, int attachment)
     {
         GIR_ASSERT(m_texture == nullptr, "A texture is already attached");

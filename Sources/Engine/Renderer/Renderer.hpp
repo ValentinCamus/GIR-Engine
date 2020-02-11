@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Core/Core.hpp>
-#include "Engine/Scene/Scene.hpp"
 #include <Engine/Shader/ShaderManager.hpp>
 #include "Engine/Framebuffer/Framebuffer.hpp"
 
@@ -13,20 +12,18 @@ namespace gir
         RSM
     };
 
+    class Scene;
+
     class Renderer
     {
     public:
-        Renderer(const Scene& scene);
+        Renderer();
 
-        void Draw();
-
-        void ReloadShaders();
+        void Draw(const Scene *scene);
 
         void SetRenderMode(RenderMode mode);
 
     private:
-        const Scene& m_scene;
-
         ShaderManager m_shaderManager;
 
         Framebuffer m_gBuffer;

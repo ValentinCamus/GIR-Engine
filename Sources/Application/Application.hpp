@@ -9,6 +9,8 @@
 #include <ImGui/Widget/Widget.hpp>
 #include <Application/WindowEventListener.hpp>
 #include <Engine/Texture/Texture2D.hpp>
+#include <Engine/Scene/Scene.hpp>
+#include <Engine/Renderer/Renderer.hpp>
 
 #define DEFAULT_APP_NAME "Application"
 #define DEFAULT_APP_WIDTH 800
@@ -86,5 +88,8 @@ namespace gir
         LightingWidget m_lightingWidget = LightingWidget("Lighting");
         ViewportWidget m_viewport       = ViewportWidget("Viewport");
         StatsWidget m_statsWidget       = StatsWidget("Statistics");
+
+        std::unique_ptr<Scene> m_scene       = nullptr;
+        std::unique_ptr<Renderer> m_renderer = nullptr;
     };
 } // namespace gir

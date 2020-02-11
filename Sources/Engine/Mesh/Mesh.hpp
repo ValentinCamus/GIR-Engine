@@ -12,14 +12,16 @@ namespace gir
     public:
         Mesh(const std::string &name,
              Material *material,
-             std::vector<unsigned> indices,
-             std::vector<Vec3f> vertices,
-             std::vector<Vec3f> normals,
-             std::vector<Vec2f> textureCoordinates);
+             std::vector<unsigned> &&indices,
+             std::vector<Vec3f> &&vertices,
+             std::vector<Vec3f> &&normals,
+             std::vector<Vec2f> &&textureCoordinates);
 
-        ~Mesh() override = default;
+        ~Mesh() = default;
 
-        const Material *GetMaterial() const;
+        Material *GetMaterial();
+
+        unsigned Size() const;
 
         const std::vector<unsigned> &GetIndices() const;
 
@@ -28,6 +30,8 @@ namespace gir
         const std::vector<Vec3f> &GetNormals() const;
 
         const std::vector<Vec2f> &GetTextureCoordinates() const;
+
+        VertexArrayObject *GetVertexArrayObject() const;
 
     private:
         Material *m_material;
@@ -40,7 +44,7 @@ namespace gir
 
         std::vector<Vec2f> m_textureCoordinates;
 
-        VertexArrayObject m_vao;
+        mutable VertexArrayObject m_vao;
     };
 
 } // namespace gir

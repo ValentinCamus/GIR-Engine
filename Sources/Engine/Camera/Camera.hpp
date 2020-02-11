@@ -36,7 +36,6 @@ namespace gir
         void UpdateProjection();
 
     private:
-        Mat4f m_view;
         Mat4f m_projection;
 
         float m_vfov;

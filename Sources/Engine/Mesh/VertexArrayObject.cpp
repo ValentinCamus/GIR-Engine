@@ -2,10 +2,7 @@
 
 namespace gir
 {
-    VertexArrayObject::VertexArrayObject() : OpenGLComponent {"VAO"}
-    {
-        glGenVertexArrays(1, &m_id);
-    }
+    VertexArrayObject::VertexArrayObject() : OpenGLComponent("VAO") { glGenVertexArrays(1, &m_id); }
 
     VertexArrayObject::~VertexArrayObject()
     {
@@ -34,8 +31,10 @@ namespace gir
             glGenBuffers(1, &m_ibo);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned) * buffer.size(), buffer.data(), GL_STATIC_DRAW);
+            m_isIndexed = true;
         }
-        else Logger::Warn("[VAO={0}] The buffer is already indexed", m_id);
+        else
+            Logger::Warn("[VAO={0}] The buffer is already indexed", m_id);
     }
 
     unsigned VertexArrayObject::GenerateVBO()

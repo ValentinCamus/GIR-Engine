@@ -4,12 +4,13 @@ namespace gir
 {
     Mesh::Mesh(const std::string &name,
                Material *material,
-               std::vector<unsigned> indices,
-               std::vector<Vec3f> vertices,
-               std::vector<Vec3f> normals,
-               std::vector<Vec2f> textureCoordinates) :
+               std::vector<unsigned> &&indices,
+               std::vector<Vec3f> &&vertices,
+               std::vector<Vec3f> &&normals,
+               std::vector<Vec2f> &&textureCoordinates) :
         Component(name),
         m_material(material),
+        m_indices(std::move(indices)),
         m_vertices(std::move(vertices)),
         m_normals(std::move(normals)),
         m_textureCoordinates(std::move(textureCoordinates))
@@ -22,7 +23,9 @@ namespace gir
         m_vao.Unbind();
     }
 
-    const Material *Mesh::GetMaterial() const { return m_material; }
+    Material *Mesh::GetMaterial() { return m_material; }
+
+    unsigned Mesh::Size() const { return static_cast<unsigned>(m_indices.size()); }
 
     const std::vector<unsigned> &Mesh::GetIndices() const { return m_indices; }
 
@@ -31,5 +34,7 @@ namespace gir
     const std::vector<Vec3f> &Mesh::GetNormals() const { return m_normals; }
 
     const std::vector<Vec2f> &Mesh::GetTextureCoordinates() const { return m_textureCoordinates; }
+
+    VertexArrayObject *Mesh::GetVertexArrayObject() const { return &m_vao; }
 
 } // namespace gir

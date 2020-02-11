@@ -6,9 +6,9 @@ namespace gir
                                                           std::unordered_map<GLenum, std::string>> &sources) :
         m_shaders(static_cast<int>(EShaderType::COUNT))
     {
-        for (const auto &shader : sources)
+        for (const auto &source : sources)
         {
-            m_shaders[static_cast<int>(shader.first)] = Shader(shader.second);
+            m_shaders[static_cast<int>(source.first)] = std::move(Shader(source.second));
         }
     }
 

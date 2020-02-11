@@ -16,7 +16,7 @@ namespace gir
 
         inline void SetTransform(const Mat4f& transform) { m_transform = transform; }
 
-    private:
+    protected:
         Mat4f m_transform;
     };
 

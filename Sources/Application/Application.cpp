@@ -2,6 +2,7 @@
 
 #include <Engine/Shader/Shader.hpp>
 #include <Engine/Mesh/VertexArrayObject.hpp>
+#include <Engine/Manager/Manager.hpp>
 
 namespace gir
 {
@@ -41,43 +42,39 @@ namespace gir
 
     void Application::Stop() { m_isRunning = false; }
 
-    Shader* shader = nullptr;
-    VertexArrayObject* vao = nullptr;
-
     void Application::Setup()
     {
         m_viewport.Init(500, 500);
 
-        shader = new Shader({
-            {GL_VERTEX_SHADER, PROJECT_SOURCE_DIR"/Shaders/Debug.vs.glsl"},
-            {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR"/Shaders/Debug.fs.glsl"}
-        });
-
         std::vector<Vec3f> vertices = {
-            {0.5f,  0.5f, 0.0f},  // top right
+            {0.5f, 0.5f, 0.0f},   // top right
             {0.5f, -0.5f, 0.0f},  // bottom right
-            {-0.5f, -0.5f, 0.0f},  // bottom left
-            {-0.5f,  0.5f, 0.0f}   // top left
+            {-0.5f, -0.5f, 0.0f}, // bottom left
+            {-0.5f, 0.5f, 0.0f}   // top left
         };
 
-        std::vector<float> colors = {
-                1.0f, 0.0f, 0.0f,
-                0.0f, 1.0f, 0.0f,
-                0.0f, 0.0f, 1.0f
-        };
+        std::vector<Vec3f> colors = {{1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f}};
 
         std::vector<unsigned> indices = {
-                0, 1, 3,  // first Triangle
-                1, 2, 3   // second Triangle
+            0,
+            1,
+            3, // first Triangle
+            1,
+            2,
+            3 // second Triangle
         };
 
-        vao = new VertexArrayObject();
+        Camera camera("Main camera", Mat4f(1.f), DEFAULT_APP_WIDTH, DEFAULT_APP_HEIGHT);
 
-        vao->Bind();
-        vao->AddFloatBuffer(vertices, 3);
-        vao->AddFloatBuffer(colors, 3);
-        vao->AddIndexBuffer(indices);
-        vao->Unbind();
+        Model* model = new Model("test");
+
+        auto* mesh = Manager<Mesh>::Add(
+            "test", nullptr, std::move(indices), std::move(vertices), std::move(colors), std::vector<Vec2f>(4));
+        model->AddMesh(mesh);
+
+        m_scene = std::make_unique<Scene>(camera, std::vector<Light>(), std::vector<Entity> {Entity("test", model)});
+
+        m_renderer = std::make_unique<Renderer>();
     }
 
     void Application::Prepare() {}
@@ -85,26 +82,7 @@ namespace gir
     void Application::Draw()
     {
         m_viewport.GetFramebuffer()->Bind();
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        shader->Bind();
-
-        static float grad = 0.01;
-
-        shader->SetUniform("uColor", {0, grad, 1, 1});
-
-        if (grad > 1.0) grad = 0.01;
-        else grad += 0.001;
-
-        vao->Bind();
-
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-        vao->Unbind();
-
-        shader->Unbind();
-
+        m_renderer->Draw(m_scene.get());
         m_viewport.GetFramebuffer()->Unbind();
     }
 
@@ -119,8 +97,8 @@ namespace gir
 
     void Application::OnWindowResize(int width, int height)
     {
-        (void)width;
-        (void)height;
+        m_scene->GetCamera().SetWidth(width);
+        m_scene->GetCamera().SetHeight(height);
     }
 
     void Application::OnKeyPressed(int keyCode) { (void)keyCode; }

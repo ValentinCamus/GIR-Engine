@@ -15,9 +15,7 @@ namespace gir
 
         ~Scene() = default;
 
-        // REVIEW: Scene::Draw() => Renderer::Draw(const Scene& scene)
-
-        inline const Camera &GetCamera() const { return m_camera; }
+        inline Camera &GetCamera() { return m_camera; }
 
         inline const std::vector<Light> &GetLights() const { return m_lights; }
 
