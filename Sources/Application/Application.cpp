@@ -7,6 +7,7 @@
 #include <IO/FileSystem/FileSystem.hpp>
 #include <IO/Loader/ModelLoader.hpp>
 #include <Engine/Camera/Camera.hpp>
+#include <Engine/Camera/CameraDebug.hpp>
 
 namespace gir
 {
@@ -50,6 +51,12 @@ namespace gir
     Shader* shader = nullptr;
     Model* nanoSuit = nullptr;
 
+    DebugCamera camera({0.0f, 0.0f, 3.0f});
+
+    // timing
+    float deltaTime = 0.0f;
+    float lastFrame = 0.0f;
+
     void Application::Setup()
     {
         m_viewport.Init(500, 500);
@@ -60,9 +67,14 @@ namespace gir
         });
 
         nanoSuit = ModelLoader::Load(FileSystem::GetAssetsDir() + "nanosuit.obj");
+
+        glEnable(GL_DEPTH_TEST);
     }
 
-    void Application::Prepare() {}
+    void Application::Prepare()
+    {
+
+    }
 
     void Application::Draw()
     {
@@ -70,19 +82,21 @@ namespace gir
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        float aspectRatio = (float)m_viewport.GetFramebuffer()->GetTexture()->GetWidth() / (float)m_viewport.GetFramebuffer()->GetTexture()->GetHeight();
-        glm::mat4 projection = glm::perspective(glm::radians(45.0f), aspectRatio, 0.1f, 100.0f);
-        glm::mat4 view = Mat4f(1.0f);
+        float aspectRatio = float(m_viewport.GetFramebuffer()->GetTexture()->GetWidth()) /
+                            float(m_viewport.GetFramebuffer()->GetTexture()->GetHeight());
 
-        shader->SetUniform("uProjection", projection);
-        shader->SetUniform("uView", view);
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), aspectRatio, 0.1f, 100.0f);
+        glm::mat4 view = camera.GetViewMatrix();
+
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f));
+        model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
 
         shader->Bind();
 
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
         shader->SetUniform("uModel", model);
+        shader->SetUniform("uView", view);
+        shader->SetUniform("uProjection", projection);
 
         for(Model::Element& element : nanoSuit->GetElements())
         {
@@ -94,15 +108,15 @@ namespace gir
 
                 shader->SetUniform("uDiffuse", attr.texture->GetSlot());
 
-                element.mesh.GetVAO().Bind();
-                glDrawElements(GL_TRIANGLES, element.mesh.GetIndices().size(), GL_UNSIGNED_INT, 0);
-                element.mesh.GetVAO().Unbind();
+                element.mesh->GetVAO().Bind();
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element.mesh->GetVAO().GetIndexBufferId());
+                glDrawElements(GL_TRIANGLES, element.mesh->GetIndices().size(), GL_UNSIGNED_INT, nullptr);
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+                element.mesh->GetVAO().Unbind();
 
                 attr.texture->Unbind();
             }
         }
-
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
         shader->Unbind();
 

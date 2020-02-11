@@ -11,7 +11,7 @@ namespace gir
     public:
         struct Element
         {
-            Mesh mesh;
+            Mesh* mesh = nullptr;
             Material* material = nullptr;
         };
 

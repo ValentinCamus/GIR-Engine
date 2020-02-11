@@ -43,32 +43,26 @@ namespace gir
     Model::Element ModelLoader::ProcessAssimpMesh(aiMesh *mesh, const aiScene *scene, Model* model)
     {
         // Data to fill
-        Mesh::Vertices vertices;
         std::vector<unsigned> indices;
+        std::vector<Mesh::Vertex> vertices;
 
         // Walk through each of the mesh's vertices
-        Logger::Debug("Assimp vertices: {}", mesh->mNumVertices);
         for(unsigned int i = 0; i < mesh->mNumVertices; ++i)
         {
-            Vec3f vertex;
-            Vec3f normal;
-            Vec2f texCoord;
-            Vec3f tangent;
-            Vec3f biTangent;
-
             // Positions
+            Vec3f vertex;
             vertex.x = mesh->mVertices[i].x;
             vertex.y = mesh->mVertices[i].y;
             vertex.z = mesh->mVertices[i].z;
-            vertices.vertices.push_back(vertex);
 
             // Normals
+            Vec3f normal;
             normal.x = mesh->mNormals[i].x;
             normal.y = mesh->mNormals[i].y;
             normal.z = mesh->mNormals[i].z;
-            vertices.normals.push_back(normal);
 
             // Texture coordinates
+            Vec2f texCoord;
             if(mesh->mTextureCoords[0]) // Does the mesh contain texture coordinates?
             {
                 // A vertex can contain up to 8 different texture coordinates.
@@ -78,37 +72,38 @@ namespace gir
                 texCoord.y = mesh->mTextureCoords[0][i].y;
             }
             else texCoord = {0.0f, 0.0f};
-            vertices.textureCoordinates.push_back(texCoord);
 
             // tangent
+            Vec3f tangent;
             tangent.x = mesh->mTangents[i].x;
             tangent.y = mesh->mTangents[i].y;
             tangent.z = mesh->mTangents[i].z;
-            vertices.tangents.push_back(tangent);
 
             // bi-tangent
+            Vec3f biTangent;
             biTangent.x = mesh->mBitangents[i].x;
             biTangent.y = mesh->mBitangents[i].y;
             biTangent.z = mesh->mBitangents[i].z;
-            vertices.biTangents.push_back(biTangent);
+
+            vertices.push_back({vertex, normal, texCoord, tangent, biTangent});
         }
+
         // Now wak through each of the mesh's faces (a face is a mesh its triangle)
         // and retrieve the corresponding vertex indices.
         for(unsigned int i = 0; i < mesh->mNumFaces; ++i)
         {
             aiFace face = mesh->mFaces[i];
-            // retrieve all indices of the face and store them in the indices vector
+            // Retrieve all indices of the face and store them in the indices vector
             for(unsigned int j = 0; j < face.mNumIndices; ++j)
             {
                 indices.push_back(face.mIndices[j]);
             }
         }
-        Logger::Debug("Assimp indices: {}", indices.size());
 
         Material* material = LoadMaterial(mesh, scene, model);
         std::string name = model->GetName() + "_Mesh" + std::to_string(model->GetElements().size());
 
-        return {Mesh(name, vertices, indices), material };
+        return {new Mesh(name, vertices, indices), material };
     }
 
     Material *ModelLoader::LoadMaterial(aiMesh *mesh, const aiScene *scene, Model* model)
@@ -142,7 +137,7 @@ namespace gir
             mat->GetTexture(type, i, &filepath);
 
             // TODO: check if filepath was loaded before
-            textures.push_back(TextureLoader::Load(FileSystem::GetAssetsDir()  + "/" + filepath.C_Str()));
+            textures.push_back(TextureLoader::Load(FileSystem::GetAssetsDir() + filepath.C_Str()));
         }
         return textures;
     }

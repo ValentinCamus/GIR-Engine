@@ -10,46 +10,30 @@ namespace gir
     class Mesh : public Component
     {
     public:
-        struct Vertices
+        struct Vertex
         {
-            std::vector<Vec3f> vertices;
-            std::vector<Vec3f> normals;
-            std::vector<Vec2f> textureCoordinates;
-            std::vector<Vec3f> tangents = {};
-            std::vector<Vec3f> biTangents = {};
+            Vec3f position;
+            Vec3f normal;
+            Vec2f textureCoordinate;
+            Vec3f tangent;
+            Vec3f biTangent;
         };
 
     public:
-        Mesh(const std::string &name, const Vertices& vertices, std::vector<unsigned> indices);
+        Mesh(const std::string &name, std::vector<Vertex> vertices, std::vector<unsigned> indices);
 
         ~Mesh() override = default;
 
         inline const std::vector<unsigned> &GetIndices() const { return m_indices; }
 
-        inline const std::vector<Vec3f> &GetVertices() const { return m_vertices; }
-
-        inline const std::vector<Vec3f> &GetNormals() const { return m_normals; }
-
-        inline const std::vector<Vec2f> &GetTextureCoordinates() const { return m_textureCoordinates; }
-
-        inline const std::vector<Vec3f> &GetTangent() const { return m_tangents; }
-
-        inline const std::vector<Vec3f> &GetBiTangent() const { return m_biTangents; }
+        inline const std::vector<Vertex> &GetVertices() const { return m_vertices; }
 
         inline VertexArrayObject &GetVAO() { return m_vao; }
 
     private:
         std::vector<unsigned> m_indices;
 
-        std::vector<Vec3f> m_vertices;
-
-        std::vector<Vec3f> m_normals;
-
-        std::vector<Vec2f> m_textureCoordinates;
-
-        std::vector<Vec3f> m_tangents;
-
-        std::vector<Vec3f> m_biTangents;
+        std::vector<Vertex> m_vertices;
 
         VertexArrayObject m_vao;
     };
