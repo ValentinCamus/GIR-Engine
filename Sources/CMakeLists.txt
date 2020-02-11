@@ -22,7 +22,7 @@ set(ICON_RESOURCE "")
 if (WIN32) #windows icon resource file, provided from /Packaging directory
     set(ICON_RESOURCE "${PROJECT_BINARY_DIR}/GIR_Engine.icon.rc")
 elseif (APPLE) #osx icon ressource file, provided from /Packaging directory
-    set(ICON_RESOURCE "${PROJECT_SOURCE_DIR}/Packaging/GIR_Engine.icns" IO/Loader/TextureLoader.cpp IO/Loader/TextureLoader.hpp IO/FileSystem/FileSystem.hpp IO/Input/Input.cpp IO/Input/Input.hpp)
+    set(ICON_RESOURCE "${PROJECT_SOURCE_DIR}/Packaging/GIR_Engine.icns" IO/Loader/TextureLoader.cpp IO/Loader/TextureLoader.hpp IO/FileSystem/FileSystem.hpp IO/Input/Input.cpp IO/Input/Input.hpp IO/Loader/ModelLoader.cpp IO/Loader/ModelLoader.hpp)
 endif ()
 
 file(GLOB_RECURSE ENGINE_SRCS "*.cpp" "*.hpp" ".inl")
@@ -62,6 +62,7 @@ target_link_libraries (GIR_Engine stb)
 target_link_libraries (GIR_Engine glm)
 target_link_libraries (GIR_Engine imgui)
 target_link_libraries (GIR_Engine spdlog)
+target_link_libraries (GIR_Engine assimp)
 
 target_link_libraries(GIR_Engine ${OPENGL_gl_LIBRARY})
 target_link_libraries(GIR_Engine ${OPENGL_glu_LIBRARY})

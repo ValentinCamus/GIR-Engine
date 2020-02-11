@@ -32,6 +32,8 @@ namespace gir
 
         inline const std::vector<Element>& GetElements() const { return m_elements; }
 
+        inline void AddElement(const Model::Element& element) { m_elements.push_back(element); }
+
     private:
         std::vector<Element> m_elements = {};
     };

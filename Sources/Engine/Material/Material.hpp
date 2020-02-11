@@ -14,10 +14,7 @@ namespace gir
             Diffuse = 0,
             Specular = 1,
             Normal = 2,
-            Roughness = 3,
-            Metallic = 4,
-            AmbientOcclusion = 5,
-            EAttributeCount = 6
+            EAttributeCount
         };
 
         struct Attribute

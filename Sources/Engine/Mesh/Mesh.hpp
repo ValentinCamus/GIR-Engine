@@ -10,28 +10,33 @@ namespace gir
     class Mesh : public Component
     {
     public:
-        Mesh(const std::string &name,
-             Material *material,
-             std::vector<unsigned> indices,
-             std::vector<Vec3f> vertices,
-             std::vector<Vec3f> normals,
-             std::vector<Vec2f> textureCoordinates);
+        struct Vertices
+        {
+            std::vector<Vec3f> vertices;
+            std::vector<Vec3f> normals;
+            std::vector<Vec2f> textureCoordinates;
+            std::vector<Vec3f> tangents = {};
+            std::vector<Vec3f> biTangents = {};
+        };
+
+    public:
+        Mesh(const std::string &name, const Vertices& vertices, std::vector<unsigned> indices);
 
         ~Mesh() override = default;
 
-        const Material *GetMaterial() const;
+        inline const std::vector<unsigned> &GetIndices() const { return m_indices; }
 
-        const std::vector<unsigned> &GetIndices() const;
+        inline const std::vector<Vec3f> &GetVertices() const { return m_vertices; }
 
-        const std::vector<Vec3f> &GetVertices() const;
+        inline const std::vector<Vec3f> &GetNormals() const { return m_normals; }
 
-        const std::vector<Vec3f> &GetNormals() const;
+        inline const std::vector<Vec2f> &GetTextureCoordinates() const { return m_textureCoordinates; }
 
-        const std::vector<Vec2f> &GetTextureCoordinates() const;
+        inline const std::vector<Vec3f> &GetTangent() const { return m_tangents; }
+
+        inline const std::vector<Vec3f> &GetBiTangent() const { return m_biTangents; }
 
     private:
-        Material *m_material;
-
         std::vector<unsigned> m_indices;
 
         std::vector<Vec3f> m_vertices;
@@ -39,6 +44,10 @@ namespace gir
         std::vector<Vec3f> m_normals;
 
         std::vector<Vec2f> m_textureCoordinates;
+
+        std::vector<Vec3f> m_tangents;
+
+        std::vector<Vec3f> m_biTangents;
 
         VertexArrayObject m_vao;
     };

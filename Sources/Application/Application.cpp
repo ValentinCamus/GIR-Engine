@@ -5,6 +5,7 @@
 #include <IO/Loader/TextureLoader.hpp>
 #include <Engine/Texture/Texture2D.hpp>
 #include <IO/FileSystem/FileSystem.hpp>
+#include <IO/Loader/ModelLoader.hpp>
 
 namespace gir
 {
@@ -49,6 +50,7 @@ namespace gir
     VertexArrayObject* vao = nullptr;
     Texture2D* texture0 = nullptr;
     Texture2D* texture1 = nullptr;
+    Model* nanoSuit = nullptr;
 
     void Application::Setup()
     {
@@ -95,6 +97,8 @@ namespace gir
 
         texture0 = TextureLoader::Load(FileSystem::GetAssetsDir() + "AwesomeFace.png");
         texture1 = TextureLoader::Load(FileSystem::GetAssetsDir() + "WoodenContainer.jpg");
+
+        nanoSuit = ModelLoader::Load(FileSystem::GetAssetsDir() + "nanosuit.obj");
     }
 
     void Application::Prepare() {}
