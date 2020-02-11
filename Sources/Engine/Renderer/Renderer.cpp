@@ -36,11 +36,13 @@ namespace gir
                 else
                     grad += 0.001f;
 
+                // FIXME: (val) Sorry, my bad :P
+                /*
                 for (const auto& entity : scene->GetEntities())
                 {
                     auto* model = entity.GetModel();
 
-                    for (unsigned i = 0; i < model->MaterialCount(); ++i)
+                    for (unsigned i = 0; i < model->GetElements().size(); ++i)
                     {
                         for (const auto& mesh : model->GetMeshes(i))
                         {
@@ -49,6 +51,7 @@ namespace gir
                         }
                     }
                 }
+                */
 
                 shader->Unbind();
                 break;

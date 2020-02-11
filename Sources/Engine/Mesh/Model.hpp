@@ -11,20 +11,33 @@ namespace gir
     class Model : public Component
     {
     public:
-        Model(const std::string &name);
+        struct Element
+        {
+            Mesh* mesh = nullptr;
+            Material* material = nullptr;
+        };
 
-        void AddMesh(Mesh *mesh);
+    public:
+        explicit Model(const std::string& name);
 
-        unsigned MaterialCount() const;
+        inline void AddMaterial(unsigned index, Material* material)
+        {
+            GIR_ASSERT(index < m_elements.size(), "Invalid element index");
+            m_elements[index].material = material;
+        }
 
-        Material *GetMaterial(unsigned i) const;
+        inline Material* GetMaterial(unsigned index) const
+        {
+            GIR_ASSERT(index < m_elements.size(), "Invalid element index");
+            return m_elements[index].material;
+        }
 
-        const std::vector<Mesh *> GetMeshes(unsigned i) const;
+        inline std::vector<Element>& GetElements() { return m_elements; }
+
+        inline void AddElement(const Model::Element& element) { m_elements.push_back(element); }
 
     private:
-        // We could work with just a vector of vectors if we checked the material on say the first element of each
-        // mesh vector
-        std::vector<MaterialMeshes> m_meshesByMaterial;
+        std::vector<Element> m_elements = {};
     };
 
 } // namespace gir

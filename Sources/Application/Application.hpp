@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 
 #include <Core/Core.hpp>
+#include <IO/Input/Input.hpp>
 #include <Application/Window.hpp>
 #include <ImGui/ImGuiController.hpp>
 #include <ImGui/Widget/Widget.hpp>
@@ -57,39 +58,23 @@ namespace gir
         /// Event called when the user attempts to close the window.
         void OnWindowClosed() override;
 
-        /// Event called when the size of the window has changed.
-        void OnWindowResize(int width, int height) override;
-
-        /// Event called when a key is pressed.
-        void OnKeyPressed(int keyCode) override;
-
-        /// Event called when a key is released.
-        void OnKeyReleased(int keyCode) override;
-
-        /// Event called when a mouse button is pressed.
-        void OnMousePressed(int button) override;
-
-        /// Event called when a mouse button is released.
-        void OnMouseReleased(int button) override;
-
-        /// Event called when the mouse position changed.
-        void OnMouseMoved(double xPos, double yPos) override;
-
-        /// Event called when a scrolling device is used.
-        void OnMouseScrolled(double xOffset, double yOffset) override;
-
     private:
         bool m_isRunning = false;
 
         Window m_window = Window();
 
+        Input m_input = Input();
+
         ImGuiController m_gui = ImGuiController();
 
-        LightingWidget m_lightingWidget = LightingWidget("Lighting");
-        ViewportWidget m_viewport       = ViewportWidget("Viewport");
-        StatsWidget m_statsWidget       = StatsWidget("Statistics");
+        ViewportWidget m_viewport = ViewportWidget("Viewport");
 
-        std::unique_ptr<Scene> m_scene       = nullptr;
+        StatsWidget m_statsWidget = StatsWidget("Statistics");
+
+        LightingWidget m_lightingWidget = LightingWidget("Lighting");
+
+        std::unique_ptr<Scene> m_scene = nullptr;
+
         std::unique_ptr<Renderer> m_renderer = nullptr;
     };
 } // namespace gir

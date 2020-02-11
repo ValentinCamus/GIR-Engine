@@ -50,8 +50,8 @@ target_link_libraries (imgui glfw)
 
 #------------------------------------------------------------------------------
 # Assimp
-# ExternalDownloadNowGit(assimp "https://github.com/assimp/assimp.git" "origin/master")
-# add_subdirectory(assimp/src/assimp_download)
+ExternalDownloadNowGit(assimp "https://github.com/assimp/assimp.git" "origin/master")
+add_subdirectory(assimp/src/assimp_download)
 
 
 

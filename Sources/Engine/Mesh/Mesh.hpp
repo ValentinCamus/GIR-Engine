@@ -10,39 +10,32 @@ namespace gir
     class Mesh : public Component
     {
     public:
-        Mesh(const std::string &name,
-             Material *material,
-             std::vector<unsigned> &&indices,
-             std::vector<Vec3f> &&vertices,
-             std::vector<Vec3f> &&normals,
-             std::vector<Vec2f> &&textureCoordinates);
+        struct Vertex
+        {
+            Vec3f position;
+            Vec3f normal;
+            Vec2f textureCoordinate;
+            Vec3f tangent;
+            Vec3f biTangent;
+        };
 
-        ~Mesh() = default;
+    public:
+        Mesh(const std::string &name, std::vector<Vertex> vertices, std::vector<unsigned> indices);
 
-        Material *GetMaterial();
+        ~Mesh() override = default;
 
-        unsigned Size() const;
+        inline const std::vector<unsigned> &GetIndices() const { return m_indices; }
 
-        const std::vector<unsigned> &GetIndices() const;
+        inline const std::vector<Vertex> &GetVertices() const { return m_vertices; }
 
-        const std::vector<Vec3f> &GetVertices() const;
+        inline VertexArrayObject &GetVAO() { return m_vao; }
 
-        const std::vector<Vec3f> &GetNormals() const;
-
-        const std::vector<Vec2f> &GetTextureCoordinates() const;
-
-        VertexArrayObject *GetVertexArrayObject() const;
+        inline VertexArrayObject* GetVertexArrayObject() const { return &m_vao; }
 
     private:
-        Material *m_material;
-
         std::vector<unsigned> m_indices;
 
-        std::vector<Vec3f> m_vertices;
-
-        std::vector<Vec3f> m_normals;
-
-        std::vector<Vec2f> m_textureCoordinates;
+        std::vector<Vertex> m_vertices;
 
         mutable VertexArrayObject m_vao;
     };

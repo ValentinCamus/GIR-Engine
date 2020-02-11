@@ -3,6 +3,12 @@
 #include <Engine/Shader/Shader.hpp>
 #include <Engine/Mesh/VertexArrayObject.hpp>
 #include <Engine/Manager/Manager.hpp>
+#include <IO/Loader/TextureLoader.hpp>
+#include <Engine/Texture/Texture2D.hpp>
+#include <IO/FileSystem/FileSystem.hpp>
+#include <IO/Loader/ModelLoader.hpp>
+#include <Engine/Camera/Camera.hpp>
+#include <Engine/Camera/CameraDebug.hpp>
 
 namespace gir
 {
@@ -15,7 +21,8 @@ namespace gir
         // Initialize the GUI
         m_gui.Init(m_window.Get());
 
-        Setup();
+        // Link the input controller with the window system.
+        m_input.Init(m_window.Get());
     }
 
     void Application::Run()
@@ -42,10 +49,27 @@ namespace gir
 
     void Application::Stop() { m_isRunning = false; }
 
+    Shader* shader = nullptr;
+    Model* nanoSuit = nullptr;
+
+    DebugCamera camera({0.0f, 0.0f, 3.0f});
+
+    // timing
+    float deltaTime = 0.0f;
+    float lastFrame = 0.0f;
+
     void Application::Setup()
     {
-
         m_viewport.Init(500, 500);
+
+        shader = new Shader({
+            {GL_VERTEX_SHADER, FileSystem::GetShadersDir() + "Debug.vs.glsl"},
+            {GL_FRAGMENT_SHADER, FileSystem::GetShadersDir() + "Debug.fs.glsl"}
+        });
+
+        nanoSuit = ModelLoader::Load(FileSystem::GetAssetsDir() + "nanosuit.obj");
+
+        glEnable(GL_DEPTH_TEST);
 
         /*
         std::vector<Vec3f> vertices = {
@@ -80,15 +104,62 @@ namespace gir
         */
     }
 
-    void Application::Prepare() {}
+    void Application::Prepare()
+    {
+
+    }
 
     void Application::Draw()
     {
-        /*
         m_viewport.GetFramebuffer()->Bind();
-        m_renderer->Draw(m_scene.get());
+
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // m_scene->GetCamera().SetWidth(m_viewport.GetFramebuffer()->GetTexture()->GetWidth());
+        // m_scene->GetCamera().SetHeight(m_viewport.GetFramebuffer()->GetTexture()->GetHeight());
+
+        float aspectRatio = float(m_viewport.GetFramebuffer()->GetTexture()->GetWidth()) /
+                            float(m_viewport.GetFramebuffer()->GetTexture()->GetHeight());
+
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), aspectRatio, 0.1f, 100.0f);
+        glm::mat4 view = camera.GetViewMatrix();
+
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f));
+        model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+
+        shader->Bind();
+
+        shader->SetUniform("uModel", model);
+        shader->SetUniform("uView", view);
+        shader->SetUniform("uProjection", projection);
+
+        for(Model::Element& element : nanoSuit->GetElements())
+        {
+            auto attr = element.material->GetAttribute(Material::EAttribute::Diffuse);
+
+            if (attr.texture)
+            {
+                attr.texture->Bind(0);
+
+                shader->SetUniform("uDiffuse", attr.texture->GetSlot());
+
+                element.mesh->GetVAO().Bind();
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element.mesh->GetVAO().GetIndexBufferId());
+                glDrawElements(GL_TRIANGLES, element.mesh->GetIndices().size(), GL_UNSIGNED_INT, nullptr);
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+                element.mesh->GetVAO().Unbind();
+
+                attr.texture->Unbind();
+            }
+        }
+
+        // m_renderer->Draw(m_scene.get());
+
+        shader->Unbind();
+
         m_viewport.GetFramebuffer()->Unbind();
-        */
     }
 
     void Application::ImGuiDraw()
@@ -98,31 +169,9 @@ namespace gir
         m_statsWidget.Draw();
     }
 
-    void Application::OnWindowClosed() { Stop(); }
-
-    void Application::OnWindowResize(int width, int height)
+    void Application::OnWindowClosed()
     {
-        m_scene->GetCamera().SetWidth(width);
-        m_scene->GetCamera().SetHeight(height);
+        Stop();
     }
 
-    void Application::OnKeyPressed(int keyCode) { (void)keyCode; }
-
-    void Application::OnKeyReleased(int keyCode) { (void)keyCode; }
-
-    void Application::OnMousePressed(int button) { (void)button; }
-
-    void Application::OnMouseReleased(int button) { (void)button; }
-
-    void Application::OnMouseMoved(double xPos, double yPos)
-    {
-        (void)xPos;
-        (void)yPos;
-    }
-
-    void Application::OnMouseScrolled(double xOffset, double yOffset)
-    {
-        (void)xOffset;
-        (void)yOffset;
-    }
 } // namespace gir

@@ -14,7 +14,7 @@ namespace gir
     public:
         Camera(const std::string &name, const Mat4f &transform, unsigned width, unsigned height, float vfov = PI / 3);
 
-        ~Camera() = default;
+        ~Camera() override = default;
 
         inline unsigned GetWidth() const { return m_width; }
 

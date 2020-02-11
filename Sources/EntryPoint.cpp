@@ -18,6 +18,7 @@ int main()
 
     gir::Logger::Info("GIR-Engine: Initialized");
 
+    application->Setup();
     application->Run();
     delete application;
 

@@ -1,40 +1,58 @@
 #include "Mesh.hpp"
 
+#include <utility>
+
 namespace gir
 {
-    Mesh::Mesh(const std::string &name,
-               Material *material,
-               std::vector<unsigned> &&indices,
-               std::vector<Vec3f> &&vertices,
-               std::vector<Vec3f> &&normals,
-               std::vector<Vec2f> &&textureCoordinates) :
-        Component(name),
-        m_material(material),
-        m_indices(std::move(indices)),
-        m_vertices(std::move(vertices)),
-        m_normals(std::move(normals)),
-        m_textureCoordinates(std::move(textureCoordinates))
+    Mesh::Mesh(const std::string &name, std::vector<Vertex> vertices, std::vector<unsigned> indices)
+        : Component(name)
+        , m_indices(std::move(indices))
+        , m_vertices(std::move(vertices))
     {
         m_vao.Bind();
-        m_vao.AddFloatBuffer(m_vertices, 3);
-        m_vao.AddFloatBuffer(m_normals, 3);
-        m_vao.AddFloatBuffer(m_textureCoordinates, 2);
-        m_vao.AddIndexBuffer(m_indices);
+
+        unsigned ibo, vbo;
+
+        glGenBuffers(1, &vbo);
+        glGenBuffers(1, &ibo);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        auto vboSizeInByte = m_vertices.size() * sizeof(Vertex);
+        glBufferData(GL_ARRAY_BUFFER, vboSizeInByte, &m_vertices[0], GL_STATIC_DRAW);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+        auto iboSizeInByte = m_indices.size() * sizeof(unsigned);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, iboSizeInByte, &m_indices[0], GL_STATIC_DRAW);
+
+        // Vertex positions
+        glEnableVertexAttribArray(0);
+        void* positionOffset = (void*) offsetof(Vertex, position);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), positionOffset);
+
+        // Vertex normals
+        glEnableVertexAttribArray(1);
+        void* normalOffset = (void*) offsetof(Vertex, normal);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), normalOffset);
+
+        // Vertex texture coords
+        glEnableVertexAttribArray(2);
+        void* texCoordOffset =  (void*) offsetof(Vertex, textureCoordinate);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), texCoordOffset);
+
+        // Vertex tangent
+        glEnableVertexAttribArray(3);
+        void* tangentOffset =  (void*) offsetof(Vertex, tangent);
+        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), tangentOffset);
+
+        // Vertex biTangent
+        glEnableVertexAttribArray(4);
+        void* biTangentOffset =  (void*) offsetof(Vertex, biTangent);
+        glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), biTangentOffset);
+
+        m_vao.SetIndexBufferId(ibo);
+        m_vao.AddVertexBufferId(vbo);
+
         m_vao.Unbind();
     }
-
-    Material *Mesh::GetMaterial() { return m_material; }
-
-    unsigned Mesh::Size() const { return static_cast<unsigned>(m_indices.size()); }
-
-    const std::vector<unsigned> &Mesh::GetIndices() const { return m_indices; }
-
-    const std::vector<Vec3f> &Mesh::GetVertices() const { return m_vertices; }
-
-    const std::vector<Vec3f> &Mesh::GetNormals() const { return m_normals; }
-
-    const std::vector<Vec2f> &Mesh::GetTextureCoordinates() const { return m_textureCoordinates; }
-
-    VertexArrayObject *Mesh::GetVertexArrayObject() const { return &m_vao; }
 
 } // namespace gir
