@@ -16,6 +16,9 @@ namespace gir
     void Renderer::Draw(const Scene* scene)
     {
         Shader* shader;
+
+        static float grad = 0.01f;
+
         switch (m_renderMode)
         {
             case RenderMode::DEBUG:
@@ -26,20 +29,18 @@ namespace gir
                 glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-                static float grad = 0.01;
-
                 shader->SetUniform("uColor", {0, grad, 1, 1});
 
                 if (grad > 1.0)
-                    grad = 0.01;
+                    grad = 0.01f;
                 else
-                    grad += 0.001;
+                    grad += 0.001f;
 
                 for (const auto& entity : scene->GetEntities())
                 {
                     auto* model = entity.GetModel();
 
-                    for (int i = 0; i < model->MaterialCount(); ++i)
+                    for (unsigned i = 0; i < model->MaterialCount(); ++i)
                     {
                         for (const auto& mesh : model->GetMeshes(i))
                         {

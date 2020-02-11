@@ -44,8 +44,10 @@ namespace gir
 
     void Application::Setup()
     {
+
         m_viewport.Init(500, 500);
 
+        /*
         std::vector<Vec3f> vertices = {
             {0.5f, 0.5f, 0.0f},   // top right
             {0.5f, -0.5f, 0.0f},  // bottom right
@@ -75,15 +77,18 @@ namespace gir
         m_scene = std::make_unique<Scene>(camera, std::vector<Light>(), std::vector<Entity> {Entity("test", model)});
 
         m_renderer = std::make_unique<Renderer>();
+        */
     }
 
     void Application::Prepare() {}
 
     void Application::Draw()
     {
+        /*
         m_viewport.GetFramebuffer()->Bind();
         m_renderer->Draw(m_scene.get());
         m_viewport.GetFramebuffer()->Unbind();
+        */
     }
 
     void Application::ImGuiDraw()
