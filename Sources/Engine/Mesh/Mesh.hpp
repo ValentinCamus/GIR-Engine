@@ -36,6 +36,8 @@ namespace gir
 
         inline const std::vector<Vec3f> &GetBiTangent() const { return m_biTangents; }
 
+        inline VertexArrayObject &GetVAO() { return m_vao; }
+
     private:
         std::vector<unsigned> m_indices;
 

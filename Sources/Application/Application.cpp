@@ -6,6 +6,7 @@
 #include <Engine/Texture/Texture2D.hpp>
 #include <IO/FileSystem/FileSystem.hpp>
 #include <IO/Loader/ModelLoader.hpp>
+#include <Engine/Camera/Camera.hpp>
 
 namespace gir
 {
@@ -47,9 +48,6 @@ namespace gir
     void Application::Stop() { m_isRunning = false; }
 
     Shader* shader = nullptr;
-    VertexArrayObject* vao = nullptr;
-    Texture2D* texture0 = nullptr;
-    Texture2D* texture1 = nullptr;
     Model* nanoSuit = nullptr;
 
     void Application::Setup()
@@ -60,43 +58,6 @@ namespace gir
             {GL_VERTEX_SHADER, FileSystem::GetShadersDir() + "Debug.vs.glsl"},
             {GL_FRAGMENT_SHADER, FileSystem::GetShadersDir() + "Debug.fs.glsl"}
         });
-
-        std::vector<float> vertices = {
-             0.5f,  0.5f, 0.0f,  // top right
-             0.5f, -0.5f, 0.0f,  // bottom right
-            -0.5f, -0.5f, 0.0f,  // bottom left
-            -0.5f,  0.5f, 0.0f   // top left
-        };
-
-        std::vector<float> colors = {
-            1.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 0.0f, 1.0f,
-            1.0f, 1.0f, 0.0f
-        };
-
-        std::vector<float> texCoords {
-            1.0f, 1.0f,
-            1.0f, 0.0f,
-            0.0f, 0.0f,
-            0.0f, 1.0f
-        };
-
-        std::vector<unsigned> indices = {
-                0, 1, 3,  // first Triangle
-                1, 2, 3   // second Triangle
-        };
-
-        vao = new VertexArrayObject();
-        vao->Bind();
-        vao->AddFloatBuffer(vertices, 3);
-        vao->AddFloatBuffer(colors, 3);
-        vao->AddFloatBuffer(texCoords, 2);
-        vao->AddIndexBuffer(indices);
-        vao->Unbind();
-
-        texture0 = TextureLoader::Load(FileSystem::GetAssetsDir() + "AwesomeFace.png");
-        texture1 = TextureLoader::Load(FileSystem::GetAssetsDir() + "WoodenContainer.jpg");
 
         nanoSuit = ModelLoader::Load(FileSystem::GetAssetsDir() + "nanosuit.obj");
     }
@@ -109,21 +70,41 @@ namespace gir
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        float aspectRatio = (float)m_viewport.GetFramebuffer()->GetTexture()->GetWidth() / (float)m_viewport.GetFramebuffer()->GetTexture()->GetHeight();
+        glm::mat4 projection = glm::perspective(glm::radians(45.0f), aspectRatio, 0.1f, 100.0f);
+        glm::mat4 view = Mat4f(1.0f);
+
+        shader->SetUniform("uProjection", projection);
+        shader->SetUniform("uView", view);
 
         shader->Bind();
-        vao->Bind();
 
-        texture0->Bind(0);
-        texture1->Bind(1);
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
+        shader->SetUniform("uModel", model);
 
-        shader->SetUniform("texture0", texture1->GetSlot());
-        shader->SetUniform("texture1", texture0->GetSlot());
+        for(Model::Element& element : nanoSuit->GetElements())
+        {
+            auto attr = element.material->GetAttribute(Material::EAttribute::Diffuse);
+
+            if (attr.texture)
+            {
+                attr.texture->Bind(0);
+
+                shader->SetUniform("uDiffuse", attr.texture->GetSlot());
+
+                element.mesh.GetVAO().Bind();
+                glDrawElements(GL_TRIANGLES, element.mesh.GetIndices().size(), GL_UNSIGNED_INT, 0);
+                element.mesh.GetVAO().Unbind();
+
+                attr.texture->Unbind();
+            }
+        }
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-        vao->Unbind();
+
         shader->Unbind();
-        texture0->Unbind();
-        texture1->Unbind();
 
         m_viewport.GetFramebuffer()->Unbind();
     }

@@ -11,6 +11,11 @@ namespace gir
         m_tangents(vertices.tangents),
         m_biTangents(vertices.biTangents)
     {
+        Logger::Debug("Vertices: {}", m_vertices.size());
+        Logger::Debug("Normals: {}", m_normals.size());
+        Logger::Debug("TexCoord: {}", m_textureCoordinates.size());
+        Logger::Debug("Indices: {}", m_indices.size());
+
         m_vao.Bind();
         m_vao.AddFloatBuffer(m_vertices, 3);
         m_vao.AddFloatBuffer(m_normals, 3);

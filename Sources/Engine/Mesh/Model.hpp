@@ -30,7 +30,7 @@ namespace gir
             return m_elements[index].material;
         }
 
-        inline const std::vector<Element>& GetElements() const { return m_elements; }
+        inline std::vector<Element>& GetElements() { return m_elements; }
 
         inline void AddElement(const Model::Element& element) { m_elements.push_back(element); }
 

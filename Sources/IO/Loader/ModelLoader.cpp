@@ -4,10 +4,8 @@ namespace gir
 {
     Model* ModelLoader::Load(const std::string &filepath)
     {
-        std::string directory = filepath.substr(0, filepath.find_last_of('/'));
-
-        Logger::Debug(directory);
-        auto* model = new Model(directory);
+        std::string name = filepath.substr(filepath.find_last_of('/') + 1);
+        auto* model = new Model(name);
 
         // Read file via Assimp
         Assimp::Importer importer;
@@ -49,6 +47,7 @@ namespace gir
         std::vector<unsigned> indices;
 
         // Walk through each of the mesh's vertices
+        Logger::Debug("Assimp vertices: {}", mesh->mNumVertices);
         for(unsigned int i = 0; i < mesh->mNumVertices; ++i)
         {
             Vec3f vertex;
@@ -99,8 +98,12 @@ namespace gir
         {
             aiFace face = mesh->mFaces[i];
             // retrieve all indices of the face and store them in the indices vector
-            for(unsigned int j = 0; j < face.mNumIndices; ++j) indices.push_back(face.mIndices[j]);
+            for(unsigned int j = 0; j < face.mNumIndices; ++j)
+            {
+                indices.push_back(face.mIndices[j]);
+            }
         }
+        Logger::Debug("Assimp indices: {}", indices.size());
 
         Material* material = LoadMaterial(mesh, scene, model);
         std::string name = model->GetName() + "_Mesh" + std::to_string(model->GetElements().size());
@@ -137,7 +140,6 @@ namespace gir
         {
             aiString filepath;
             mat->GetTexture(type, i, &filepath);
-            Logger::Debug(filepath.C_Str());
 
             // TODO: check if filepath was loaded before
             textures.push_back(TextureLoader::Load(FileSystem::GetAssetsDir()  + "/" + filepath.C_Str()));
