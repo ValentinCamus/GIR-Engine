@@ -105,14 +105,14 @@ namespace gir
         unsigned width  = m_camera->GetWidth();
         unsigned height = m_camera->GetHeight();
 
-        float x = xPos - m_xPrev + width / 2;
-        float y = yPos - m_yPrev + height / 2;
+        float x = xPos - m_xPrev + float(width) / 2;
+        float y = yPos - m_yPrev + float(height) / 2;
 
         m_xPrev = xPos;
         m_yPrev = yPos;
 
         // Map x and y to [-1, 1]
-        Vec4f front(1 - 2 * x / width, 2 * y / height - 1, 0.f, 1.f);
+        Vec4f front(1 - 2 * x / float(width), 2 * y / float(height) - 1, 0.f, 1.f);
 
         front = m_camera->GetInverseProjection() * front;
         front /= front.w;

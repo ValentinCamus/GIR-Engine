@@ -14,10 +14,10 @@ namespace gir
     {
     public:
         /// Initialize the controller.
-        void Init(GLFWwindow* window);
+        explicit ImGuiController(GLFWwindow* window);
 
         /// Terminate the current controller session.
-        void Shutdown();
+        virtual ~ImGuiController();
 
         /// Prepare the GUI renderer.
         void BeginFrame();

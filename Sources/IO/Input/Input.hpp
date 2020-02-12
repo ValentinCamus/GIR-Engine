@@ -9,7 +9,7 @@ namespace gir
     class Input
     {
     public:
-        void Init(GLFWwindow* window);
+        explicit Input(GLFWwindow* window = nullptr);
 
         bool IsKeyPressed(int keyCode);
 

@@ -2,9 +2,9 @@
 
 namespace gir
 {
-    void Window::Init(const char *name, unsigned int width, unsigned int height)
+    Window::Window(const char* name, unsigned int width, unsigned int height)
+        : m_name(name)
     {
-        m_name = name;
         Logger::Info("Creating GLFW window: \"{0}\", Size=[w={1}, h={2}]", name, width, height);
 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -15,14 +15,14 @@ namespace gir
 #endif
 
         GIR_CHECK(glfwInit(), "Failed to initialize GLFW");
-        m_window = glfwCreateWindow(width, height, name, nullptr, nullptr);
+        m_window = glfwCreateWindow(static_cast<int>(width), static_cast<int>(height), name, nullptr, nullptr);
         GIR_CHECK(m_window != nullptr, "Failed to create GLFW window");
 
         glfwMakeContextCurrent(m_window);
         GIR_CHECK(gladLoadGLLoader((GLADloadproc)glfwGetProcAddress), "Failed to initialize GLAD");
     }
 
-    void Window::Shutdown()
+    Window::~Window()
     {
         GIR_ASSERT(IsValid(), "Window::Shutdown: Invalid window");
         glfwDestroyWindow(m_window);
@@ -107,4 +107,5 @@ namespace gir
             listener->OnMouseMoved(xPos, yPos);
         });
     }
+
 } // namespace gir

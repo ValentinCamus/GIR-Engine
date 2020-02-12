@@ -13,7 +13,9 @@ namespace gir
     {
     public:
         /// Initialize and create the window.
-        void Init(const char* name, unsigned int width, unsigned int height);
+        Window(const char* name, unsigned int width, unsigned int height);
+
+        virtual ~Window();
 
         /// Destroy the window.
         void Shutdown();

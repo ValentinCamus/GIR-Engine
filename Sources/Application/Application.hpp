@@ -30,7 +30,7 @@ namespace gir
                              unsigned height  = DEFAULT_APP_HEIGHT);
 
         /// Default destructor.
-        ~Application() override = default;
+        ~Application() override;
 
         /// Setup and start the draw loop.
         void Run();
@@ -67,19 +67,19 @@ namespace gir
 
         float m_time = 0.0f;
 
-        Window m_window = Window();
+        Input m_input;
 
-        Input m_input = Input();
+        CameraController m_cameraController;
 
-        CameraController m_cameraController = CameraController(nullptr);
+        Window* m_window = nullptr;
 
-        ImGuiController m_gui = ImGuiController();
+        ImGuiController* m_gui = nullptr;
 
-        ViewportWidget m_viewport = ViewportWidget("Viewport");
+        ViewportWidget* m_viewport = nullptr;
 
-        StatsWidget m_statsWidget = StatsWidget("Statistics");
+        StatsWidget* m_statsWidget = nullptr;
 
-        LightingWidget m_lightingWidget = LightingWidget("Lighting");
+        LightingWidget* m_lightingWidget = nullptr;
 
         std::unique_ptr<Scene> m_scene = nullptr;
 

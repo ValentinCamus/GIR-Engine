@@ -2,7 +2,8 @@
 
 namespace gir
 {
-    void ViewportWidget::Init(unsigned width, unsigned height)
+    ViewportWidget::ViewportWidget(const char* name, unsigned width, unsigned height, bool isVisible)
+        : ImGuiWidget(name, isVisible)
     {
         m_texture     = new Texture2D("Default texture", GL_RGB, GL_RGB, GL_UNSIGNED_INT);
         m_framebuffer = new Framebuffer("Default framebuffer");
@@ -79,4 +80,5 @@ namespace gir
         ImGui::Image(id, winSize, ImVec2(0, 1), ImVec2(1, 0));
         m_framebuffer->Unbind();
     }
+
 } // namespace gir

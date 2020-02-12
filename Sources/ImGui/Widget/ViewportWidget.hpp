@@ -11,15 +11,12 @@ namespace gir
     class ViewportWidget : public ImGuiWidget
     {
     public:
-        /// Constructor.
-        using ImGuiWidget::ImGuiWidget;
+        /// Initialize the widget.
+        /// @warning: needs to be initialized after the renderer initialization (e.g glad).
+        ViewportWidget(const char* name, unsigned width, unsigned height, bool isVisible = true);
 
         /// Destructor.
         ~ViewportWidget() override;
-
-        /// Initialize the widget.
-        /// @warning: needs to be initialized after the renderer initialization (e.g glad).
-        void Init(unsigned width, unsigned height);
 
         void Draw() override;
 

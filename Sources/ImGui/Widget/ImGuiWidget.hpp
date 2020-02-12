@@ -9,6 +9,7 @@ namespace gir
             : m_name(name)
             , m_isVisible(isVisible)
         {
+
         }
 
         /// Default destructor.

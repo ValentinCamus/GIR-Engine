@@ -5,7 +5,8 @@
 
 namespace gir
 {
-    void ImGuiController::Init(GLFWwindow* window)
+    ImGuiController::ImGuiController(GLFWwindow* window)
+        : m_window(window)
     {
         GIR_ASSERT(window, "ImGuiController::Init: Invalid parameter");
 
@@ -21,7 +22,6 @@ namespace gir
         ImGui::GetStyle().WindowRounding              = 0.0f;
         ImGui::GetStyle().Colors[ImGuiCol_WindowBg].w = 1.0f;
 
-        m_window = window;
         SetupPlatformBindings();
 
         ImGui::GetIO().IniFilename = PROJECT_SOURCE_DIR "/Data/ImGui.ini";
@@ -29,7 +29,7 @@ namespace gir
         Logger::Info("ImGui: Initialized");
     }
 
-    void ImGuiController::Shutdown()
+    ImGuiController::~ImGuiController()
     {
         ImGui_ImplGlfw_Shutdown();
         ImGui_ImplOpenGL3_Shutdown();

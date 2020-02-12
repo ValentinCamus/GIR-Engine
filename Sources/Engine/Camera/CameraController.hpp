@@ -9,7 +9,7 @@ namespace gir
     class CameraController
     {
     public:
-        explicit CameraController(Camera* camera);
+        explicit CameraController(Camera* camera = nullptr);
 
         void MoveForward(float deltaTime);
 

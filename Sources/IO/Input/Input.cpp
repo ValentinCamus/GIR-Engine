@@ -2,27 +2,32 @@
 
 namespace gir
 {
-    void Input::Init(GLFWwindow *window)
+    Input::Input(GLFWwindow *window)
+        : m_window(window)
     {
-        m_window = window;
-        Logger::Info("Input mode: GLFW input system");
-        Logger::Warn("GIR Engine supports only US keyboard binding (aka QWERTY)");
+
     }
 
     bool Input::IsKeyPressed(int keyCode)
     {
+        if (!m_window) return false;
+
         auto state = glfwGetKey(m_window, keyCode);
         return state == GLFW_PRESS || state == GLFW_REPEAT;
     }
 
     bool Input::IsMouseButtonPressed(int button)
     {
+        if (!m_window) return false;
+
         auto state = glfwGetMouseButton(m_window, button);
         return state == GLFW_PRESS;
     }
 
     Vec2f Input::GetMousePosition()
     {
+        if (!m_window) return {0.0f, 0.0f};
+
         double xPos, yPos;
         glfwGetCursorPos(m_window, &xPos, &yPos);
 
@@ -31,12 +36,16 @@ namespace gir
 
     float Input::GetMouseX()
     {
+        if (!m_window) return 0.0f;
+
         Vec2f position = GetMousePosition();
         return position.x;
     }
 
     float Input::GetMouseY()
     {
+        if (!m_window) return 0.0f;
+
         Vec2f position = GetMousePosition();
         return position.y;
     }
