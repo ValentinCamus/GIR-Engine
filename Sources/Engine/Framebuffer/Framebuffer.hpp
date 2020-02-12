@@ -37,9 +37,11 @@ namespace gir
 
         inline bool IsRenderbufferAttached() const { return m_rbo > 0; }
 
-        inline bool IsTextureAttached() const { return m_texture != nullptr; }
+        inline bool HasTexturesAttached() const { return !m_textures.empty(); }
 
-        inline const Texture2D* GetTexture() const { return m_texture; }
+        inline Texture2D* GetTexture(unsigned i) { return m_textures[i]; }
+
+        inline unsigned TextureCount() const { return static_cast<unsigned>(m_textures.size()); }
 
         float GetAspectRatio() const;
 
@@ -50,6 +52,6 @@ namespace gir
         unsigned m_width  = 0;
         unsigned m_height = 0;
 
-        Texture2D* m_texture = nullptr;
+        std::vector<Texture2D*> m_textures {};
     };
 } // namespace gir

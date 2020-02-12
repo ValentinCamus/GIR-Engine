@@ -48,8 +48,8 @@ namespace gir
 
     ImVec2 ViewportWidget::GetFramebufferSize() const
     {
-        auto fbWidth  = (float)m_framebuffer->GetTexture()->GetWidth();
-        auto fbHeight = (float)m_framebuffer->GetTexture()->GetHeight();
+        auto fbWidth  = (float)m_framebuffer->GetTexture(0)->GetWidth();
+        auto fbHeight = (float)m_framebuffer->GetTexture(0)->GetHeight();
         return {fbWidth, fbHeight};
     }
 
@@ -75,7 +75,7 @@ namespace gir
     {
         ImVec2 winSize = ImGui::GetWindowSize();
         m_framebuffer->Bind();
-        void* id = (void*)(uintptr_t)m_framebuffer->GetTexture()->GetId();
+        void* id = (void*)(uintptr_t)m_framebuffer->GetTexture(0)->GetId();
         ImGui::Image(id, winSize, ImVec2(0, 1), ImVec2(1, 0));
         m_framebuffer->Unbind();
     }

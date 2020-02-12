@@ -1,12 +1,17 @@
-#version 330 core
+#version 410 core
 
-in vec3 vColor;
+layout (location = 0) in vec2 textureCoordinates;
 
-out vec4 FragColor;
+layout (location = 0) out vec4 fragColor;
 
-uniform vec4 uColor;
+uniform sampler2D positions;
+uniform sampler2D normals;
+uniform sampler2D diffuseColor;
+uniform sampler2D specularColor;
+uniform sampler2D specularParameters;
+
 
 void main()
 {
-    FragColor = uColor + vec4(vColor, 1.0);
+    fragColor = vec4(texture(diffuseColor, textureCoordinates).xyz, 1.0);
 }

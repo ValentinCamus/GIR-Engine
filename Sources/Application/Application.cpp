@@ -64,7 +64,10 @@ namespace gir
             3 // second Triangle
         };
 
-        Camera camera("Main camera", Mat4f(1.f), DEFAULT_APP_WIDTH, DEFAULT_APP_HEIGHT);
+        unsigned width  = m_viewport.GetFramebuffer()->GetTexture(0)->GetWidth();
+        unsigned height = m_viewport.GetFramebuffer()->GetTexture(0)->GetHeight();
+
+        Camera camera("Main camera", Mat4f(1.f), width, height);
 
         Model* model = new Model("test");
 
@@ -74,7 +77,7 @@ namespace gir
 
         m_scene = std::make_unique<Scene>(camera, std::vector<Light>(), std::vector<Entity> {Entity("test", model)});
 
-        m_renderer = std::make_unique<Renderer>();
+        m_renderer = std::make_unique<Renderer>(m_viewport.GetFramebuffer(), width, height);
     }
 
     void Application::Prepare() {}
@@ -95,10 +98,15 @@ namespace gir
 
     void Application::OnWindowClosed() { Stop(); }
 
-    void Application::OnWindowResize(int width, int height)
+    void Application::OnWindowResize(int, int)
     {
+        unsigned width = m_viewport.GetFramebuffer()->GetTexture(0)->GetWidth();
+        unsigned height = m_viewport.GetFramebuffer()->GetTexture(0)->GetHeight();
+
         m_scene->GetCamera().SetWidth(width);
         m_scene->GetCamera().SetHeight(height);
+
+        m_renderer->ResizeGBuffer(width, height);
     }
 
     void Application::OnKeyPressed(int keyCode) { (void)keyCode; }

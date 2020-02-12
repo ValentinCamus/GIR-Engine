@@ -32,7 +32,7 @@ namespace gir
         m_vfov              = vfov;
     }
 
-    const Mat4f &Camera::GetViewMatrix()
+    Mat4f Camera::GetViewMatrix() const
     {
         Mat4f view;
 
@@ -47,15 +47,14 @@ namespace gir
         return view;
     }
 
-    const Mat4f &Camera::GetProjectionMatrix()
+    const Mat4f &Camera::GetProjectionMatrix() const
     {
         if (m_isProjectionDirty) UpdateProjection();
 
-        // TODO:
         return m_projection;
     }
 
-    void Camera::UpdateProjection()
+    void Camera::UpdateProjection() const
     {
         m_projection = glm::perspective(m_vfov, static_cast<float>(m_width) / m_height, nearZ, farZ);
 

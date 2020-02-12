@@ -2,7 +2,7 @@
 
 #include <Core/Core.hpp>
 #include <Engine/Shader/ShaderManager.hpp>
-#include "Engine/Framebuffer/Framebuffer.hpp"
+#include <Engine/Framebuffer/Framebuffer.hpp>
 
 namespace gir
 {
@@ -13,20 +13,27 @@ namespace gir
     };
 
     class Scene;
+    class Mesh;
 
     class Renderer
     {
     public:
-        Renderer();
+        Renderer(Framebuffer *defaultFramebuffer, unsigned width, unsigned height);
 
         void Draw(const Scene *scene);
+
+        void ResizeGBuffer(unsigned width, unsigned height);
 
         void SetRenderMode(RenderMode mode);
 
     private:
         ShaderManager m_shaderManager;
 
-        Framebuffer m_gBuffer;
+        Framebuffer *m_defaultFramebuffer;
+
+        Framebuffer m_GBuffer;
+
+        Mesh *m_quad = nullptr;
 
         RenderMode m_renderMode = RenderMode::DEBUG;
     };

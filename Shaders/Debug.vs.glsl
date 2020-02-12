@@ -1,13 +1,17 @@
-#version 330 core
+#version 410 core
 
-layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec3 aNormals;
-layout (location = 2) in vec2 aTextureCoordinates;
+layout (location = 0) in vec3 inPosition;
+layout (location = 1) in vec3 inNormal;
+layout (location = 2) in vec2 inTextureCoordinates;
+layout (location = 3) in vec3 inTangent;
+layout (location = 4) in vec3 inBitangent;
 
-out vec3 vColor;
+layout (location = 0) out vec2 textureCoordinates;
+
 
 void main()
 {
-    vColor = aNormals;
-    gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
+    gl_Position = vec4(inPosition + 1.f, 1.0);
+
+    textureCoordinates = inTextureCoordinates;
 }

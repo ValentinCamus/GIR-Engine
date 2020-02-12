@@ -20,10 +20,11 @@ namespace gir
             glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
         }
 
-        if (m_texture)
+        for (auto texture : m_textures)
         {
-            m_texture->Bind();
-            m_texture->Allocate(width, height);
+            texture->Bind();
+            texture->Allocate(width, height);
+            texture->Unbind();
         }
     }
 
@@ -60,12 +61,9 @@ namespace gir
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, m_rbo);
     }
 
-    // TODO: make it possible to attach multiple textures to a framebuffer
     void Framebuffer::AttachTexture(Texture2D* texture, int attachment)
     {
-        GIR_ASSERT(m_texture == nullptr, "A texture is already attached");
-
-        m_texture = texture;
+        m_textures.push_back(texture);
         glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, texture->GetId(), 0);
     }
 

@@ -17,6 +17,8 @@ namespace gir
 
         inline Camera &GetCamera() { return m_camera; }
 
+        inline const Camera &GetCamera() const { return m_camera; }
+
         inline const std::vector<Light> &GetLights() const { return m_lights; }
 
         inline const std::vector<Entity> &GetEntities() const { return m_entities; }

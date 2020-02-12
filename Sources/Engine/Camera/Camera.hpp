@@ -28,22 +28,22 @@ namespace gir
 
         void SetVerticalFOV(float vfov);
 
-        const Mat4f &GetViewMatrix();
+        Mat4f GetViewMatrix() const;
 
-        const Mat4f &GetProjectionMatrix();
-
-    private:
-        void UpdateProjection();
+        const Mat4f &GetProjectionMatrix() const;
 
     private:
-        Mat4f m_projection;
+        void UpdateProjection() const;
+
+    private:
+        mutable Mat4f m_projection;
+
+        mutable bool m_isProjectionDirty = false;
 
         float m_vfov;
 
         unsigned m_width;
         unsigned m_height;
-
-        bool m_isProjectionDirty = false;
     };
 
 } // namespace gir

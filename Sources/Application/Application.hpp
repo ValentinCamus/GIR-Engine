@@ -58,7 +58,7 @@ namespace gir
         void OnWindowClosed() override;
 
         /// Event called when the size of the window has changed.
-        void OnWindowResize(int width, int height) override;
+        void OnWindowResize(int, int) override;
 
         /// Event called when a key is pressed.
         void OnKeyPressed(int keyCode) override;
