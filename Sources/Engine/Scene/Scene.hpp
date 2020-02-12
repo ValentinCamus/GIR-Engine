@@ -2,11 +2,12 @@
 
 #include <Core/Core.hpp>
 #include "Engine/Camera/Camera.hpp"
-#include "Engine/Light/Light.hpp"
 #include "Engine/Mesh/Entity.hpp"
 
 namespace gir
 {
+    class Light;
+
     class Scene
     {
     public:

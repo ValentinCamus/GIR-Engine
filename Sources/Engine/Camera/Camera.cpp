@@ -5,11 +5,7 @@ namespace gir
     float Camera::nearZ = 0.1f;
     float Camera::farZ  = 100.0f;
 
-    Camera::Camera(const std::string &name,
-                   const Mat4f &transform,
-                   unsigned width,
-                   unsigned height,
-                   float vfov) :
+    Camera::Camera(const std::string &name, const Mat4f &transform, unsigned width, unsigned height, float vfov) :
         SceneComponent(name, transform),
         m_vfov(vfov),
         m_width(width),
@@ -62,11 +58,14 @@ namespace gir
         return m_projection;
     }
 
+    const Mat4f &Camera::GetInverseProjection() const { return m_inverseProjection; }
+
     void Camera::UpdateProjection() const
     {
         m_isProjectionDirty = false;
 
-        m_projection = glm::perspective(m_vfov, float(m_width) / float(m_height), nearZ, farZ);
+        m_projection        = glm::perspective(m_vfov, float(m_width) / float(m_height), nearZ, farZ);
+        m_inverseProjection = glm::inverse(m_projection);
     }
 
 } // namespace gir

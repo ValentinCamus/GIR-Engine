@@ -33,8 +33,8 @@ namespace gir
         {
             // Per-frame time logic
             auto currentTime = static_cast<float>(glfwGetTime());
-            float deltaTime = m_time - currentTime;
-            m_time = currentTime;
+            float deltaTime  = m_time - currentTime;
+            m_time           = currentTime;
 
             m_window.PollEvents();
 
@@ -52,10 +52,7 @@ namespace gir
         m_window.Shutdown();
     }
 
-    void Application::Stop()
-    {
-        m_isRunning = false;
-    }
+    void Application::Stop() { m_isRunning = false; }
 
     void Application::Setup()
     {
@@ -87,6 +84,8 @@ namespace gir
         if (m_input.IsKeyPressed(GLFW_KEY_A)) m_cameraController.MoveLeft(deltaTime);
         if (m_input.IsKeyPressed(GLFW_KEY_Q)) m_cameraController.MoveUp(deltaTime);
         if (m_input.IsKeyPressed(GLFW_KEY_E)) m_cameraController.MoveDown(deltaTime);
+        if (m_input.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_1))
+            m_cameraController.SetMousePos(m_input.GetMouseX(), m_input.GetMouseY());
     }
 
     void Application::Draw(float deltaTime)
@@ -94,10 +93,14 @@ namespace gir
         unsigned viewportWidth  = m_viewport.GetFramebuffer()->GetTexture(0)->GetWidth();
         unsigned viewportHeight = m_viewport.GetFramebuffer()->GetTexture(0)->GetHeight();
 
-        m_scene->GetCamera().SetWidth(viewportWidth);
-        m_scene->GetCamera().SetHeight(viewportHeight);
+        Camera& camera = m_scene->GetCamera();
+        if (camera.GetWidth() != viewportWidth || camera.GetHeight() != viewportHeight)
+        {
+            camera.SetWidth(viewportWidth);
+            camera.SetHeight(viewportHeight);
 
-        m_renderer->ResizeGBuffer(viewportWidth, viewportHeight);
+            m_renderer->ResizeGBuffer(viewportWidth, viewportHeight);
+        }
 
         m_renderer->Draw(m_scene.get());
     }
@@ -109,17 +112,14 @@ namespace gir
         m_statsWidget.Draw();
     }
 
-    void Application::OnWindowClosed()
-    {
-        Stop();
-    }
+    void Application::OnWindowClosed() { Stop(); }
 
     void Application::OnMouseMoved(double xPos, double yPos)
     {
         if (m_scene)
         {
-            m_cameraController.SetCamera(&m_scene->GetCamera());
-            m_cameraController.LookAt(static_cast<float>(xPos), static_cast<float>(yPos));
+            if (m_input.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_1))
+                m_cameraController.LookAt(static_cast<float>(xPos), static_cast<float>(yPos));
         }
     }
 
