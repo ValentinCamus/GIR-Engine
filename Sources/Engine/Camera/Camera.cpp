@@ -2,10 +2,14 @@
 
 namespace gir
 {
-    float Camera::nearZ = 0.5f;
-    float Camera::farZ  = 200.0f;
+    float Camera::nearZ = 0.1f;
+    float Camera::farZ  = 100.0f;
 
-    Camera::Camera(const std::string &name, const Mat4f &transform, unsigned width, unsigned height, float vfov) :
+    Camera::Camera(const std::string &name,
+                   const Mat4f &transform,
+                   unsigned width,
+                   unsigned height,
+                   float vfov) :
         SceneComponent(name, transform),
         m_vfov(vfov),
         m_width(width),
@@ -17,19 +21,22 @@ namespace gir
     void Camera::SetWidth(unsigned width)
     {
         m_isProjectionDirty = true;
-        m_width             = width;
+
+        m_width = width;
     }
 
     void Camera::SetHeight(unsigned height)
     {
         m_isProjectionDirty = true;
-        m_height            = height;
+
+        m_height = height;
     }
 
     void Camera::SetVerticalFOV(float vfov)
     {
         m_isProjectionDirty = true;
-        m_vfov              = vfov;
+
+        m_vfov = vfov;
     }
 
     Mat4f Camera::GetViewMatrix() const
@@ -44,6 +51,7 @@ namespace gir
         view[3][1] = -dot(translation, rotation[1]);
         view[3][2] = -dot(translation, rotation[2]);
         view[3][3] = 1.f;
+
         return view;
     }
 
@@ -56,9 +64,9 @@ namespace gir
 
     void Camera::UpdateProjection() const
     {
-        m_projection = glm::perspective(m_vfov, static_cast<float>(m_width) / m_height, nearZ, farZ);
-
         m_isProjectionDirty = false;
+
+        m_projection = glm::perspective(m_vfov, float(m_width) / float(m_height), nearZ, farZ);
     }
 
 } // namespace gir

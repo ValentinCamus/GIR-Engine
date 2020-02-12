@@ -13,6 +13,8 @@
 #include <Engine/Scene/Scene.hpp>
 #include <Engine/Renderer/Renderer.hpp>
 
+#include <Engine/Camera/CameraController.hpp>
+
 #define DEFAULT_APP_NAME "Application"
 #define DEFAULT_APP_WIDTH 800
 #define DEFAULT_APP_HEIGHT 600
@@ -37,20 +39,16 @@ namespace gir
         void Stop();
 
         /// Define the base application setup.
-        // TODO: add time step
         virtual void Setup();
 
         /// Called just before the draw loop.
-        // TODO: add time step
-        virtual void Prepare();
+        virtual void Prepare(float deltaTime);
 
         /// Draw loop.
-        // TODO: add time step
-        virtual void Draw();
+        virtual void Draw(float deltaTime);
 
         /// GUI draw loop.
-        // TODO: add time step
-        virtual void ImGuiDraw();
+        virtual void ImGuiDraw(float deltaTime);
 
         /// Check if the application is running.
         inline bool IsRunning() const { return m_isRunning; }
@@ -58,15 +56,22 @@ namespace gir
         /// Event called when the user attempts to close the window.
         void OnWindowClosed() override;
 
-        /// Event called when the size of the window has changed.
-        void OnWindowResize(int, int) override;
+        /// Event called when the mouse position changed.
+        void OnMouseMoved(double xPos, double yPos) override;
+
+        /// Event called when a scrolling device is used.
+        void OnMouseScrolled(double xOffset, double yOffset) override;
 
     private:
         bool m_isRunning = false;
 
+        float m_time = 0.0f;
+
         Window m_window = Window();
 
         Input m_input = Input();
+
+        CameraController m_cameraController = CameraController(nullptr);
 
         ImGuiController m_gui = ImGuiController();
 
