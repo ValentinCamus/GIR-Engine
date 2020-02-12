@@ -10,7 +10,6 @@ layout (location = 0) out vec3 outPosition;
 layout (location = 1) out vec3 outNormal;
 layout (location = 2) out vec3 outDiffuseColor;
 layout (location = 3) out vec3 outSpecularColor;
-layout (location = 4) out vec2 outSpecularParameters;
 
 
 struct Material {
@@ -40,7 +39,6 @@ void main() {
     outDiffuseColor = normal;
     outNormal = normal;
     outSpecularColor = normal;
-    outSpecularParameters = normal.xy;
 //    float alpha = m.hasAlphaTexture ? texture(m.alphaTexture, textureCoord).x : m.alpha;
 //
 //    if(alpha < 0.25)
@@ -49,5 +47,4 @@ void main() {
 //    outNormal = vec3(m.hasNormalTexture ? mat3(tangent, bitangent, normal) * normalize(texture(m.normalTexture, textureCoord).xyz) : normal);
 //    outDiffuseColor = m.hasKdTexture ? texture(m.kdTexture, textureCoord).xyz: m.kd;
 //    outSpecularColor = m.hasKsTexture ? texture(m.ksTexture, textureCoord).xyz : m.ks;
-//    outSpecularParameters = vec2(m.ns, m.nsStrength);
 }

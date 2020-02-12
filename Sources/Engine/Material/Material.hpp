@@ -69,5 +69,4 @@ namespace gir
     private:
         std::unordered_map<Material::EAttribute, Attribute> m_attributes = {};
     };
-
 } // namespace gir

@@ -19,7 +19,6 @@ namespace gir
     private:
         std::vector<Shader> m_shaders;
     };
-
 } // namespace gir
 
 #include "ShaderManager.inl"

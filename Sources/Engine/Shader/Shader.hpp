@@ -60,7 +60,6 @@ namespace gir
     private:
         std::unordered_map<std::string, GLint> m_uniforms;
     };
-
 } // namespace gir
 
 #include "Shader.inl"

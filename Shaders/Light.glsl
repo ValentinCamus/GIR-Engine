@@ -5,6 +5,8 @@
 #define DIRECTIONAL_LIGHT 1
 #define SPOT_LIGHT 2
 
+#define NEAR_Z 0.2f
+#define FAR_Z 100.f
 
 struct Light {
     uint type;
@@ -12,12 +14,8 @@ struct Light {
     vec3 color;
     vec3 position;
     vec3 direction;
-    float range;
     float cosInnerAngle;
     float cosOuterAngle;
-
-    float nearZ;
-    float farZ;
 };
 
 float linearizeDepth(float near, float far, float z) { 
@@ -28,7 +26,7 @@ float linearizeDepth(float near, float far, float z) {
 float linearizeDepth(Light l, float z) {
     switch(l.type) {
         case POINT_LIGHT: 
-        case SPOT_LIGHT: return linearizeDepth(l.nearZ, l.farZ, z);
+        case SPOT_LIGHT: return linearizeDepth(NEAR_Z, FAR_Z, z);
         default: return z;
     }
 }

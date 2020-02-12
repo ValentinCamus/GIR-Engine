@@ -41,5 +41,4 @@ namespace gir
 
         mutable VertexArrayObject m_vao;
     };
-
 } // namespace gir

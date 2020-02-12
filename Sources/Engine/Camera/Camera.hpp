@@ -45,5 +45,4 @@ namespace gir
         unsigned m_width;
         unsigned m_height;
     };
-
 } // namespace gir

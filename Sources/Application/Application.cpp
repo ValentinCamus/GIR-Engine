@@ -70,7 +70,7 @@ namespace gir
         transform[3] = {0.f, -7.5f, -20.f, 1.f};
 
         m_scene = std::make_unique<Scene>(
-            camera, std::vector<Light>(), std::vector<Entity> {Entity("test", nanoSuit, transform)});
+            camera, std::vector<Light*>(), std::vector<Entity> {Entity("test", nanoSuit, transform)});
 
         m_renderer = std::make_unique<Renderer>(m_viewport.GetFramebuffer(), width, height);
     }

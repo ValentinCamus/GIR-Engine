@@ -16,5 +16,4 @@ namespace gir
     private:
         Model* m_model = nullptr;
     };
-
 } // namespace gir

@@ -40,5 +40,4 @@ namespace gir
         unsigned m_ibo = 0;
         bool m_isIndexed = false;
     };
-
 } // namespace gir

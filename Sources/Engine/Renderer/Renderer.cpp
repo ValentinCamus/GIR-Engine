@@ -59,8 +59,7 @@ namespace gir
         std::vector<GLuint> attachments {GL_COLOR_ATTACHMENT0,
                                          GL_COLOR_ATTACHMENT1,
                                          GL_COLOR_ATTACHMENT2,
-                                         GL_COLOR_ATTACHMENT3,
-                                         GL_COLOR_ATTACHMENT4};
+                                         GL_COLOR_ATTACHMENT3};
 
         Texture2D* texture = Manager<Texture2D>::Add("Positions", GL_RGB32F, GL_RGB, GL_FLOAT);
         m_GBuffer.AttachTexture(texture, attachments[0]);
@@ -73,9 +72,6 @@ namespace gir
 
         texture = Manager<Texture2D>::Add("Specular colors", GL_RGB, GL_RGB, GL_UNSIGNED_BYTE);
         m_GBuffer.AttachTexture(texture, attachments[3]);
-
-        texture = Manager<Texture2D>::Add("Specular parameters", GL_RG16F, GL_RG, GL_FLOAT);
-        m_GBuffer.AttachTexture(texture, attachments[4]);
 
         glDrawBuffers(attachments.size(), attachments.data());
 

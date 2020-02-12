@@ -19,5 +19,4 @@ namespace gir
     protected:
         Mat4f m_transform;
     };
-
 } // namespace gir

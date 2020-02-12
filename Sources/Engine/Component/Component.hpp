@@ -17,7 +17,6 @@ namespace gir
     protected:
         std::string m_name;
     };
-
 } // namespace gir
 
 #endif

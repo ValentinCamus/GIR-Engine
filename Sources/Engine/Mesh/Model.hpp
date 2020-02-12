@@ -25,5 +25,4 @@ namespace gir
     private:
         std::vector<MaterialMeshes> m_meshesByMaterial;
     };
-
 } // namespace gir
