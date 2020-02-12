@@ -6,7 +6,17 @@ namespace gir
 {
     Framebuffer::Framebuffer(const std::string& name) : OpenGLComponent(name) { glGenFramebuffers(1, &m_id); }
 
-    Framebuffer::~Framebuffer() { glDeleteFramebuffers(1, &m_id); }
+    Framebuffer::~Framebuffer() { 
+        for(auto *texture : m_textures) {
+            unsigned id = texture->GetId();
+            glDeleteTextures(1, &id);
+        }
+
+        if(IsRenderbufferAttached())
+            glDeleteRenderbuffers(1, &m_rbo);
+
+        glDeleteFramebuffers(1, &m_id); 
+    }
 
     void Framebuffer::Resize(unsigned width, unsigned height)
     {

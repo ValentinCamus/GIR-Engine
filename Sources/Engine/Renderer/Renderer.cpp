@@ -129,7 +129,7 @@ namespace gir
                     shader->SetUniform("model", entity.GetTransform());
                     auto* model = entity.GetModel();
 
-                    for (int i = 0; i < model->MaterialCount(); ++i)
+                    for (int i = 0; i < static_cast<int>(model->MaterialCount()); ++i)
                     {
                         for (const auto& mesh : model->GetMeshes(i))
                         {
@@ -158,7 +158,7 @@ namespace gir
                 const char* uniforms[5] = {
                     "positions", "normals", "diffuseColor", "specularColor", "specularParameters"};
 
-                for (int i = 0; i < m_GBuffer.TextureCount(); ++i)
+                for (int i = 0; i < static_cast<int>(m_GBuffer.TextureCount()); ++i)
                 {
                     m_GBuffer.GetTexture(i)->Bind(i);
                     shader->SetUniform(uniforms[i], i);
@@ -166,7 +166,7 @@ namespace gir
 
                 glDrawElements(GL_TRIANGLES, m_quad->Size(), GL_UNSIGNED_INT, 0);
 
-                for (int i = 0; i < m_GBuffer.TextureCount(); ++i) { m_GBuffer.GetTexture(i)->Unbind(); }
+                for (int i = 0; i < static_cast<int>(m_GBuffer.TextureCount()); ++i) { m_GBuffer.GetTexture(i)->Unbind(); }
 
                 glEnable(GL_DEPTH_TEST);
 
