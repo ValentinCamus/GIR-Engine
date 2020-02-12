@@ -1,17 +1,16 @@
-#version 330 core
+#version 410 core
 
-layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec3 aNormal;
-layout (location = 2) in vec2 aTexCoords;
+layout (location = 0) in vec3 inPosition;
+layout (location = 1) in vec3 inNormal;
+layout (location = 2) in vec2 inTextureCoordinates;
+layout (location = 3) in vec3 inTangent;
+layout (location = 4) in vec3 inBitangent;
 
-out vec2 TexCoords;
-
-uniform mat4 uModel;
-uniform mat4 uView;
-uniform mat4 uProjection;
+layout (location = 0) out vec2 textureCoordinates;
 
 void main()
 {
-    TexCoords = aTexCoords;
-    gl_Position = uProjection * uView * uModel * vec4(aPos, 1.0);
+    gl_Position = vec4(inPosition, 1.f);
+
+    textureCoordinates = inTextureCoordinates;
 }

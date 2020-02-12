@@ -4,7 +4,7 @@ namespace gir
 {
     void ViewportWidget::Init(unsigned width, unsigned height)
     {
-        m_texture     = new Texture2D("Default texture", GL_RGB, GL_UNSIGNED_INT);
+        m_texture     = new Texture2D("Default texture", GL_RGB, GL_RGB, GL_UNSIGNED_INT);
         m_framebuffer = new Framebuffer("Default framebuffer");
 
         m_framebuffer->Bind();
@@ -48,8 +48,8 @@ namespace gir
 
     ImVec2 ViewportWidget::GetFramebufferSize() const
     {
-        auto fbWidth  = (float)m_framebuffer->GetTexture()->GetWidth();
-        auto fbHeight = (float)m_framebuffer->GetTexture()->GetHeight();
+        auto fbWidth  = (float)m_framebuffer->GetTexture(0)->GetWidth();
+        auto fbHeight = (float)m_framebuffer->GetTexture(0)->GetHeight();
         return {fbWidth, fbHeight};
     }
 
@@ -75,7 +75,7 @@ namespace gir
     {
         ImVec2 winSize = ImGui::GetWindowSize();
         m_framebuffer->Bind();
-        void* id = (void*)(uintptr_t)m_framebuffer->GetTexture()->GetId();
+        void* id = (void*)(uintptr_t)m_framebuffer->GetTexture(0)->GetId();
         ImGui::Image(id, winSize, ImVec2(0, 1), ImVec2(1, 0));
         m_framebuffer->Unbind();
     }

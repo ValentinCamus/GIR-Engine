@@ -2,10 +2,10 @@
 
 namespace gir
 {
-    Texture2D::Texture2D(const std::string& name, int format, int type) :
-        OpenGLComponent {name},
+    Texture2D::Texture2D(const std::string& name, int internalFormat, int format, int type) :
+        OpenGLComponent(name),
+        m_internalFormat(internalFormat),
         m_format(format),
-        m_internalFormat(format),
         m_type(type)
     {
         glGenTextures(1, &m_id);
@@ -21,10 +21,10 @@ namespace gir
         Unbind();
     }
 
-    Texture2D::Texture2D(const std::string& name, int format, int internalFormat, int type) :
+    Texture2D::Texture2D(const std::string& name, int format, int type) :
             OpenGLComponent {name},
             m_format(format),
-            m_internalFormat(internalFormat),
+            m_internalFormat(format),
             m_type(type)
     {
         glGenTextures(1, &m_id);
@@ -47,6 +47,7 @@ namespace gir
         GIR_ASSERT(IsBound(), "Texture2D::Resize: The texture needs to be bound to be resized");
         m_width  = width;
         m_height = height;
+
         glTexImage2D(GL_TEXTURE_2D, 0, m_format, width, height, 0, m_internalFormat, m_type, pixels);
     }
 

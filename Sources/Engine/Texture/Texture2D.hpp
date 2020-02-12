@@ -12,15 +12,15 @@ namespace gir
         /// Constructor.
         /// @name: specifies the name of the component.
         /// @format: specifies the number of color components in the texture.
+        /// @internalFormat: ...
         /// @type: specifies the data type of the pixel data.
-        explicit Texture2D(const std::string& name, int format, int type);
+        explicit Texture2D(const std::string& name, int internalFormat, int format, int type);
 
         /// Constructor.
         /// @name: specifies the name of the component.
         /// @format: specifies the number of color components in the texture.
-        /// @internalFormat: ...
         /// @type: specifies the data type of the pixel data.
-        explicit Texture2D(const std::string& name, int format, int internalFormat, int type);
+        explicit Texture2D(const std::string& name, int format, int type);
 
         /// Destructor.
         ~Texture2D() override;
@@ -65,10 +65,10 @@ namespace gir
 
         unsigned m_height = 0;
 
+        int m_internalFormat = GL_RGBA32F;
+
         /// The number of color components in the texture.
         int m_format = GL_RGBA;
-
-        int m_internalFormat = GL_RGBA;
 
         /// The data type of the pixel data.
         int m_type = GL_UNSIGNED_INT;

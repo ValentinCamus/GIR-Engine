@@ -58,6 +58,9 @@ namespace gir
         /// Event called when the user attempts to close the window.
         void OnWindowClosed() override;
 
+        /// Event called when the size of the window has changed.
+        void OnWindowResize(int, int) override;
+
     private:
         bool m_isRunning = false;
 

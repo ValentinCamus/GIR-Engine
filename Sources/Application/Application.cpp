@@ -49,59 +49,45 @@ namespace gir
 
     void Application::Stop() { m_isRunning = false; }
 
+    // Begin Debug =====================================================================================================
+
     Shader* shader = nullptr;
     Model* nanoSuit = nullptr;
 
-    DebugCamera camera({0.0f, 0.0f, 3.0f});
+    DebugCamera debugCamera({0.0f, 0.0f, 3.0f});
 
     // timing
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;
+
+    // End Debug =======================================================================================================
 
     void Application::Setup()
     {
         m_viewport.Init(500, 500);
 
         shader = new Shader({
-            {GL_VERTEX_SHADER, FileSystem::GetShadersDir() + "Debug.vs.glsl"},
-            {GL_FRAGMENT_SHADER, FileSystem::GetShadersDir() + "Debug.fs.glsl"}
+            {GL_VERTEX_SHADER, FileSystem::GetShadersDir() + "ModelDiffuse.vs.glsl"},
+            {GL_FRAGMENT_SHADER, FileSystem::GetShadersDir() + "ModelDiffuse.fs.glsl"}
         });
 
         nanoSuit = ModelLoader::Load(FileSystem::GetAssetsDir() + "nanosuit.obj");
 
         glEnable(GL_DEPTH_TEST);
 
-        /*
-        std::vector<Vec3f> vertices = {
-            {0.5f, 0.5f, 0.0f},   // top right
-            {0.5f, -0.5f, 0.0f},  // bottom right
-            {-0.5f, -0.5f, 0.0f}, // bottom left
-            {-0.5f, 0.5f, 0.0f}   // top left
-        };
+        // =============================================================================================================
+        unsigned width  = m_viewport.GetFramebuffer()->GetTexture(0)->GetWidth();
+        unsigned height = m_viewport.GetFramebuffer()->GetTexture(0)->GetHeight();
 
-        std::vector<Vec3f> colors = {{1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f}};
+        Camera camera("Main camera", Mat4f(1.f), width, height);
 
-        std::vector<unsigned> indices = {
-            0,
-            1,
-            3, // first Triangle
-            1,
-            2,
-            3 // second Triangle
-        };
+        Mat4f transform(1.f);
+        transform[3] = { 0.f, 0.f, -2.f, 1.f};
 
-        Camera camera("Main camera", Mat4f(1.f), DEFAULT_APP_WIDTH, DEFAULT_APP_HEIGHT);
+        m_scene = std::make_unique<Scene>(camera, std::vector<Light>(), std::vector<Entity> {Entity("test", nanoSuit, transform)});
 
-        Model* model = new Model("test");
+        // m_renderer = std::make_unique<Renderer>(m_viewport.GetFramebuffer(), width, height);
 
-        auto* mesh = Manager<Mesh>::Add(
-            "test", nullptr, std::move(indices), std::move(vertices), std::move(colors), std::vector<Vec2f>(4));
-        model->AddMesh(mesh);
-
-        m_scene = std::make_unique<Scene>(camera, std::vector<Light>(), std::vector<Entity> {Entity("test", model)});
-
-        m_renderer = std::make_unique<Renderer>();
-        */
     }
 
     void Application::Prepare()
@@ -116,14 +102,11 @@ namespace gir
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // m_scene->GetCamera().SetWidth(m_viewport.GetFramebuffer()->GetTexture()->GetWidth());
-        // m_scene->GetCamera().SetHeight(m_viewport.GetFramebuffer()->GetTexture()->GetHeight());
+        float aspectRatio = float(m_viewport.GetFramebuffer()->GetTexture(0)->GetWidth()) /
+                            float(m_viewport.GetFramebuffer()->GetTexture(0)->GetHeight());
 
-        float aspectRatio = float(m_viewport.GetFramebuffer()->GetTexture()->GetWidth()) /
-                            float(m_viewport.GetFramebuffer()->GetTexture()->GetHeight());
-
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), aspectRatio, 0.1f, 100.0f);
-        glm::mat4 view = camera.GetViewMatrix();
+        glm::mat4 projection = glm::perspective(glm::radians(debugCamera.Zoom), aspectRatio, 0.1f, 100.0f);
+        glm::mat4 view = debugCamera.GetViewMatrix();
 
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f));
@@ -135,7 +118,7 @@ namespace gir
         shader->SetUniform("uView", view);
         shader->SetUniform("uProjection", projection);
 
-        for(Model::Element& element : nanoSuit->GetElements())
+        for(const Model::Element& element : nanoSuit->GetElements())
         {
             auto attr = element.material->GetAttribute(Material::EAttribute::Diffuse);
 
@@ -155,9 +138,9 @@ namespace gir
             }
         }
 
-        // m_renderer->Draw(m_scene.get());
-
         shader->Unbind();
+
+        // m_renderer->Draw(m_scene.get());
 
         m_viewport.GetFramebuffer()->Unbind();
     }
@@ -172,6 +155,17 @@ namespace gir
     void Application::OnWindowClosed()
     {
         Stop();
+    }
+
+    void Application::OnWindowResize(int width, int height)
+    {
+        unsigned viewportWidth  = m_viewport.GetFramebuffer()->GetTexture(0)->GetWidth();
+        unsigned viewportHeight = m_viewport.GetFramebuffer()->GetTexture(0)->GetHeight();
+
+        m_scene->GetCamera().SetWidth(viewportWidth);
+        m_scene->GetCamera().SetHeight(viewportHeight);
+
+        // m_renderer->ResizeGBuffer(viewportWidth, viewportHeight);
     }
 
 } // namespace gir
