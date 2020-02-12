@@ -24,8 +24,8 @@ void main() {
     textureCoord = inTextureCoord;
 
     // Incorrect for non uniform scaling
-//    normal = normalize((model * vec4(inNormal, 0.f)).xyz);
-//    bitangent = normalize((model * vec4(inBitangent, 0.f)).xyz);
-//    tangent = normalize((model * vec4(inBitangent, 0.f)).xyz);
+    normal = normalize((model * vec4(inNormal, 0.f)).xyz);
+    bitangent = normalize((model * vec4(inBitangent, 0.f)).xyz);
+    tangent = normalize((model * vec4(inBitangent, 0.f)).xyz);
     // tangent = normalize(cross(bitangent, normal)); // Workaround for assimp generating only the bitangent in some of my models
 }

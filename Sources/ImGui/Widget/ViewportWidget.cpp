@@ -4,7 +4,7 @@ namespace gir
 {
     void ViewportWidget::Init(unsigned width, unsigned height)
     {
-        m_texture     = new Texture2D("Default texture", GL_RGB, GL_UNSIGNED_INT);
+        m_texture     = new Texture2D("Default texture", GL_RGB, GL_RGB, GL_UNSIGNED_INT);
         m_framebuffer = new Framebuffer("Default framebuffer");
 
         m_framebuffer->Bind();

@@ -36,7 +36,11 @@ uniform Material m;
 
 
 void main() {
-    outDiffuseColor = vec3(1.f, 0.f, 0.f);
+    outPosition = position;
+    outDiffuseColor = normal;
+    outNormal = normal;
+    outSpecularColor = normal;
+    outSpecularParameters = normal.xy;
 //    float alpha = m.hasAlphaTexture ? texture(m.alphaTexture, textureCoord).x : m.alpha;
 //
 //    if(alpha < 0.25)

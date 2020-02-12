@@ -56,11 +56,11 @@ namespace gir
         std::vector<Vec3f> colors = {{1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f}};
 
         std::vector<unsigned> indices = {
+            1,
             0,
-            1,
-            3, // first Triangle
-            1,
+            2, // first Triangle
             2,
+            0,
             3 // second Triangle
         };
 
@@ -71,23 +71,26 @@ namespace gir
 
         Model* model = new Model("test");
 
-        auto* mesh = Manager<Mesh>::Add(
-            "test", nullptr, std::move(indices), std::move(vertices), std::move(colors), std::vector<Vec2f>(4));
+        auto* mesh = Manager<Mesh>::Add("test",
+                                        nullptr,
+                                        std::move(indices),
+                                        std::move(vertices),
+                                        std::move(colors),
+                                        std::vector<Vec2f>(4),
+                                        std::vector<Vec3f>(4),
+                                        std::vector<Vec3f>(4));
         model->AddMesh(mesh);
+        Mat4f transform(1.f);
+        transform[3] = { 0.f, 0.f, -2.f, 1.f};
 
-        m_scene = std::make_unique<Scene>(camera, std::vector<Light>(), std::vector<Entity> {Entity("test", model)});
+        m_scene = std::make_unique<Scene>(camera, std::vector<Light>(), std::vector<Entity> {Entity("test", model, transform)});
 
         m_renderer = std::make_unique<Renderer>(m_viewport.GetFramebuffer(), width, height);
     }
 
     void Application::Prepare() {}
 
-    void Application::Draw()
-    {
-        m_viewport.GetFramebuffer()->Bind();
-        m_renderer->Draw(m_scene.get());
-        m_viewport.GetFramebuffer()->Unbind();
-    }
+    void Application::Draw() { m_renderer->Draw(m_scene.get()); }
 
     void Application::ImGuiDraw()
     {
@@ -100,7 +103,7 @@ namespace gir
 
     void Application::OnWindowResize(int, int)
     {
-        unsigned width = m_viewport.GetFramebuffer()->GetTexture(0)->GetWidth();
+        unsigned width  = m_viewport.GetFramebuffer()->GetTexture(0)->GetWidth();
         unsigned height = m_viewport.GetFramebuffer()->GetTexture(0)->GetHeight();
 
         m_scene->GetCamera().SetWidth(width);

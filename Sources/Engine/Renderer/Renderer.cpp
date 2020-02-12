@@ -3,6 +3,31 @@
 #include "Engine/Manager/Manager.hpp"
 #include "Engine/Mesh/Mesh.hpp"
 
+#define GL_CHECK_ERROR()                                            \
+    {                                                               \
+        GLenum error;                                               \
+        while ((error = glGetError()) != GL_NO_ERROR)               \
+        {                                                           \
+            std::string errorMessage;                               \
+            switch (error)                                          \
+            {                                                       \
+                case GL_INVALID_ENUM:                               \
+                    errorMessage = "Invalid enum";                  \
+                    break;                                          \
+                case GL_INVALID_VALUE:                              \
+                    errorMessage = "Invalid value";                 \
+                    break;                                          \
+                case GL_INVALID_OPERATION:                          \
+                    errorMessage = "Invalid operation";             \
+                    break;                                          \
+                case GL_INVALID_FRAMEBUFFER_OPERATION:              \
+                    errorMessage = "Invalid framebuffer operation"; \
+                    break;                                          \
+            }                                                       \
+            Logger::Error(errorMessage);                            \
+        }                                                           \
+    }
+
 namespace gir
 {
     Renderer::Renderer(Framebuffer* defaultFramebuffer, unsigned width, unsigned height) :
@@ -17,18 +42,18 @@ namespace gir
     {
         // Creating screen quad
         std::vector<Vec3f> vertices = {
-            {0.5f, 0.5f, 0.0f},   // top right
-            {0.5f, -0.5f, 0.0f},  // bottom right
-            {-0.5f, -0.5f, 0.0f}, // bottom left
-            {-0.5f, 0.5f, 0.0f}   // top left
+            {1.f, 1.f, 0.0f},   // top right
+            {1.f, -1.f, 0.0f},  // bottom right
+            {-1.f, -1.f, 0.0f}, // bottom left
+            {-1.f, 1.f, 0.0f}   // top left
         };
 
         std::vector<unsigned> indices = {
+            1,
             0,
-            1,
-            3, // first Triangle
-            1,
+            2, // first Triangle
             2,
+            0,
             3 // second Triangle
         };
 
@@ -40,47 +65,39 @@ namespace gir
                                     std::move(indices),
                                     std::move(vertices),
                                     std::vector<Vec3f>(size),
-                                    std::move(textureCoordinates));
+                                    std::move(textureCoordinates),
+                                    std::vector<Vec3f>(size),
+                                    std::vector<Vec3f>(size));
 
         // Filling GBuffer with textures
         m_GBuffer.Bind();
 
-        m_GBuffer.AttachRenderbuffer(GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT);
-        m_GBuffer.Resize(width, height);
+        std::vector<GLuint> attachments {GL_COLOR_ATTACHMENT0,
+                                         GL_COLOR_ATTACHMENT1,
+                                         GL_COLOR_ATTACHMENT2,
+                                         GL_COLOR_ATTACHMENT3,
+                                         GL_COLOR_ATTACHMENT4};
 
-        std::vector<GLuint> attachments {GL_COLOR_ATTACHMENT2};
+        Texture2D* texture = Manager<Texture2D>::Add("Positions", GL_RGB32F, GL_RGB, GL_FLOAT);
+        m_GBuffer.AttachTexture(texture, attachments[0]);
 
-        Texture2D* texture; /* = Manager<Texture2D>::Add("Positions", GL_RGB32F, GL_FLOAT);
-         texture->Bind();
-         texture->Allocate(width, height);
-         texture->Unbind();
-         m_GBuffer.AttachTexture(texture, GL_COLOR_ATTACHMENT0);
+        texture = Manager<Texture2D>::Add("Normals", GL_RGB32F, GL_RGB, GL_FLOAT);
+        m_GBuffer.AttachTexture(texture, attachments[1]);
 
-         texture = Manager<Texture2D>::Add("Normals", GL_RGB32F, GL_FLOAT);
-         texture->Bind();
-         texture->Allocate(width, height);
-         texture->Unbind();
-         m_GBuffer.AttachTexture(texture, GL_COLOR_ATTACHMENT1);*/
+        texture = Manager<Texture2D>::Add("Diffuse colors", GL_RGB, GL_RGB, GL_UNSIGNED_BYTE);
+        m_GBuffer.AttachTexture(texture, attachments[2]);
 
-        texture = Manager<Texture2D>::Add("Diffuse colors", GL_RGB, GL_UNSIGNED_BYTE);
-        texture->Bind();
-        texture->Allocate(width, height);
-        texture->Unbind();
-        m_GBuffer.AttachTexture(texture, GL_COLOR_ATTACHMENT2);
+        texture = Manager<Texture2D>::Add("Specular colors", GL_RGB, GL_RGB, GL_UNSIGNED_BYTE);
+        m_GBuffer.AttachTexture(texture, attachments[3]);
 
-        /*texture = Manager<Texture2D>::Add("Specular colors", GL_RGB, GL_UNSIGNED_BYTE);
-        texture->Bind();
-        texture->Allocate(width, height);
-        texture->Unbind();
-        m_GBuffer.AttachTexture(texture, GL_COLOR_ATTACHMENT3);
-
-        texture = Manager<Texture2D>::Add("Specular parameters", GL_RG16F, GL_FLOAT);
-        texture->Bind();
-        texture->Allocate(width, height);
-        texture->Unbind();
-        m_GBuffer.AttachTexture(texture, GL_COLOR_ATTACHMENT4);*/
+        texture = Manager<Texture2D>::Add("Specular parameters", GL_RG16F, GL_RG, GL_FLOAT);
+        m_GBuffer.AttachTexture(texture, attachments[4]);
 
         glDrawBuffers(attachments.size(), attachments.data());
+
+        m_GBuffer.AttachRenderbuffer(GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT);
+
+        m_GBuffer.Resize(width, height);
 
         GIR_ASSERT(m_GBuffer.IsComplete(), "Incomplete GBuffer framebuffer");
 
@@ -100,12 +117,12 @@ namespace gir
                 auto* shader = m_shaderManager.GetShader(EShaderType::GBUFFER);
 
                 shader->Bind();
-                m_defaultFramebuffer->Unbind();
                 m_GBuffer.Bind();
 
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-                shader->SetUniform("vp", scene->GetCamera().GetProjectionMatrix() * scene->GetCamera().GetViewMatrix());
+                const auto& camera = scene->GetCamera();
+                shader->SetUniform("vp", camera.GetProjectionMatrix() * camera.GetViewMatrix());
 
                 for (const auto& entity : scene->GetEntities())
                 {
@@ -124,10 +141,13 @@ namespace gir
                     }
                 }
                 m_GBuffer.Unbind();
+
                 shader->Unbind();
 
                 shader = m_shaderManager.GetShader(EShaderType::DEBUG);
+
                 shader->Bind();
+
                 m_defaultFramebuffer->Bind();
                 glClear(GL_COLOR_BUFFER_BIT);
                 glDisable(GL_DEPTH_TEST);
@@ -135,9 +155,8 @@ namespace gir
                 auto* vao = m_quad->GetVertexArrayObject();
                 vao->Bind();
 
-                // const char* uniforms[5] = {"positions", "normals", "diffuseColor", "specularColor",
-                // "specularParameters"};
-                const char* uniforms[1] = {"diffuseColor"};
+                const char* uniforms[5] = {
+                    "positions", "normals", "diffuseColor", "specularColor", "specularParameters"};
 
                 for (int i = 0; i < m_GBuffer.TextureCount(); ++i)
                 {
@@ -150,7 +169,9 @@ namespace gir
                 for (int i = 0; i < m_GBuffer.TextureCount(); ++i) { m_GBuffer.GetTexture(i)->Unbind(); }
 
                 glEnable(GL_DEPTH_TEST);
+
                 vao->Unbind();
+                m_defaultFramebuffer->Unbind();
                 shader->Unbind();
             }
             break;
@@ -162,6 +183,7 @@ namespace gir
                 Logger::Error("Invalid render mode");
                 break;
         }
+        GL_CHECK_ERROR()
     }
 
     void Renderer::ResizeGBuffer(unsigned width, unsigned height) { m_GBuffer.Resize(width, height); }

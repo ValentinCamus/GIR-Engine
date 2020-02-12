@@ -7,18 +7,24 @@ namespace gir
                std::vector<unsigned> &&indices,
                std::vector<Vec3f> &&vertices,
                std::vector<Vec3f> &&normals,
-               std::vector<Vec2f> &&textureCoordinates) :
+               std::vector<Vec2f> &&textureCoordinates,
+               std::vector<Vec3f> &&tangents,
+               std::vector<Vec3f> &&bitangents) :
         Component(name),
         m_material(material),
         m_indices(std::move(indices)),
         m_vertices(std::move(vertices)),
         m_normals(std::move(normals)),
-        m_textureCoordinates(std::move(textureCoordinates))
+        m_textureCoordinates(std::move(textureCoordinates)),
+        m_tangents(std::move(tangents)),
+        m_bitangents(std::move(bitangents))
     {
         m_vao.Bind();
         m_vao.AddFloatBuffer(m_vertices, 3);
         m_vao.AddFloatBuffer(m_normals, 3);
         m_vao.AddFloatBuffer(m_textureCoordinates, 2);
+        m_vao.AddFloatBuffer(m_tangents, 3);
+        m_vao.AddFloatBuffer(m_bitangents, 3);
         m_vao.AddIndexBuffer(m_indices);
         m_vao.Unbind();
     }
@@ -28,10 +34,6 @@ namespace gir
     unsigned Mesh::Size() const { return static_cast<unsigned>(m_indices.size()); }
 
     const std::vector<unsigned> &Mesh::GetIndices() const { return m_indices; }
-
-    const std::vector<Vec3f> &Mesh::GetVertices() const { return m_vertices; }
-
-    const std::vector<Vec3f> &Mesh::GetNormals() const { return m_normals; }
 
     const std::vector<Vec2f> &Mesh::GetTextureCoordinates() const { return m_textureCoordinates; }
 

@@ -10,8 +10,13 @@ uniform sampler2D diffuseColor;
 uniform sampler2D specularColor;
 uniform sampler2D specularParameters;
 
-
 void main()
 {
-    fragColor = vec4(texture(diffuseColor, textureCoordinates).xyz, 1.0);
+    // Just so none of the uniform is optimized away
+    vec3 color = vec3(texture(specularParameters, textureCoordinates).xy, 0.f);
+    fragColor = vec4(normalize(texture(positions, textureCoordinates).xyz 
+                    + texture(normals, textureCoordinates).xyz 
+                    + texture(diffuseColor, textureCoordinates).xyz 
+                    + texture(specularColor, textureCoordinates).xyz 
+                    + color), 1.0);
 }
