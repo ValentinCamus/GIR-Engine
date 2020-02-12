@@ -32,37 +32,35 @@
 namespace gir
 {
     Renderer::Renderer(Framebuffer* defaultFramebuffer, unsigned width, unsigned height) :
-            m_shaderManager({{EShaderType::DEBUG,
-                                     {{GL_VERTEX_SHADER, PROJECT_SOURCE_DIR "/Shaders/Debug.vs.glsl"},
-                                             {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR "/Shaders/Debug.fs.glsl"}}},
-                             {EShaderType::GBUFFER,
-                                     {{GL_VERTEX_SHADER, PROJECT_SOURCE_DIR "/Shaders/GBuffer.vs.glsl"},
-                                             {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR "/Shaders/GBuffer.fs.glsl"}}}}),
-            m_defaultFramebuffer(defaultFramebuffer),
-            m_GBuffer("GBuffer")
+        m_shaderManager({{EShaderType::DEBUG,
+                          {{GL_VERTEX_SHADER, PROJECT_SOURCE_DIR "/Shaders/Debug.vs.glsl"},
+                           {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR "/Shaders/Debug.fs.glsl"}}},
+                         {EShaderType::GBUFFER,
+                          {{GL_VERTEX_SHADER, PROJECT_SOURCE_DIR "/Shaders/GBuffer.vs.glsl"},
+                           {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR "/Shaders/GBuffer.fs.glsl"}}}}),
+        m_defaultFramebuffer(defaultFramebuffer),
+        m_GBuffer("GBuffer")
     {
         // Creating screen quad
         std::vector<Mesh::Vertex> vertices = {
-                {{ 1.f,  1.f, 0.0f}, Vec3f(), {1.f, 1.f}, Vec3f(), Vec3f()},
-                {{ 1.f, -1.f, 0.0f}, Vec3f(), {1.f, 0.f}, Vec3f(), Vec3f()},
-                {{-1.f, -1.f, 0.0f}, Vec3f(), {0.f, 0.f}, Vec3f(), Vec3f()},
-                {{-1.f,  1.f, 0.0f}, Vec3f(), {0.f, 1.f}, Vec3f(), Vec3f()},
+            {{1.f, 1.f, 0.0f}, Vec3f(), {1.f, 1.f}, Vec3f(), Vec3f()},
+            {{1.f, -1.f, 0.0f}, Vec3f(), {1.f, 0.f}, Vec3f(), Vec3f()},
+            {{-1.f, -1.f, 0.0f}, Vec3f(), {0.f, 0.f}, Vec3f(), Vec3f()},
+            {{-1.f, 1.f, 0.0f}, Vec3f(), {0.f, 1.f}, Vec3f(), Vec3f()},
         };
 
-        std::vector<unsigned> indices = {1, 0, 2, 2, 0, 3 };
+        std::vector<unsigned> indices = {1, 0, 2, 2, 0, 3};
 
-        m_quad = Manager<Mesh>::Add("Deferred shading quad", std::move(vertices), std::move(indices));
+        m_quad = std::make_unique<Mesh>("Deferred shading quad", std::move(vertices), std::move(indices));
 
         // Filling GBuffer with textures
         m_GBuffer.Bind();
 
-        std::vector<GLuint> attachments {
-            GL_COLOR_ATTACHMENT0,
-            GL_COLOR_ATTACHMENT1,
-            GL_COLOR_ATTACHMENT2,
-            GL_COLOR_ATTACHMENT3,
-            GL_COLOR_ATTACHMENT4
-        };
+        std::vector<GLuint> attachments {GL_COLOR_ATTACHMENT0,
+                                         GL_COLOR_ATTACHMENT1,
+                                         GL_COLOR_ATTACHMENT2,
+                                         GL_COLOR_ATTACHMENT3,
+                                         GL_COLOR_ATTACHMENT4};
 
         Texture2D* texture = Manager<Texture2D>::Add("Positions", GL_RGB32F, GL_RGB, GL_FLOAT);
         m_GBuffer.AttachTexture(texture, attachments[0]);
@@ -115,11 +113,15 @@ namespace gir
                     shader->SetUniform("model", entity.GetTransform());
                     auto* model = entity.GetModel();
 
-                    for (const auto& element : model->GetElements())
+                    for (int i = 0; i < static_cast<int>(model->MaterialCount()); ++i)
                     {
-                        element.mesh->GetVertexArrayObject()->Bind();
-                        glDrawElements(GL_TRIANGLES, element.mesh->GetIndices().size(), GL_UNSIGNED_INT, nullptr);
-                        element.mesh->GetVertexArrayObject()->Unbind();
+                        for (const auto& mesh : model->GetMeshes(i))
+                        {
+                            auto* vao = mesh->GetVertexArrayObject();
+                            vao->Bind();
+                            glDrawElements(GL_TRIANGLES, mesh->Size(), GL_UNSIGNED_INT, 0);
+                            vao->Unbind();
+                        }
                     }
                 }
                 m_GBuffer.Unbind();
@@ -138,7 +140,7 @@ namespace gir
                 vao->Bind();
 
                 const char* uniforms[5] = {
-                        "positions", "normals", "diffuseColor", "specularColor", "specularParameters"};
+                    "positions", "normals", "diffuseColor", "specularColor", "specularParameters"};
 
                 for (int i = 0; i < static_cast<int>(m_GBuffer.TextureCount()); ++i)
                 {
@@ -148,7 +150,8 @@ namespace gir
 
                 glDrawElements(GL_TRIANGLES, m_quad->GetIndices().size(), GL_UNSIGNED_INT, nullptr);
 
-                for (int i = 0; i < static_cast<int>(m_GBuffer.TextureCount()); ++i) { m_GBuffer.GetTexture(i)->Unbind(); }
+                for (int i = 0; i < static_cast<int>(m_GBuffer.TextureCount()); ++i)
+                { m_GBuffer.GetTexture(i)->Unbind(); }
 
                 glEnable(GL_DEPTH_TEST);
 

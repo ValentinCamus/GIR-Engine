@@ -4,6 +4,10 @@ find_package(Git REQUIRED)
 
 include(CleanCppExtensions)
 
+set(GLM_TEST_ENABLE OFF CACHE BOOL "Disable GLM unit tests build.")
+set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "Disable Assimp unit tests build.")
+set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "Disable Assimp applications build.")
+
 #------------------------------------------------------------------------------
 # Convenience update all, dependencies are added in ExternalHeaderOnly_Add
 add_custom_target(update COMMENT "Updated all external projects")
@@ -52,8 +56,3 @@ target_link_libraries (imgui glfw)
 # Assimp
 ExternalDownloadNowGit(assimp "https://github.com/assimp/assimp.git" "origin/master")
 add_subdirectory(assimp/src/assimp_download)
-
-
-
-
-

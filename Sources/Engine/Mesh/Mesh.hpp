@@ -28,9 +28,11 @@ namespace gir
 
         inline const std::vector<Vertex> &GetVertices() const { return m_vertices; }
 
+        inline unsigned Size() const { return m_indices.size(); }
+
         inline VertexArrayObject &GetVAO() { return m_vao; }
 
-        inline VertexArrayObject* GetVertexArrayObject() const { return &m_vao; }
+        inline VertexArrayObject *GetVertexArrayObject() const { return &m_vao; }
 
     private:
         std::vector<unsigned> m_indices;

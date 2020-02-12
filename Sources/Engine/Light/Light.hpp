@@ -5,9 +5,15 @@
 
 namespace gir
 {
-    // TODO: do according to the GLSL struct equivalent
     class Light : public SceneComponent
     {
+    public:
+        Light(const std::string& name);
+
+        virtual ~Light();
+
+    private:
+
     };
 
 } // namespace gir

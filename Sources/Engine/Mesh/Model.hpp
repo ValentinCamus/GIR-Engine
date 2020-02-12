@@ -7,37 +7,23 @@
 namespace gir
 {
     using MaterialMeshes = std::pair<Material *, std::vector<Mesh *>>;
+    using Element = std::pair<Material *, Mesh*>;
 
     class Model : public Component
     {
     public:
-        struct Element
-        {
-            Mesh* mesh = nullptr;
-            Material* material = nullptr;
-        };
+        Model(const std::string &name);
 
-    public:
-        explicit Model(const std::string& name);
+        void AddMesh(Element element);
 
-        inline void AddMaterial(unsigned index, Material* material)
-        {
-            GIR_ASSERT(index < m_elements.size(), "Invalid element index");
-            m_elements[index].material = material;
-        }
+        unsigned MaterialCount() const;
 
-        inline Material* GetMaterial(unsigned index) const
-        {
-            GIR_ASSERT(index < m_elements.size(), "Invalid element index");
-            return m_elements[index].material;
-        }
+        Material *GetMaterial(unsigned i) const;
 
-        inline const std::vector<Element>& GetElements() const { return m_elements; }
-
-        inline void AddElement(const Model::Element& element) { m_elements.push_back(element); }
+        const std::vector<Mesh *> GetMeshes(unsigned i) const;
 
     private:
-        std::vector<Element> m_elements = {};
+        std::vector<MaterialMeshes> m_meshesByMaterial;
     };
 
 } // namespace gir

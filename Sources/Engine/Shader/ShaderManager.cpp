@@ -8,7 +8,7 @@ namespace gir
     {
         for (const auto &source : sources)
         {
-            m_shaders[static_cast<int>(source.first)] = std::move(Shader(source.second));
+            m_shaders[static_cast<int>(source.first)] = Shader(source.second);
         }
     }
 

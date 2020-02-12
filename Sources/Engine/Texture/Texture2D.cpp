@@ -22,10 +22,10 @@ namespace gir
     }
 
     Texture2D::Texture2D(const std::string& name, int format, int type) :
-            OpenGLComponent {name},
-            m_format(format),
-            m_internalFormat(format),
-            m_type(type)
+        OpenGLComponent {name},
+        m_internalFormat(format),
+        m_format(format),
+        m_type(type)
     {
         glGenTextures(1, &m_id);
 
@@ -48,7 +48,7 @@ namespace gir
         m_width  = width;
         m_height = height;
 
-        glTexImage2D(GL_TEXTURE_2D, 0, m_format, width, height, 0, m_internalFormat, m_type, pixels);
+        glTexImage2D(GL_TEXTURE_2D, 0, m_internalFormat, width, height, 0, m_format, m_type, pixels);
     }
 
     void Texture2D::Bind()

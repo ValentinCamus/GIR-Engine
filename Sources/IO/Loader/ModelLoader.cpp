@@ -1,18 +1,24 @@
 #include "ModelLoader.hpp"
+#include <Engine/Manager/Manager.hpp>
 
 namespace gir
 {
-    Model* ModelLoader::Load(const std::string &filepath)
+    Model* ModelLoader::Load(const std::string& filepath)
     {
+        Manager<Texture2D>::Clear();
+        Manager<Material>::Clear();
+        Manager<Mesh>::Clear();
+        Manager<Model>::Clear();
+
         std::string name = filepath.substr(filepath.find_last_of('/') + 1);
-        auto* model = new Model(name);
+        auto* model      = Manager<Model>::Add(name);
 
         // Read file via Assimp
         Assimp::Importer importer;
-        unsigned int flags = aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace;
+        unsigned int flags   = aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace;
         const aiScene* scene = importer.ReadFile(filepath, flags);
 
-        if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+        if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
         {
             Logger::Error("Assimp: {}", importer.GetErrorString());
             return nullptr;
@@ -23,31 +29,28 @@ namespace gir
         return model;
     }
 
-    void ModelLoader::ProcessAssimpNode(aiNode *node, const aiScene *scene, Model* model)
+    void ModelLoader::ProcessAssimpNode(aiNode* node, const aiScene* scene, Model* model)
     {
         // Process each mesh located at the current node
-        for(unsigned int i = 0; i < node->mNumMeshes; ++i)
+        for (unsigned int i = 0; i < node->mNumMeshes; ++i)
         {
             // The node object only contains indices to index the actual objects in the scene.
             // The scene contains all the data, node is just to keep stuff organized (like relations between nodes).
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-            model->AddElement(ProcessAssimpMesh(mesh, scene, model));
+            model->AddMesh(ProcessAssimpMesh(mesh, scene, model));
         }
         // after we've processed all of the meshes (if any) we then recursively process each of the children nodes
-        for(unsigned int i = 0; i < node->mNumChildren; ++i)
-        {
-            ProcessAssimpNode(node->mChildren[i], scene, model);
-        }
+        for (unsigned int i = 0; i < node->mNumChildren; ++i) { ProcessAssimpNode(node->mChildren[i], scene, model); }
     }
 
-    Model::Element ModelLoader::ProcessAssimpMesh(aiMesh *mesh, const aiScene *scene, Model* model)
+    Element ModelLoader::ProcessAssimpMesh(aiMesh* mesh, const aiScene* scene, Model* model)
     {
         // Data to fill
         std::vector<unsigned> indices;
         std::vector<Mesh::Vertex> vertices;
 
         // Walk through each of the mesh's vertices
-        for(unsigned int i = 0; i < mesh->mNumVertices; ++i)
+        for (unsigned int i = 0; i < mesh->mNumVertices; ++i)
         {
             // Positions
             Vec3f vertex;
@@ -63,7 +66,7 @@ namespace gir
 
             // Texture coordinates
             Vec2f texCoord;
-            if(mesh->mTextureCoords[0]) // Does the mesh contain texture coordinates?
+            if (mesh->mTextureCoords[0]) // Does the mesh contain texture coordinates?
             {
                 // A vertex can contain up to 8 different texture coordinates.
                 // We thus make the assumption that we won't use models where a vertex
@@ -71,7 +74,8 @@ namespace gir
                 texCoord.x = mesh->mTextureCoords[0][i].x;
                 texCoord.y = mesh->mTextureCoords[0][i].y;
             }
-            else texCoord = {0.0f, 0.0f};
+            else
+                texCoord = {0.0f, 0.0f};
 
             // tangent
             Vec3f tangent;
@@ -90,26 +94,23 @@ namespace gir
 
         // Now wak through each of the mesh's faces (a face is a mesh its triangle)
         // and retrieve the corresponding vertex indices.
-        for(unsigned int i = 0; i < mesh->mNumFaces; ++i)
+        for (unsigned int i = 0; i < mesh->mNumFaces; ++i)
         {
             aiFace face = mesh->mFaces[i];
             // Retrieve all indices of the face and store them in the indices vector
-            for(unsigned int j = 0; j < face.mNumIndices; ++j)
-            {
-                indices.push_back(face.mIndices[j]);
-            }
+            for (unsigned int j = 0; j < face.mNumIndices; ++j) { indices.push_back(face.mIndices[j]); }
         }
 
         Material* material = LoadMaterial(mesh, scene, model);
-        std::string name = model->GetName() + "_Mesh" + std::to_string(model->GetElements().size());
+        std::string name   = model->GetName() + "_Mesh" + std::to_string(model->MaterialCount());
 
-        return {new Mesh(name, vertices, indices), material };
+        return {material, Manager<Mesh>::Add(name, vertices, indices)};
     }
 
-    Material *ModelLoader::LoadMaterial(aiMesh *mesh, const aiScene *scene, Model* model)
+    Material* ModelLoader::LoadMaterial(aiMesh* mesh, const aiScene* scene, Model* model)
     {
-        std::string name = model->GetName() + "_Mat" + std::to_string(model->GetElements().size());
-        auto* material = new Material(name);
+        std::string name  = model->GetName() + "_Mat" + std::to_string(model->MaterialCount());
+        auto* material    = Manager<Material>::Add(name);
         aiMaterial* aiMat = scene->mMaterials[mesh->mMaterialIndex];
 
         // 1. diffuse maps
@@ -127,11 +128,11 @@ namespace gir
     }
 
     // Checks all material textures of a given type and loads the textures if they're not loaded yet.
-    std::vector<Texture2D*> ModelLoader::LoadMaterialTextures(aiMaterial *mat, aiTextureType type)
+    std::vector<Texture2D*> ModelLoader::LoadMaterialTextures(aiMaterial* mat, aiTextureType type)
     {
         std::vector<Texture2D*> textures;
 
-        for(unsigned int i = 0; i < mat->GetTextureCount(type); ++i)
+        for (unsigned int i = 0; i < mat->GetTextureCount(type); ++i)
         {
             aiString filepath;
             mat->GetTexture(type, i, &filepath);
@@ -141,4 +142,4 @@ namespace gir
         }
         return textures;
     }
-}
+} // namespace gir

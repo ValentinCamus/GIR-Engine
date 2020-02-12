@@ -1,4 +1,5 @@
 #include "TextureLoader.hpp"
+#include <Engine/Manager/Manager.hpp>
 
 #include <stb_image.h>
 
@@ -16,7 +17,7 @@ namespace gir
         const unsigned char* pixels = stbi_load(cPath, &width, &height, &nChannels, 0);
         GIR_ASSERT(pixels, "TextureLoader::Load: Image not found");
 
-        auto* texture = new Texture2D(filename, GetFormat(nChannels), GL_UNSIGNED_BYTE);
+        auto* texture = Manager<Texture2D>::Add(filename, GetFormat(nChannels), GL_UNSIGNED_BYTE);
         texture->Bind(0);
         texture->Allocate(width, height, pixels);
         texture->Unbind();

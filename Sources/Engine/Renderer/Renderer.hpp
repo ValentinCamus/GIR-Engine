@@ -33,7 +33,7 @@ namespace gir
 
         Framebuffer m_GBuffer;
 
-        Mesh *m_quad = nullptr;
+        std::unique_ptr<Mesh> m_quad = nullptr;
 
         RenderMode m_renderMode = RenderMode::DEBUG;
     };
