@@ -12,7 +12,11 @@ namespace gir
         static float nearZ;
 
     public:
-        Camera(const std::string &name, const Mat4f &transform, unsigned width, unsigned height, float vfov = PI / 3);
+        Camera(const std::string &name,
+               const Mat4f &transform,
+               unsigned width,
+               unsigned height,
+               float vfov = PI / 3);
 
         ~Camera() override = default;
 
@@ -20,7 +24,7 @@ namespace gir
 
         inline unsigned GetHeight() const { return m_height; }
 
-        inline float GetVerticalFOW() const { return m_vfov; }
+        inline float GetVerticalFOV() const { return m_vfov; }
 
         void SetWidth(unsigned width);
 
@@ -36,7 +40,7 @@ namespace gir
         void UpdateProjection() const;
 
     private:
-        mutable Mat4f m_projection;
+        mutable Mat4f m_projection = Mat4f(1.0f);
 
         mutable bool m_isProjectionDirty = false;
 

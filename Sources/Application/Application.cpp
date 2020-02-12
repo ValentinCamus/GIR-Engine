@@ -31,13 +31,18 @@ namespace gir
 
         while (m_isRunning)
         {
+            // Per-frame time logic
+            auto currentTime = static_cast<float>(glfwGetTime());
+            float deltaTime = m_time - currentTime;
+            m_time = currentTime;
+
             m_window.PollEvents();
 
-            Prepare();
-            Draw();
+            Prepare(deltaTime);
+            Draw(deltaTime);
 
             m_gui.BeginFrame();
-            ImGuiDraw();
+            ImGuiDraw(deltaTime);
             m_gui.EndFrame();
 
             m_window.SwapBuffers();
@@ -47,13 +52,10 @@ namespace gir
         m_window.Shutdown();
     }
 
-    void Application::Stop() { m_isRunning = false; }
-
-    // timing
-    float deltaTime = 0.0f;
-    float lastFrame = 0.0f;
-
-    // End Debug =======================================================================================================
+    void Application::Stop()
+    {
+        m_isRunning = false;
+    }
 
     void Application::Setup()
     {
@@ -75,30 +77,59 @@ namespace gir
         m_renderer = std::make_unique<Renderer>(m_viewport.GetFramebuffer(), width, height);
     }
 
-    void Application::Prepare() {}
+    void Application::Prepare(float deltaTime)
+    {
+        m_cameraController.SetCamera(&m_scene->GetCamera());
 
-    void Application::Draw() { m_renderer->Draw(m_scene.get()); }
+        if (m_input.IsKeyPressed(GLFW_KEY_W)) m_cameraController.MoveForward(deltaTime);
+        if (m_input.IsKeyPressed(GLFW_KEY_S)) m_cameraController.MoveBackward(deltaTime);
+        if (m_input.IsKeyPressed(GLFW_KEY_D)) m_cameraController.MoveRight(deltaTime);
+        if (m_input.IsKeyPressed(GLFW_KEY_A)) m_cameraController.MoveLeft(deltaTime);
+        if (m_input.IsKeyPressed(GLFW_KEY_Q)) m_cameraController.MoveUp(deltaTime);
+        if (m_input.IsKeyPressed(GLFW_KEY_E)) m_cameraController.MoveDown(deltaTime);
+    }
 
-    void Application::ImGuiDraw()
+    void Application::Draw(float deltaTime)
+    {
+        unsigned viewportWidth  = m_viewport.GetFramebuffer()->GetTexture(0)->GetWidth();
+        unsigned viewportHeight = m_viewport.GetFramebuffer()->GetTexture(0)->GetHeight();
+
+        m_scene->GetCamera().SetWidth(viewportWidth);
+        m_scene->GetCamera().SetHeight(viewportHeight);
+
+        m_renderer->ResizeGBuffer(viewportWidth, viewportHeight);
+
+        m_renderer->Draw(m_scene.get());
+    }
+
+    void Application::ImGuiDraw(float deltaTime)
     {
         m_viewport.Draw();
         m_lightingWidget.Draw();
         m_statsWidget.Draw();
     }
 
-    void Application::OnWindowClosed() { Stop(); }
-
-    void Application::OnWindowResize(int width, int height)
+    void Application::OnWindowClosed()
     {
-        unsigned viewportWidth  = m_viewport.GetFramebuffer()->GetTexture(0)->GetWidth();
-        unsigned viewportHeight = m_viewport.GetFramebuffer()->GetTexture(0)->GetHeight();
+        Stop();
+    }
 
-        Logger::Info(viewportWidth);
-        Logger::Info(viewportHeight);
-        m_scene->GetCamera().SetWidth(viewportWidth);
-        m_scene->GetCamera().SetHeight(viewportHeight);
+    void Application::OnMouseMoved(double xPos, double yPos)
+    {
+        if (m_scene)
+        {
+            m_cameraController.SetCamera(&m_scene->GetCamera());
+            m_cameraController.LookAt(static_cast<float>(xPos), static_cast<float>(yPos));
+        }
+    }
 
-        m_renderer->ResizeGBuffer(viewportWidth, viewportHeight);
+    void Application::OnMouseScrolled(double xOffset, double yOffset)
+    {
+        if (m_scene)
+        {
+            m_cameraController.SetCamera(&m_scene->GetCamera());
+            m_cameraController.Zoom(static_cast<float>(yOffset));
+        }
     }
 
 } // namespace gir
