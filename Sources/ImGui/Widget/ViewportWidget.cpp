@@ -32,11 +32,10 @@ namespace gir
             return;
         }
 
-        if (ShouldResizeFramebuffer()) { ResizeFramebuffer(); }
-        else
-        {
-            DrawFramebuffer();
-        }
+        if (ShouldResizeFramebuffer()) ResizeFramebuffer();
+        else DrawFramebuffer();
+
+
 
         ImGui::End();
     }

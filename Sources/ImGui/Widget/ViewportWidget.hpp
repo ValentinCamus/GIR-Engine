@@ -20,9 +20,19 @@ namespace gir
 
         void Draw() override;
 
+        /// @return: The viewport's framebuffer.
         inline Framebuffer* GetFramebuffer() { return m_framebuffer; }
 
+        /// @return: The viewport's width.
+        /// @note: The viewport's dimension is different from the application's window dimension.
+        inline unsigned GetWidth() const { return m_framebuffer->GetTexture(0)->GetWidth(); }
+
+        /// @return: The viewport's height.
+        /// @note: The viewport's dimension is different from the application's window dimension.
+        inline unsigned GetHeight() const { return m_framebuffer->GetTexture(0)->GetHeight(); }
+
     private:
+        /// @return: The framebuffer dimension.
         ImVec2 GetFramebufferSize() const;
 
         /// @return: true if the size of the window and the framebuffer doesn't match.
@@ -31,6 +41,7 @@ namespace gir
         /// Resize the framebuffer with the current window size.
         void ResizeFramebuffer();
 
+        /// Draw the framebuffer's texture at the attachment: GL_COLOR_ATTACHMENT0.
         void DrawFramebuffer();
 
     private:

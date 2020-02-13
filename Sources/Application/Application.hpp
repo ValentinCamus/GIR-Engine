@@ -63,26 +63,30 @@ namespace gir
         void OnMouseScrolled(double xOffset, double yOffset) override;
 
     private:
+        /// Is the application running ?
         bool m_isRunning = false;
 
+        /// This timer measures time elapsed since GLFW was initialized.
         float m_time = 0.0f;
 
-        Input m_input;
+        std::unique_ptr<Input> m_input = nullptr;
 
-        CameraController m_cameraController;
+        std::unique_ptr<CameraController> m_cameraController = nullptr;
+
+        /// Contains all the scene's information.
+        std::unique_ptr<Scene> m_scene = nullptr;
+
+        std::unique_ptr<Renderer> m_renderer = nullptr;
 
         Window* m_window = nullptr;
 
         ImGuiController* m_gui = nullptr;
 
+        //
         ViewportWidget* m_viewport = nullptr;
 
         StatsWidget* m_statsWidget = nullptr;
 
         LightingWidget* m_lightingWidget = nullptr;
-
-        std::unique_ptr<Scene> m_scene = nullptr;
-
-        std::unique_ptr<Renderer> m_renderer = nullptr;
     };
 } // namespace gir

@@ -20,9 +20,6 @@ namespace gir
 
         // Initialize the GUI
         m_gui = new ImGuiController(m_window->Get());
-
-        // Link the input controller with the window system.
-        m_input = Input(m_window->Get());
     }
 
     Application::~Application()
@@ -66,6 +63,10 @@ namespace gir
 
     void Application::Setup()
     {
+        // Link the input controller with the window system.
+        m_input = std::make_unique<Input>(m_window->Get());
+
+        // Create all the application widgets.
         m_statsWidget = new StatsWidget("Statistics");
         m_lightingWidget = new LightingWidget("Lighting");
         m_viewport = new ViewportWidget("Viewport", 500, 500);
@@ -75,46 +76,43 @@ namespace gir
         unsigned width  = m_viewport->GetFramebuffer()->GetTexture(0)->GetWidth();
         unsigned height = m_viewport->GetFramebuffer()->GetTexture(0)->GetHeight();
 
-        Camera camera("Main camera", Mat4f(1.f), width, height);
-
         Mat4f transform(1.f);
         transform[3] = {0.f, -7.5f, -20.f, 1.f};
-
+        
         m_scene = std::make_unique<Scene>(
-            camera,
+            Camera("MainCamera", Mat4f(1.f), width, height),
             std::vector<Light*>(),
             std::vector<Entity> {
-                Entity("test", nanoSuit, transform)
+                Entity("NanoSuit", nanoSuit, transform)
             }
         );
 
-        m_renderer = std::make_unique<Renderer>(m_viewport->GetFramebuffer(), width, height);
+        m_cameraController = std::make_unique<CameraController>(&m_scene->GetCamera());
+        m_renderer = std::make_unique<Renderer>(width, height);
     }
 
     void Application::Prepare(float deltaTime)
     {
-        m_cameraController.SetCamera(&m_scene->GetCamera());
+        // Step 1: Camera's inputs
+        if (m_input->IsKeyPressed(GLFW_KEY_W)) m_cameraController->MoveForward(deltaTime);
+        if (m_input->IsKeyPressed(GLFW_KEY_S)) m_cameraController->MoveBackward(deltaTime);
+        if (m_input->IsKeyPressed(GLFW_KEY_D)) m_cameraController->MoveRight(deltaTime);
+        if (m_input->IsKeyPressed(GLFW_KEY_A)) m_cameraController->MoveLeft(deltaTime);
+        if (m_input->IsKeyPressed(GLFW_KEY_Q)) m_cameraController->MoveUp(deltaTime);
+        if (m_input->IsKeyPressed(GLFW_KEY_E)) m_cameraController->MoveDown(deltaTime);
 
-        if (m_input.IsKeyPressed(GLFW_KEY_W)) m_cameraController.MoveForward(deltaTime);
-        if (m_input.IsKeyPressed(GLFW_KEY_S)) m_cameraController.MoveBackward(deltaTime);
-        if (m_input.IsKeyPressed(GLFW_KEY_D)) m_cameraController.MoveRight(deltaTime);
-        if (m_input.IsKeyPressed(GLFW_KEY_A)) m_cameraController.MoveLeft(deltaTime);
-        if (m_input.IsKeyPressed(GLFW_KEY_Q)) m_cameraController.MoveUp(deltaTime);
-        if (m_input.IsKeyPressed(GLFW_KEY_E)) m_cameraController.MoveDown(deltaTime);
 
-        if (m_input.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_1))
+        if (m_input->IsMouseButtonPressed(GLFW_MOUSE_BUTTON_1))
         {
-            m_cameraController.SetMousePos(m_input.GetMouseX(), m_input.GetMouseY());
+            m_cameraController->SetMousePos(m_input->GetMouseX(), m_input->GetMouseY());
         }
 
-    }
-
-    void Application::Draw(float deltaTime)
-    {
-        unsigned viewportWidth  = m_viewport->GetFramebuffer()->GetTexture(0)->GetWidth();
-        unsigned viewportHeight = m_viewport->GetFramebuffer()->GetTexture(0)->GetHeight();
-
+        // Step 2: The camera and renderer's GBuffer dimensions depends on the viewport and not the window.
         Camera& camera = m_scene->GetCamera();
+
+        unsigned viewportWidth  = m_viewport->GetWidth();
+        unsigned viewportHeight = m_viewport->GetHeight();
+
         if (camera.GetWidth() != viewportWidth || camera.GetHeight() != viewportHeight)
         {
             camera.SetWidth(viewportWidth);
@@ -122,8 +120,11 @@ namespace gir
 
             m_renderer->ResizeGBuffer(viewportWidth, viewportHeight);
         }
+    }
 
-        m_renderer->Draw(m_scene.get());
+    void Application::Draw(float deltaTime)
+    {
+        m_renderer->Draw(m_scene.get(), m_viewport->GetFramebuffer());
     }
 
     void Application::ImGuiDraw(float deltaTime)
@@ -133,15 +134,18 @@ namespace gir
         m_statsWidget->Draw();
     }
 
-    void Application::OnWindowClosed() { Stop(); }
+    void Application::OnWindowClosed()
+    {
+        Stop();
+    }
 
     void Application::OnMouseMoved(double xPos, double yPos)
     {
         if (m_scene)
         {
-            if (m_input.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_1))
+            if (m_input->IsMouseButtonPressed(GLFW_MOUSE_BUTTON_1))
             {
-                m_cameraController.LookAt(static_cast<float>(xPos), static_cast<float>(yPos));
+                m_cameraController->LookAt(static_cast<float>(xPos), static_cast<float>(yPos));
             }
         }
     }
@@ -150,8 +154,7 @@ namespace gir
     {
         if (m_scene)
         {
-            m_cameraController.SetCamera(&m_scene->GetCamera());
-            m_cameraController.Zoom(static_cast<float>(yOffset));
+            m_cameraController->Zoom(static_cast<float>(yOffset));
         }
     }
 

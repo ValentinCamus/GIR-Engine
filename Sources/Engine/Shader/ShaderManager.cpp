@@ -2,8 +2,7 @@
 
 namespace gir
 {
-    ShaderManager::ShaderManager(const std::unordered_map<EShaderType,
-                                                          std::unordered_map<GLenum, std::string>> &sources) :
+    ShaderManager::ShaderManager(const std::unordered_map<EShaderType, ShaderType> &sources) :
         m_shaders(static_cast<int>(EShaderType::COUNT))
     {
         for (const auto &source : sources)

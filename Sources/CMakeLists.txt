@@ -22,7 +22,7 @@ set(ICON_RESOURCE "")
 if (WIN32) #windows icon resource file, provided from /Packaging directory
     set(ICON_RESOURCE "${PROJECT_BINARY_DIR}/GIR_Engine.icon.rc")
 elseif (APPLE) #osx icon ressource file, provided from /Packaging directory
-    set(ICON_RESOURCE "${PROJECT_SOURCE_DIR}/Packaging/GIR_Engine.icns" IO/Loader/TextureLoader.cpp IO/Loader/TextureLoader.hpp IO/FileSystem/FileSystem.hpp IO/Input/Input.cpp IO/Input/Input.hpp IO/Loader/ModelLoader.cpp IO/Loader/ModelLoader.hpp Engine/Camera/CameraDebug.hpp Engine/Camera/CameraController.cpp Engine/Camera/CameraController.hpp)
+    set(ICON_RESOURCE "${PROJECT_SOURCE_DIR}/Packaging/GIR_Engine.icns" IO/Loader/TextureLoader.cpp IO/Loader/TextureLoader.hpp IO/FileSystem/FileSystem.hpp IO/Input/Input.cpp IO/Input/Input.hpp IO/Loader/ModelLoader.cpp IO/Loader/ModelLoader.hpp Engine/Camera/CameraDebug.hpp Engine/Camera/CameraController.cpp Engine/Camera/CameraController.hpp Engine/Renderer/Quad.hpp)
 endif ()
 
 file(GLOB_RECURSE ENGINE_SRCS "*.cpp" "*.hpp" ".inl")
