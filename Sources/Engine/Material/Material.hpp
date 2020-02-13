@@ -39,7 +39,7 @@ namespace gir
         // Also it could most likely be cleaner
         inline void SetUniforms(int slot, Shader* shader)
         {
-            for (int i = 0; i < m_attributes.size(); ++i)
+            for (int i = 0; i < static_cast<int>(m_attributes.size()); ++i)
             {
                 Attribute attr = m_attributes[i];
                 if (attr.texture) attr.texture->Bind(slot + i);
