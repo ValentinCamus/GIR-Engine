@@ -6,14 +6,10 @@ layout (location = 0) out vec4 fragColor;
 
 uniform sampler2D positions;
 uniform sampler2D normals;
-uniform sampler2D diffuseColor;
-uniform sampler2D specularColor;
+uniform sampler2D albedo;
+uniform sampler2D metalnessRoughnessAlpha;
 
 void main()
 {
-    // Just so none of the uniform is optimized away
-    fragColor = vec4(normalize(texture(positions, textureCoordinates).xyz
-                    + texture(normals, textureCoordinates).xyz
-                    + texture(diffuseColor, textureCoordinates).xyz
-                    + texture(specularColor, textureCoordinates).xyz), 1.0);
+    fragColor = vec4(texture(albedo, textureCoordinates).xyz, 1.0);
 }

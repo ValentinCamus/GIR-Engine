@@ -8,43 +8,43 @@ layout (location = 4) in vec3 bitangent;
 
 layout (location = 0) out vec3 outPosition;
 layout (location = 1) out vec3 outNormal;
-layout (location = 2) out vec3 outDiffuseColor;
-layout (location = 3) out vec3 outSpecularColor;
+layout (location = 2) out vec3 outAlbedo;
+layout (location = 3) out vec3 outMetalnessRoughnessAlpha;
 
 
 struct Material {
-    bool hasNormalTexture;
-    bool hasKdTexture;
-    bool hasKsTexture;
-    bool hasAlphaTexture;
+    bool hasNormalMap;
+    bool hasAlbedoMap;
+    bool hasMetalnessMap;
+    bool hasRoughnessMap;
+    bool hasAlphaMap;
 
-    sampler2D normalTexture;
-    sampler2D kdTexture;
-    sampler2D ksTexture;
-    sampler2D alphaTexture;
-
-    vec3 kd;
-    vec3 ks;
-    float ns;
-    float nsStrength;
+    sampler2D normalMap;
+    sampler2D albedoMap;
+    sampler2D metalnessMap;
+    sampler2D roughnessMap;
+    sampler2D alphaMap;
+    
+    vec3 albedo;
+    float metalness;
+    float roughness;
     float alpha;
 };
 
-
 uniform Material m;
-
 
 void main() {
     outPosition = position;
-    outDiffuseColor = normal;
-    outNormal = normal;
-    outSpecularColor = normal;
-//    float alpha = m.hasAlphaTexture ? texture(m.alphaTexture, textureCoord).x : m.alpha;
-//
-//    if(alpha < 0.25)
-//        discard;
-//
-//    outNormal = vec3(m.hasNormalTexture ? mat3(tangent, bitangent, normal) * normalize(texture(m.normalTexture, textureCoord).xyz) : normal);
-//    outDiffuseColor = m.hasKdTexture ? texture(m.kdTexture, textureCoord).xyz: m.kd;
-//    outSpecularColor = m.hasKsTexture ? texture(m.ksTexture, textureCoord).xyz : m.ks;
+
+    float alpha = m.hasAlphaMap ? texture(m.alphaMap, textureCoord).x : m.alpha;
+
+    if(alpha < 0.25)
+        discard;
+    
+    outNormal = vec3(m.hasNormalMap ? mat3(tangent, bitangent, normal) * normalize(texture(m.normalMap, textureCoord).xyz) : normal);
+    outAlbedo = m.hasAlbedoMap ? texture(m.albedoMap, textureCoord).xyz : m.albedo;
+
+    float metalness = m.hasMetalnessMap ? texture(m.metalnessMap, textureCoord).x : m.metalness;
+    float roughness = m.hasRoughnessMap ? texture(m.roughnessMap, textureCoord).x : m.roughness;
+    outMetalnessRoughnessAlpha = vec3(metalness, roughness, alpha);
 }

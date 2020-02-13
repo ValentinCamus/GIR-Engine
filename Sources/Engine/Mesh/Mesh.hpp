@@ -16,7 +16,7 @@ namespace gir
             Vec3f normal;
             Vec2f textureCoordinate;
             Vec3f tangent;
-            Vec3f biTangent;
+            Vec3f bitangent;
         };
 
     public:

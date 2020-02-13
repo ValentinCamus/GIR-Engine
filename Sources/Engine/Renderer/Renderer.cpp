@@ -32,12 +32,15 @@
 namespace gir
 {
     Renderer::Renderer(Framebuffer* defaultFramebuffer, unsigned width, unsigned height) :
-        m_shaderManager({{EShaderType::DEBUG,
-                          {{GL_VERTEX_SHADER, PROJECT_SOURCE_DIR "/Shaders/Debug.vs.glsl"},
-                           {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR "/Shaders/Debug.fs.glsl"}}},
-                         {EShaderType::GBUFFER,
+        m_shaderManager({{EShaderType::GBUFFER,
                           {{GL_VERTEX_SHADER, PROJECT_SOURCE_DIR "/Shaders/GBuffer.vs.glsl"},
-                           {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR "/Shaders/GBuffer.fs.glsl"}}}}),
+                           {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR "/Shaders/GBuffer.fs.glsl"}}},
+                         {EShaderType::DEFERRED_LIGHTING,
+                          {{GL_VERTEX_SHADER, PROJECT_SOURCE_DIR "/Shaders/CookTorrance.vs.glsl"},
+                           {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR "/Shaders/CookTorrance.fs.glsl"}}},
+                         {EShaderType::DEBUG,
+                          {{GL_VERTEX_SHADER, PROJECT_SOURCE_DIR "/Shaders/Debug.vs.glsl"},
+                           {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR "/Shaders/Debug.fs.glsl"}}}}),
         m_defaultFramebuffer(defaultFramebuffer),
         m_GBuffer("GBuffer")
     {
@@ -56,10 +59,8 @@ namespace gir
         // Filling GBuffer with textures
         m_GBuffer.Bind();
 
-        std::vector<GLuint> attachments {GL_COLOR_ATTACHMENT0,
-                                         GL_COLOR_ATTACHMENT1,
-                                         GL_COLOR_ATTACHMENT2,
-                                         GL_COLOR_ATTACHMENT3};
+        std::vector<GLuint> attachments {
+            GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3};
 
         Texture2D* texture = Manager<Texture2D>::Add("Positions", GL_RGB32F, GL_RGB, GL_FLOAT);
         m_GBuffer.AttachTexture(texture, attachments[0]);
@@ -67,10 +68,10 @@ namespace gir
         texture = Manager<Texture2D>::Add("Normals", GL_RGB32F, GL_RGB, GL_FLOAT);
         m_GBuffer.AttachTexture(texture, attachments[1]);
 
-        texture = Manager<Texture2D>::Add("Diffuse colors", GL_RGB, GL_RGB, GL_UNSIGNED_BYTE);
+        texture = Manager<Texture2D>::Add("Albedo", GL_RGB, GL_RGB, GL_UNSIGNED_BYTE);
         m_GBuffer.AttachTexture(texture, attachments[2]);
 
-        texture = Manager<Texture2D>::Add("Specular colors", GL_RGB, GL_RGB, GL_UNSIGNED_BYTE);
+        texture = Manager<Texture2D>::Add("Metalness/Roughness/Alpha", GL_RGB, GL_RGB, GL_UNSIGNED_BYTE);
         m_GBuffer.AttachTexture(texture, attachments[3]);
 
         glDrawBuffers(attachments.size(), attachments.data());
@@ -90,40 +91,44 @@ namespace gir
 
     void Renderer::Draw(const Scene* scene)
     {
+        auto* shader = m_shaderManager.GetShader(EShaderType::GBUFFER);
+
+        shader->Bind();
+        m_GBuffer.Bind();
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        const auto& camera = scene->GetCamera();
+        shader->SetUniform("vp", camera.GetProjectionMatrix() * camera.GetViewMatrix());
+
+        for (const auto& entity : scene->GetEntities())
+        {
+            shader->SetUniform("model", entity.GetTransform());
+            auto* model = entity.GetModel();
+
+            for (int i = 0; i < static_cast<int>(model->MaterialCount()); ++i)
+            {
+                auto* material = model->GetMaterial(i);
+                material->SetUniforms(0, shader);
+
+                for (const auto& mesh : model->GetMeshes(i))
+                {
+                    auto* vao = mesh->GetVertexArrayObject();
+                    vao->Bind();
+                    glDrawElements(GL_TRIANGLES, mesh->Size(), GL_UNSIGNED_INT, 0);
+                    vao->Unbind();
+                }
+                material->UnbindTextures();
+            }
+        }
+        m_GBuffer.Unbind();
+
+        shader->Unbind();
+
         switch (m_renderMode)
         {
             case RenderMode::DEBUG:
             {
-                auto* shader = m_shaderManager.GetShader(EShaderType::GBUFFER);
-
-                shader->Bind();
-                m_GBuffer.Bind();
-
-                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-                const auto& camera = scene->GetCamera();
-                shader->SetUniform("vp", camera.GetProjectionMatrix() * camera.GetViewMatrix());
-
-                for (const auto& entity : scene->GetEntities())
-                {
-                    shader->SetUniform("model", entity.GetTransform());
-                    auto* model = entity.GetModel();
-
-                    for (int i = 0; i < static_cast<int>(model->MaterialCount()); ++i)
-                    {
-                        for (const auto& mesh : model->GetMeshes(i))
-                        {
-                            auto* vao = mesh->GetVertexArrayObject();
-                            vao->Bind();
-                            glDrawElements(GL_TRIANGLES, mesh->Size(), GL_UNSIGNED_INT, 0);
-                            vao->Unbind();
-                        }
-                    }
-                }
-                m_GBuffer.Unbind();
-
-                shader->Unbind();
-
                 shader = m_shaderManager.GetShader(EShaderType::DEBUG);
 
                 shader->Bind();
@@ -135,19 +140,12 @@ namespace gir
                 auto* vao = m_quad->GetVertexArrayObject();
                 vao->Bind();
 
-                const char* uniforms[5] = {
-                    "positions", "normals", "diffuseColor", "specularColor", "specularParameters"};
-
-                for (int i = 0; i < static_cast<int>(m_GBuffer.TextureCount()); ++i)
-                {
-                    m_GBuffer.GetTexture(i)->Bind(i);
-                    shader->SetUniform(uniforms[i], i);
-                }
+                m_GBuffer.GetTexture(2)->Bind(2);
+                shader->SetUniform("albedo", 2);
 
                 glDrawElements(GL_TRIANGLES, m_quad->GetIndices().size(), GL_UNSIGNED_INT, nullptr);
 
-                for (int i = 0; i < static_cast<int>(m_GBuffer.TextureCount()); ++i)
-                { m_GBuffer.GetTexture(i)->Unbind(); }
+                m_GBuffer.GetTexture(2)->Unbind();
 
                 glEnable(GL_DEPTH_TEST);
 

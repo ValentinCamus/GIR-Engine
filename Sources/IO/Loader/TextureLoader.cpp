@@ -7,15 +7,17 @@ namespace gir
 {
     Texture2D* TextureLoader::Load(const std::string &filename, bool flipYAxis)
     {
-        stbi_set_flip_vertically_on_load(flipYAxis);
-
         int width = 0;
         int height = 0;
         int nChannels = 0;
         const char * cPath = filename.c_str();
 
         const unsigned char* pixels = stbi_load(cPath, &width, &height, &nChannels, 0);
-        GIR_ASSERT(pixels, "TextureLoader::Load: Image not found");
+        if (!pixels)
+        {
+            Logger::Warn("TextureLoader::Load: Image not found " + filename);
+            return nullptr;
+        }
 
         auto* texture = Manager<Texture2D>::Add(filename, GetFormat(nChannels), GL_UNSIGNED_BYTE);
         texture->Bind(0);

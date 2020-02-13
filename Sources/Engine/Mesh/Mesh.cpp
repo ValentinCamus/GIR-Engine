@@ -44,9 +44,9 @@ namespace gir
         void* tangentOffset =  (void*) offsetof(Vertex, tangent);
         glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), tangentOffset);
 
-        // Vertex biTangent
+        // Vertex bitangent
         glEnableVertexAttribArray(4);
-        void* biTangentOffset =  (void*) offsetof(Vertex, biTangent);
+        void* biTangentOffset =  (void*) offsetof(Vertex, bitangent);
         glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), biTangentOffset);
 
         m_vao.SetIndexBufferId(ibo);

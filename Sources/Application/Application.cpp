@@ -58,18 +58,18 @@ namespace gir
     {
         m_viewport.Init(500, 500);
 
-        Model* nanoSuit = ModelLoader::Load(FileSystem::GetAssetsDir() + "nanosuit.obj");
+        Model* sponza = ModelLoader::Load(FileSystem::GetAssetsDir() + "sponza.obj");
 
         unsigned width  = m_viewport.GetFramebuffer()->GetTexture(0)->GetWidth();
         unsigned height = m_viewport.GetFramebuffer()->GetTexture(0)->GetHeight();
 
         Camera camera("Main camera", Mat4f(1.f), width, height);
 
-        Mat4f transform(1.f);
+        Mat4f transform(0.025f);
         transform[3] = {0.f, -7.5f, -20.f, 1.f};
 
         m_scene = std::make_unique<Scene>(
-            camera, std::vector<Light*>(), std::vector<Entity> {Entity("test", nanoSuit, transform)});
+            camera, std::vector<Light*>(), std::vector<Entity> {Entity("Scene 1", sponza, transform)});
 
         m_renderer = std::make_unique<Renderer>(m_viewport.GetFramebuffer(), width, height);
     }

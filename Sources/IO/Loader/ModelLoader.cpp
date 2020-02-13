@@ -84,12 +84,12 @@ namespace gir
             tangent.z = mesh->mTangents[i].z;
 
             // bi-tangent
-            Vec3f biTangent;
-            biTangent.x = mesh->mBitangents[i].x;
-            biTangent.y = mesh->mBitangents[i].y;
-            biTangent.z = mesh->mBitangents[i].z;
+            Vec3f bitangent;
+            bitangent.x = mesh->mBitangents[i].x;
+            bitangent.y = mesh->mBitangents[i].y;
+            bitangent.z = mesh->mBitangents[i].z;
 
-            vertices.push_back({vertex, normal, texCoord, tangent, biTangent});
+            vertices.push_back({vertex, normal, texCoord, tangent, bitangent});
         }
 
         // Now wak through each of the mesh's faces (a face is a mesh its triangle)
@@ -113,16 +113,59 @@ namespace gir
         auto* material    = Manager<Material>::Add(name);
         aiMaterial* aiMat = scene->mMaterials[mesh->mMaterialIndex];
 
-        // 1. diffuse maps
-        std::vector<Texture2D*> diffuseMaps = LoadMaterialTextures(aiMat, aiTextureType_DIFFUSE);
-        // 2. specular maps
-        std::vector<Texture2D*> specularMaps = LoadMaterialTextures(aiMat, aiTextureType_SPECULAR);
-        // 3. normal maps
+        // 1. normal maps
         std::vector<Texture2D*> normalMaps = LoadMaterialTextures(aiMat, aiTextureType_HEIGHT);
+        // 2. albedo maps
+        std::vector<Texture2D*> albedoMaps = LoadMaterialTextures(aiMat, aiTextureType_DIFFUSE);
+        // 3. metalness maps
+        std::vector<Texture2D*> metalnessMaps = LoadMaterialTextures(aiMat, aiTextureType_AMBIENT);
+        // 4. roughness maps
+        std::vector<Texture2D*> roughnessMaps = LoadMaterialTextures(aiMat, aiTextureType_SHININESS);
+        // 5. alpha maps
+        std::vector<Texture2D*> alphaMaps = LoadMaterialTextures(aiMat, aiTextureType_OPACITY);
 
-        if (!diffuseMaps.empty()) material->SetAttribute(Material::EAttribute::Diffuse, diffuseMaps[0]);
-        if (!specularMaps.empty()) material->SetAttribute(Material::EAttribute::Specular, specularMaps[0]);
-        if (!normalMaps.empty()) material->SetAttribute(Material::EAttribute::Normal, normalMaps[0]);
+        if (!normalMaps.empty()) material->SetAttribute(Material::EAttribute::NORMAL, normalMaps[0]);
+
+        if (!albedoMaps.empty())
+            material->SetAttribute(Material::EAttribute::ALBEDO, albedoMaps[0]);
+        else
+        {
+            aiColor3D color;
+            aiMat->Get(AI_MATKEY_COLOR_DIFFUSE, color);
+
+            Vec4f albedo(color.r, color.g, color.b, 1.f);
+            material->SetAttribute(Material::EAttribute::ALBEDO, albedo);
+        }
+
+        if (!metalnessMaps.empty())
+            material->SetAttribute(Material::EAttribute::METALNESS, metalnessMaps[0]);
+        else
+        {
+            int metalness;
+            aiMat->Get(AI_MATKEY_COLOR_AMBIENT, metalness);
+
+            material->SetAttribute(Material::EAttribute::ALBEDO, Vec4f(metalness));
+        }
+
+        if (!roughnessMaps.empty())
+            material->SetAttribute(Material::EAttribute::ROUGHNESS, roughnessMaps[0]);
+        else
+        {
+            int roughness;
+            aiMat->Get(AI_MATKEY_SHININESS, roughness);
+
+            material->SetAttribute(Material::EAttribute::ALBEDO, Vec4f(roughness));
+        }
+
+        if (!alphaMaps.empty())
+            material->SetAttribute(Material::EAttribute::ALPHA, roughnessMaps[0]);
+        else
+        {
+            float alpha;
+            aiMat->Get(AI_MATKEY_OPACITY, alpha);
+
+            material->SetAttribute(Material::EAttribute::ALPHA, Vec4f(alpha));
+        }
 
         return material;
     }
