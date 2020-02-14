@@ -11,7 +11,7 @@ namespace gir
     class Scene
     {
     public:
-        Scene(const Camera &camera, std::vector<Light *> &&lights, std::vector<Entity> &&entities);
+        Scene(const Camera &camera, std::vector<std::unique_ptr<Light>> &&lights, std::vector<Entity> &&entities);
 
         ~Scene() = default;
 
@@ -19,14 +19,14 @@ namespace gir
 
         inline const Camera &GetCamera() const { return m_camera; }
 
-        inline const std::vector<Light *> &GetLights() const { return m_lights; }
+        inline const std::vector<std::unique_ptr<Light>> &GetLights() const { return m_lights; }
 
         inline const std::vector<Entity> &GetEntities() const { return m_entities; }
 
     private:
         Camera m_camera;
 
-        std::vector<Light *> m_lights;
+        std::vector<std::unique_ptr<Light>> m_lights;
 
         std::vector<Entity> m_entities;
     };

@@ -37,7 +37,7 @@ namespace gir
 
         // That's a big boy for an header but whatever
         // Also it could most likely be cleaner
-        inline void SetUniforms(int slot, Shader* shader)
+        inline void SetUniforms(const std::string& name, Shader* shader, int slot)
         {
             for (int i = 0; i < static_cast<int>(m_attributes.size()); ++i)
             {
@@ -47,49 +47,49 @@ namespace gir
                 switch (static_cast<EAttribute>(i))
                 {
                     case EAttribute::NORMAL:
-                        shader->SetUniform("m.hasNormalMap", static_cast<bool>(attr.texture));
+                        shader->SetUniform(name + ".hasNormalMap", static_cast<bool>(attr.texture));
 
-                        if (attr.texture) shader->SetUniform("m.normalMap", i);
+                        if (attr.texture) shader->SetUniform(name + ".normalMap", i);
 
                         break;
 
                     case EAttribute::ALBEDO:
-                        shader->SetUniform("m.hasAlbedoMap", static_cast<bool>(attr.texture));
+                        shader->SetUniform(name + ".hasAlbedoMap", static_cast<bool>(attr.texture));
 
                         if (attr.texture)
-                            shader->SetUniform("m.albedoMap", i);
+                            shader->SetUniform(name + ".albedoMap", i);
                         else
-                            shader->SetUniform("m.albedo", Vec3f(attr.color));
+                            shader->SetUniform(name + ".albedo", Vec3f(attr.color));
 
                         break;
 
                     case EAttribute::METALNESS:
-                        shader->SetUniform("m.hasMetalnessMap", static_cast<bool>(attr.texture));
+                        shader->SetUniform(name + ".hasMetalnessMap", static_cast<bool>(attr.texture));
 
                         if (attr.texture)
-                            shader->SetUniform("m.metalnessMap", i);
+                            shader->SetUniform(name + ".metalnessMap", i);
                         else
-                            shader->SetUniform("m.metalness", attr.color.r);
+                            shader->SetUniform(name + ".metalness", attr.color.r);
 
                         break;
 
                     case EAttribute::ROUGHNESS:
-                        shader->SetUniform("m.hasRoughnessMap", static_cast<bool>(attr.texture));
+                        shader->SetUniform(name + ".hasRoughnessMap", static_cast<bool>(attr.texture));
 
                         if (attr.texture)
-                            shader->SetUniform("m.roughnessMap", i);
+                            shader->SetUniform(name + ".roughnessMap", i);
                         else
-                            shader->SetUniform("m.roughness", attr.color.r);
+                            shader->SetUniform(name + ".roughness", attr.color.r);
 
                         break;
 
                     case EAttribute::ALPHA:
-                        shader->SetUniform("m.hasAlphaMap", static_cast<bool>(attr.texture));
+                        shader->SetUniform(name + ".hasAlphaMap", static_cast<bool>(attr.texture));
 
                         if (attr.texture)
-                            shader->SetUniform("m.alphaMap", i);
+                            shader->SetUniform(name + ".alphaMap", i);
                         else
-                            shader->SetUniform("m.alpha", attr.color.r);
+                            shader->SetUniform(name + ".alpha", attr.color.r);
 
                         break;
 

@@ -7,9 +7,8 @@ layout (location = 3) in vec3 tangent;
 layout (location = 4) in vec3 bitangent;
 
 layout (location = 0) out vec3 outPosition;
-layout (location = 1) out vec3 outNormal;
-layout (location = 2) out vec3 outAlbedo;
-layout (location = 3) out vec3 outMetalnessRoughnessAlpha;
+layout (location = 1) out vec4 outNormalMetalness;
+layout (location = 2) out vec4 outAlbedoRoughness;
 
 
 struct Material {
@@ -31,20 +30,19 @@ struct Material {
     float alpha;
 };
 
-uniform Material m;
+uniform Material material;
 
 void main() {
     outPosition = position;
 
-    float alpha = m.hasAlphaMap ? texture(m.alphaMap, textureCoord).x : m.alpha;
+    float alpha = material.hasAlphaMap ? texture(material.alphaMap, textureCoord).x : material.alpha;
 
     if(alpha < 0.25)
         discard;
-    
-    outNormal = vec3(m.hasNormalMap ? mat3(tangent, bitangent, normal) * normalize(texture(m.normalMap, textureCoord).xyz) : normal);
-    outAlbedo = m.hasAlbedoMap ? texture(m.albedoMap, textureCoord).xyz : m.albedo;
 
-    float metalness = m.hasMetalnessMap ? texture(m.metalnessMap, textureCoord).x : m.metalness;
-    float roughness = m.hasRoughnessMap ? texture(m.roughnessMap, textureCoord).x : m.roughness;
-    outMetalnessRoughnessAlpha = vec3(metalness, roughness, alpha);
+    float metalness = material.hasMetalnessMap ? texture(material.metalnessMap, textureCoord).x : material.metalness;
+    float roughness = material.hasRoughnessMap ? texture(material.roughnessMap, textureCoord).x : material.roughness;
+    
+    outNormalMetalness = vec4((material.hasNormalMap ? mat3(tangent, bitangent, normal) * normalize(texture(material.normalMap, textureCoord).xyz) : normal), metalness);
+    outAlbedoRoughness = vec4(material.hasAlbedoMap ? texture(material.albedoMap, textureCoord).xyz : material.albedo, roughness);
 }

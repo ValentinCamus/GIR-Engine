@@ -9,6 +9,7 @@
 #include <IO/Loader/ModelLoader.hpp>
 #include <Engine/Camera/Camera.hpp>
 #include <Engine/Camera/CameraDebug.hpp>
+#include <Engine/Light/DirectionnalLight.hpp>
 
 namespace gir
 {
@@ -65,11 +66,17 @@ namespace gir
 
         Camera camera("Main camera", Mat4f(1.f), width, height);
 
-        Mat4f transform(0.025f);
-        transform[3] = {0.f, -7.5f, -20.f, 1.f};
+        Mat4f entityTransform(0.025f);
+        entityTransform[3] = {0.f, -7.5f, -20.f, 1.f};
 
-        m_scene = std::make_unique<Scene>(
-            camera, std::vector<Light*>(), std::vector<Entity> {Entity("Scene 1", sponza, transform)});
+        Mat4f lightTransform(1.f);
+        lightTransform[3] = {0.f, 25.f, 0.f, 1.f};
+
+        auto light = std::make_unique<DirectionnalLight>("Sunlight", lightTransform, Vec3f {0.8f, 0.8f, 0.8f});
+
+        m_scene = std::make_unique<Scene>(camera,
+                                          std::vector<std::unique_ptr<Light>> {std::move(light)},
+                                          std::vector<Entity> {Entity("Scene 1", sponza, entityTransform)});
 
         m_renderer = std::make_unique<Renderer>(m_viewport.GetFramebuffer(), width, height);
     }

@@ -3,6 +3,7 @@
 #include "Engine/Scene/Scene.hpp"
 #include "Engine/Manager/Manager.hpp"
 #include "Engine/Mesh/Mesh.hpp"
+#include "Engine/Light/Light.hpp"
 
 #define GL_CHECK_ERROR()                                            \
     {                                                               \
@@ -59,15 +60,13 @@ namespace gir
         // Filling GBuffer with textures
         m_GBuffer.Bind();
 
-        std::vector<GLuint> attachments {
-            GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3};
+        std::vector<GLuint> attachments {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};
 
-        m_GBuffer.AttachTexture(std::make_unique<Texture2D>("positions", GL_RGB32F, GL_RGB, GL_FLOAT), attachments[0]);
-        m_GBuffer.AttachTexture(std::make_unique<Texture2D>("normals", GL_RGB32F, GL_RGB, GL_FLOAT), attachments[1]);
-        m_GBuffer.AttachTexture(std::make_unique<Texture2D>("albedos", GL_RGB, GL_RGB, GL_UNSIGNED_BYTE),
+        m_GBuffer.AttachTexture(std::make_unique<Texture2D>("position", GL_RGB32F, GL_RGB, GL_FLOAT), attachments[0]);
+        m_GBuffer.AttachTexture(std::make_unique<Texture2D>("normalMetalness", GL_RGBA32F, GL_RGBA, GL_FLOAT),
+                                attachments[1]);
+        m_GBuffer.AttachTexture(std::make_unique<Texture2D>("albedoRoughness", GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE),
                                 attachments[2]);
-        m_GBuffer.AttachTexture(
-            std::make_unique<Texture2D>("metalnessRoughnessAlpha", GL_RGB, GL_RGB, GL_UNSIGNED_BYTE), attachments[3]);
 
         glDrawBuffers(attachments.size(), attachments.data());
 
@@ -104,7 +103,7 @@ namespace gir
             for (int i = 0; i < static_cast<int>(model->MaterialCount()); ++i)
             {
                 auto* material = model->GetMaterial(i);
-                material->SetUniforms(0, shader);
+                material->SetUniforms("material", shader, 0);
 
                 for (const auto& mesh : model->GetMeshes(i))
                 {
@@ -163,6 +162,9 @@ namespace gir
 
                 auto* vao = m_quad->GetVertexArrayObject();
                 vao->Bind();
+
+                shader->SetUniform("cameraPosition", Vec3f(camera.GetTransform()[3]));
+                scene->GetLights()[0]->SetUniforms("light", shader);
 
                 for (int i = 0; i < m_GBuffer.TextureCount(); ++i)
                 {

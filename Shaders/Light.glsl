@@ -14,6 +14,7 @@ struct Light {
     vec3 color;
     vec3 position;
     vec3 direction;
+    // float range;
     float cosInnerAngle;
     float cosOuterAngle;
 };
@@ -44,7 +45,6 @@ float distanceAttenuation(Light l, float dist) {
     // float distToRange = dist / l.range;
     // float attenuation = max(1 - (distToRange * distToRange * distToRange * distToRange), 0.f);
 
-    // TODO: Tweak (1/dist^2 gives a really huge attenuation)
     return 1 / (dist * dist);
 }
 

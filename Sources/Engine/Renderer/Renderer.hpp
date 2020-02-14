@@ -35,7 +35,7 @@ namespace gir
 
         std::unique_ptr<Mesh> m_quad = nullptr;
 
-        RenderMode m_renderMode = RenderMode::DEBUG;
+        RenderMode m_renderMode = RenderMode::RSM;
     };
 
 } // namespace gir
