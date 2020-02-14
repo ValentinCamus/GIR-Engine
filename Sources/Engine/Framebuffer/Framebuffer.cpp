@@ -6,16 +6,11 @@ namespace gir
 {
     Framebuffer::Framebuffer(const std::string& name) : OpenGLComponent(name) { glGenFramebuffers(1, &m_id); }
 
-    Framebuffer::~Framebuffer() { 
-        for(auto *texture : m_textures) {
-            unsigned id = texture->GetId();
-            glDeleteTextures(1, &id);
-        }
+    Framebuffer::~Framebuffer()
+    {
+        if (IsRenderbufferAttached()) glDeleteRenderbuffers(1, &m_rbo);
 
-        if(IsRenderbufferAttached())
-            glDeleteRenderbuffers(1, &m_rbo);
-
-        glDeleteFramebuffers(1, &m_id); 
+        glDeleteFramebuffers(1, &m_id);
     }
 
     void Framebuffer::Resize(unsigned width, unsigned height)
@@ -30,7 +25,7 @@ namespace gir
             glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
         }
 
-        for (auto texture : m_textures)
+        for (auto &texture : m_textures)
         {
             texture->Bind();
             texture->Allocate(width, height);
@@ -71,10 +66,10 @@ namespace gir
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, m_rbo);
     }
 
-    void Framebuffer::AttachTexture(Texture2D* texture, int attachment)
+    void Framebuffer::AttachTexture(std::unique_ptr<Texture2D>&& texture, int attachment)
     {
-        m_textures.push_back(texture);
         glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, texture->GetId(), 0);
+        m_textures.emplace_back(std::move(texture));
     }
 
     bool Framebuffer::IsComplete() const { return glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE; }

@@ -4,11 +4,11 @@ namespace gir
 {
     void ViewportWidget::Init(unsigned width, unsigned height)
     {
-        m_texture     = new Texture2D("Default texture", GL_RGB, GL_RGB, GL_UNSIGNED_INT);
         m_framebuffer = new Framebuffer("Default framebuffer");
 
         m_framebuffer->Bind();
-        m_framebuffer->AttachTexture(m_texture, GL_COLOR_ATTACHMENT0);
+        m_framebuffer->AttachTexture(std::make_unique<Texture2D>("Default texture", GL_RGB, GL_RGB, GL_UNSIGNED_INT),
+                                     GL_COLOR_ATTACHMENT0);
         m_framebuffer->AttachRenderbuffer(GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT);
         m_framebuffer->Resize(width, height);
         m_framebuffer->Unbind();
@@ -40,11 +40,7 @@ namespace gir
         ImGui::End();
     }
 
-    ViewportWidget::~ViewportWidget()
-    {
-        delete m_framebuffer;
-        delete m_texture;
-    }
+    ViewportWidget::~ViewportWidget() { delete m_framebuffer; }
 
     ImVec2 ViewportWidget::GetFramebufferSize() const
     {

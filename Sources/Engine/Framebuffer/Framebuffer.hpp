@@ -26,7 +26,7 @@ namespace gir
         /// Attach a texture to the framebuffer.
         /// @texture: the texture to attach.
         /// @attachment: specifies the attachment point to which an image from texture should be attached.
-        void AttachTexture(Texture2D* texture, int attachment);
+        void AttachTexture(std::unique_ptr<Texture2D>&& texture, int attachment);
 
         void Bind() override;
 
@@ -39,7 +39,7 @@ namespace gir
 
         inline bool HasTexturesAttached() const { return !m_textures.empty(); }
 
-        inline Texture2D* GetTexture(unsigned i) { return m_textures[i]; }
+        inline Texture2D* GetTexture(unsigned i) { return m_textures[i].get(); }
 
         inline unsigned TextureCount() const { return static_cast<unsigned>(m_textures.size()); }
 
@@ -52,6 +52,6 @@ namespace gir
         unsigned m_width  = 0;
         unsigned m_height = 0;
 
-        std::vector<Texture2D*> m_textures {};
+        std::vector<std::unique_ptr<Texture2D>> m_textures {};
     };
 } // namespace gir

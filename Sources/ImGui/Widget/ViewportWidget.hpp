@@ -37,9 +37,6 @@ namespace gir
         void DrawFramebuffer();
 
     private:
-        /// Where the framebuffer will draw the scene.
-        Texture2D* m_texture = nullptr;
-
         Framebuffer* m_framebuffer = nullptr;
     };
 } // namespace gir

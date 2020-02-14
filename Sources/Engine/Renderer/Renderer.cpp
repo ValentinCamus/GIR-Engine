@@ -62,17 +62,12 @@ namespace gir
         std::vector<GLuint> attachments {
             GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3};
 
-        Texture2D* texture = Manager<Texture2D>::Add("Positions", GL_RGB32F, GL_RGB, GL_FLOAT);
-        m_GBuffer.AttachTexture(texture, attachments[0]);
-
-        texture = Manager<Texture2D>::Add("Normals", GL_RGB32F, GL_RGB, GL_FLOAT);
-        m_GBuffer.AttachTexture(texture, attachments[1]);
-
-        texture = Manager<Texture2D>::Add("Albedo", GL_RGB, GL_RGB, GL_UNSIGNED_BYTE);
-        m_GBuffer.AttachTexture(texture, attachments[2]);
-
-        texture = Manager<Texture2D>::Add("Metalness/Roughness/Alpha", GL_RGB, GL_RGB, GL_UNSIGNED_BYTE);
-        m_GBuffer.AttachTexture(texture, attachments[3]);
+        m_GBuffer.AttachTexture(std::make_unique<Texture2D>("positions", GL_RGB32F, GL_RGB, GL_FLOAT), attachments[0]);
+        m_GBuffer.AttachTexture(std::make_unique<Texture2D>("normals", GL_RGB32F, GL_RGB, GL_FLOAT), attachments[1]);
+        m_GBuffer.AttachTexture(std::make_unique<Texture2D>("albedos", GL_RGB, GL_RGB, GL_UNSIGNED_BYTE),
+                                attachments[2]);
+        m_GBuffer.AttachTexture(
+            std::make_unique<Texture2D>("metalnessRoughnessAlpha", GL_RGB, GL_RGB, GL_UNSIGNED_BYTE), attachments[3]);
 
         glDrawBuffers(attachments.size(), attachments.data());
 
@@ -140,8 +135,9 @@ namespace gir
                 auto* vao = m_quad->GetVertexArrayObject();
                 vao->Bind();
 
-                m_GBuffer.GetTexture(2)->Bind(2);
-                shader->SetUniform("albedo", 2);
+                auto* texture = m_GBuffer.GetTexture(2);
+                texture->Bind(2);
+                shader->SetUniform(texture->GetName(), 2);
 
                 glDrawElements(GL_TRIANGLES, m_quad->GetIndices().size(), GL_UNSIGNED_INT, nullptr);
 
@@ -157,6 +153,34 @@ namespace gir
             }
             case RenderMode::RSM:
             {
+                shader = m_shaderManager.GetShader(EShaderType::DEFERRED_LIGHTING);
+
+                shader->Bind();
+
+                m_defaultFramebuffer->Bind();
+                glClear(GL_COLOR_BUFFER_BIT);
+                glDisable(GL_DEPTH_TEST);
+
+                auto* vao = m_quad->GetVertexArrayObject();
+                vao->Bind();
+
+                for (int i = 0; i < m_GBuffer.TextureCount(); ++i)
+                {
+                    auto* texture = m_GBuffer.GetTexture(i);
+                    texture->Bind(i);
+                    shader->SetUniform(texture->GetName(), i);
+                }
+
+                glDrawElements(GL_TRIANGLES, m_quad->GetIndices().size(), GL_UNSIGNED_INT, nullptr);
+
+                for (int i = 0; i < m_GBuffer.TextureCount(); ++i) { m_GBuffer.GetTexture(i)->Unbind(); }
+
+                glEnable(GL_DEPTH_TEST);
+
+                vao->Unbind();
+                m_defaultFramebuffer->Unbind();
+                shader->Unbind();
+
                 break;
             }
             default:
