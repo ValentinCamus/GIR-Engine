@@ -3,11 +3,10 @@
 #include <Core/Core.hpp>
 #include "Engine/Camera/Camera.hpp"
 #include "Engine/Mesh/Entity.hpp"
+#include "Engine/Light/Light.hpp"
 
 namespace gir
 {
-    class Light;
-
     class Scene
     {
     public:

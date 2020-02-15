@@ -191,7 +191,6 @@ namespace gir
                 break;
             }
         }
-        GL_CHECK_ERROR()
     }
 
     void Renderer::ResizeGBuffer(unsigned width, unsigned height) { m_GBuffer.Resize(width, height); }

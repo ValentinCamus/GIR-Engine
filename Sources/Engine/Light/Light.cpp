@@ -1,4 +1,5 @@
 #include "Light.hpp"
+#include <Engine/Scene/Scene.hpp>
 
 namespace gir
 {

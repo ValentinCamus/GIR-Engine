@@ -20,7 +20,7 @@ namespace gir
         /// @name: specifies the name of the component.
         /// @format: specifies the number of color components in the texture.
         /// @type: specifies the data type of the pixel data.
-        explicit Texture2D(const std::string& name, int format, int type);
+        explicit Texture2D(const std::string& name, int format, int type, bool generateMipmap = false);
 
         /// Destructor.
         ~Texture2D() override;
@@ -72,5 +72,7 @@ namespace gir
 
         /// The data type of the pixel data.
         int m_type = GL_UNSIGNED_INT;
+
+        bool m_generateMipmap = false;
     };
 } // namespace gir

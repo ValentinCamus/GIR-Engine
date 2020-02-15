@@ -12,7 +12,7 @@ namespace gir
     void DirectionnalLight::SetUniforms(const std::string &name, Shader *shader)
     {
         Light::SetUniforms(name, shader);
-        shader->SetUniform(name + ".type", 1);
+        shader->SetUniform(name + ".type", static_cast<unsigned>(1));
         shader->SetUniform(name + ".direction", Vec3f(-m_transform[2]));
     }
 

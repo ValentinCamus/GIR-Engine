@@ -19,7 +19,7 @@ namespace gir
             return nullptr;
         }
 
-        auto* texture = Manager<Texture2D>::Add(filename, GetFormat(nChannels), GL_UNSIGNED_BYTE);
+        auto* texture = Manager<Texture2D>::Add(filename, GetFormat(nChannels), GL_UNSIGNED_BYTE, true);
         texture->Bind(0);
         texture->Allocate(width, height, pixels);
         texture->Unbind();

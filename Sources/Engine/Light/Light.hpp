@@ -5,7 +5,6 @@
 #include <Engine/Component/SceneComponent.hpp>
 #include <Engine/Shader/Shader.hpp>
 #include <Engine/Framebuffer/Framebuffer.hpp>
-#include <Engine/Scene/Scene.hpp>
 
 #define NEAR_Z 0.2f
 #define FAR_Z 100.f

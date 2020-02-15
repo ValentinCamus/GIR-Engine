@@ -18,7 +18,7 @@ namespace gir
     void SpotLight::SetUniforms(const std::string &name, Shader *shader)
     {
         Light::SetUniforms(name, shader);
-        shader->SetUniform(name + ".type", 2);
+        shader->SetUniform(name + ".type", static_cast<unsigned>(2));
         shader->SetUniform(name + ".direction", Vec3f(-m_transform[2]));
         shader->SetUniform(name + ".innerAngle", m_innerAngle);
         shader->SetUniform(name + ".outerAngle", m_outerAngle);

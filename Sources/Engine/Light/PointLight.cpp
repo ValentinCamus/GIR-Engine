@@ -12,7 +12,7 @@ namespace gir
     void PointLight::SetUniforms(const std::string& name, Shader* shader)
     {
         Light::SetUniforms(name, shader);
-        shader->SetUniform(name + ".type", 0);
+        shader->SetUniform(name + ".type", static_cast<unsigned>(0));
     }
 
     const Mat4f& PointLight::GetProjection() const { return m_projection; }

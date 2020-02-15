@@ -32,7 +32,7 @@ float geometryGGXSchlickBeckmann(float ndotvec, float roughness) {
 }
 
 float geometrySmith(float cosThetai, float cosThetao, float roughness) {
-    return geometryGGXSchlickBeckmann(cosThetao, roughness) * geometryGGXSchlickBeckmann(cosThetai, roughness);
+    return geometryGGXSchlickBeckmann(cosThetai, roughness) * geometryGGXSchlickBeckmann(cosThetao, roughness);
 }
 
 vec3 fresnelSchlick(vec3 view, vec3 half, vec3 f0) {
@@ -59,7 +59,7 @@ void main()
     float cosThetai = max(dot(normal, wi), 0);
     float cosThetao = max(dot(normal, wo), 0);
 
-    vec3 Lo = light.color * attenuation(light, wi, position);
+    vec3 Li = light.color * attenuation(light, wi, position);
     
     vec3 f0 = mix(vec3(0.04), albedo, metalness);
     
@@ -69,7 +69,8 @@ void main()
     vec3 cookTorrance = distributionGGX(normal, half, roughness) * fresnel * geometrySmith(cosThetai, cosThetao, roughness);
     vec3 lambert = albedo / PI;
 
-    float denominator = max(4 * max(dot(wo, normal), 0) * max(dot(wi, normal), 0), 0.001);
+    float denominator = max(4 * max(dot(wo, normal), 0) * max(dot(wi, normal), 0), 0.004);
 
-    fragColor = vec4((kd * lambert + cookTorrance) / denominator * Lo * cosThetai, 1.f);
+    fragColor = vec4((kd * lambert + cookTorrance / denominator) * Li * cosThetai, 1.f);
+    fragColor = fragColor / (fragColor + 1);
 }

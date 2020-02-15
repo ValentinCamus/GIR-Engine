@@ -21,18 +21,22 @@ namespace gir
         Unbind();
     }
 
-    Texture2D::Texture2D(const std::string& name, int format, int type) :
+    Texture2D::Texture2D(const std::string& name, int format, int type, bool generateMipmap) :
         OpenGLComponent {name},
         m_internalFormat(format),
         m_format(format),
-        m_type(type)
+        m_type(type),
+        m_generateMipmap(generateMipmap)
     {
         glGenTextures(1, &m_id);
 
         Bind();
 
         // Default parameters:
-        SetParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        if (m_generateMipmap)
+            SetParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        else
+            SetParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         SetParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         SetParameter(GL_TEXTURE_WRAP_S, GL_REPEAT);
         SetParameter(GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -49,6 +53,8 @@ namespace gir
         m_height = height;
 
         glTexImage2D(GL_TEXTURE_2D, 0, m_internalFormat, width, height, 0, m_format, m_type, pixels);
+
+        if (m_generateMipmap) glGenerateMipmap(GL_TEXTURE_2D);
     }
 
     void Texture2D::Bind()
