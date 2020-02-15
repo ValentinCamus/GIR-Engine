@@ -9,7 +9,7 @@ namespace gir
     class Manager
     {
     public:
-        static const T* Get(const std::string& name);
+        static T* Get(const std::string& name);
 
         template<class... Ts>
         static T* Add(Ts&&... args);
@@ -32,15 +32,16 @@ namespace gir
     std::vector<std::unique_ptr<T>> Manager<T>::m_elements {};
 
     template<class T>
-    const T* Manager<T>::Get(const std::string& name)
+    T* Manager<T>::Get(const std::string& name)
     {
         auto predicate = [&name](const std::unique_ptr<T>& elementUptr) { return elementUptr->GetName() == name; };
 
         auto it = std::find_if(m_elements.cbegin(), m_elements.cend(), predicate);
 
-        GIR_ASSERT(it != m_elements.cend(), "Element \"" + name + "\" does not exist");
-
-        return it->get();
+        if (it != m_elements.cend())
+            return it->get();
+        else
+            return nullptr;
     }
 
     template<class T>

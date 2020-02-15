@@ -7,7 +7,9 @@ namespace gir
 
     void Model::AddMesh(Element element)
     {
-        auto predicate = [&element](const MaterialMeshes &materialMeshes) { return materialMeshes.first == element.first; };
+        auto predicate = [&element](const MaterialMeshes &materialMeshes) {
+            return materialMeshes.first == element.first;
+        };
 
         auto it = std::find_if(m_meshesByMaterial.begin(), m_meshesByMaterial.end(), predicate);
 

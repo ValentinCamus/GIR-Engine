@@ -102,16 +102,21 @@ namespace gir
         }
 
         Material* material = LoadMaterial(mesh, scene, model);
-        std::string name   = model->GetName() + "_Mesh" + std::to_string(model->MaterialCount());
+        std::string name   = mesh->mName.C_Str();
 
-        return {material, Manager<Mesh>::Add(name, vertices, indices)};
+        if (Mesh* mesh = Manager<Mesh>::Get(name))
+            return {material, mesh};
+        else
+            return {material, Manager<Mesh>::Add(name, vertices, indices)};
     }
 
     Material* ModelLoader::LoadMaterial(aiMesh* mesh, const aiScene* scene, Model* model)
     {
-        std::string name  = model->GetName() + "_Mat" + std::to_string(model->MaterialCount());
-        auto* material    = Manager<Material>::Add(name);
         aiMaterial* aiMat = scene->mMaterials[mesh->mMaterialIndex];
+
+        if (Material* mat = Manager<Material>::Get(aiMat->GetName().C_Str())) return mat;
+
+        auto* material = Manager<Material>::Add(aiMat->GetName().C_Str());
 
         // 1. normal maps
         std::vector<Texture2D*> normalMaps = LoadMaterialTextures(aiMat, aiTextureType_HEIGHT);
