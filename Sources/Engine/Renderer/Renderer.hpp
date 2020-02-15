@@ -6,10 +6,12 @@
 
 namespace gir
 {
-    enum class RenderMode
+    enum class ERenderMode
     {
-        DEBUG,
-        RSM
+        DEBUG  = 0,
+        DIRECT = 1,
+        RSM    = 2,
+        RSMGS  = 3
     };
 
     class Scene;
@@ -24,7 +26,7 @@ namespace gir
 
         void ResizeGBuffer(unsigned width, unsigned height);
 
-        void SetRenderMode(RenderMode mode);
+        void SetRenderMode(ERenderMode mode);
 
     private:
         ShaderManager m_shaderManager;
@@ -35,7 +37,7 @@ namespace gir
 
         std::unique_ptr<Mesh> m_quad = nullptr;
 
-        RenderMode m_renderMode = RenderMode::RSM;
+        ERenderMode m_renderMode = ERenderMode::DIRECT;
     };
 
 } // namespace gir

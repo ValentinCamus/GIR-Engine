@@ -10,6 +10,7 @@
 #include <Engine/Camera/Camera.hpp>
 #include <Engine/Camera/CameraDebug.hpp>
 #include <Engine/Light/DirectionnalLight.hpp>
+#include <Engine/Light/PointLight.hpp>
 
 namespace gir
 {
@@ -73,7 +74,11 @@ namespace gir
         lightTransform[3] = {0.f, 25.f, 0.f, 1.f};
 
         std::vector<std::unique_ptr<Light>> lights;
-        lights.emplace_back(std::make_unique<DirectionnalLight>("Sunlight", lightTransform, Vec3f {1.f, 1.f, 1.f}));
+        lights.emplace_back(
+            std::make_unique<DirectionnalLight>("Sunlight", lightTransform, Vec3f {0.85f, 0.8f, 0.85f}));
+
+        lightTransform[3] = {0.f, 1.f, 0.5f, 1.f};
+        lights.emplace_back(std::make_unique<PointLight>("Point light 1", lightTransform, Vec3f {0.85f, 0.8f, 0.85f}));
 
         m_scene = std::make_unique<Scene>(
             camera, std::move(lights), std::vector<Entity> {Entity("Scene 1", sponza, entityTransform)});
@@ -91,6 +96,14 @@ namespace gir
         if (m_input.IsKeyPressed(GLFW_KEY_A)) m_cameraController.MoveLeft(deltaTime);
         if (m_input.IsKeyPressed(GLFW_KEY_Q)) m_cameraController.MoveUp(deltaTime);
         if (m_input.IsKeyPressed(GLFW_KEY_E)) m_cameraController.MoveDown(deltaTime);
+
+        if (m_input.IsKeyPressed(GLFW_KEY_F5))
+        {
+            unsigned width  = m_viewport.GetFramebuffer()->GetTexture(0)->GetWidth();
+            unsigned height = m_viewport.GetFramebuffer()->GetTexture(0)->GetHeight();
+            m_renderer      = std::make_unique<Renderer>(m_viewport.GetFramebuffer(), width, height);
+        }
+
         if (m_input.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_1))
             m_cameraController.SetMousePos(m_input.GetMouseX(), m_input.GetMouseY());
     }
@@ -108,6 +121,8 @@ namespace gir
 
             m_renderer->ResizeGBuffer(viewportWidth, viewportHeight);
         }
+
+        m_renderer->SetRenderMode(static_cast<ERenderMode>(m_lightingWidget.GetLightingMode()));
 
         m_renderer->Draw(m_scene.get());
     }

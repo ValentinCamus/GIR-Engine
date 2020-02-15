@@ -9,11 +9,12 @@ namespace gir
 {
     enum class ELightingMode
     {
-        Unlit  = 0,
-        Direct = 1,
-        Global = 2
+        DEBUG  = 0,
+        DIRECT = 1,
+        RSM    = 2,
+        RSMGS  = 3
     };
-    constexpr const char* LIGHTING_MODES[] = {"Unlit", "Direct", "Global"};
+    constexpr const char* LIGHTING_MODES[] = {"Debug", "Direct", "RSM", "RSM + GS"};
 
     class LightingWidget : public ImGuiWidget
     {

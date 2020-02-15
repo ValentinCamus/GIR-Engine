@@ -1,5 +1,6 @@
 #version 410 core
 
+#define MAX_LIGHTS 4
 #define PI 3.14159265359f
 
 #include "Light.glsl"
@@ -12,16 +13,17 @@ uniform sampler2D position;
 uniform sampler2D normalMetalness;
 uniform sampler2D albedoRoughness;
 
-uniform Light light;
 uniform vec3 cameraPosition;
+uniform uint lightCount;
+uniform Light lights[MAX_LIGHTS];
 
-float distributionGGX(vec3 normal, vec3 half, float roughness) {
+float distributionGGX(vec3 normal, vec3 halfv, float roughness) {
     float roughnessSQ = roughness * roughness;
 
-    float ndoth = max(dot(normal, half), 0);
+    float ndoth = max(dot(normal, halfv), 0);
     float coefficiant = ndoth * ndoth * (roughnessSQ - 1) + 1;
 
-    return roughnessSQ / (PI * coefficiant * coefficiant);
+    return roughnessSQ / max(PI * coefficiant * coefficiant, 0.015);
 }
 
 float geometryGGXSchlickBeckmann(float ndotvec, float roughness) {
@@ -35,8 +37,8 @@ float geometrySmith(float cosThetai, float cosThetao, float roughness) {
     return geometryGGXSchlickBeckmann(cosThetai, roughness) * geometryGGXSchlickBeckmann(cosThetao, roughness);
 }
 
-vec3 fresnelSchlick(vec3 view, vec3 half, vec3 f0) {
-    return f0 + (1 - f0) * pow(1 - max(dot(view, half), 0), 5);
+vec3 fresnelSchlick(vec3 view, vec3 halfv, vec3 f0) {
+    return f0 + (1 - f0) * pow(1 - max(dot(view, halfv), 0), 5);
 }
 
 // Single light for now
@@ -52,25 +54,30 @@ void main()
     float metalness = normalM.w;
     float roughness = albedoR.w;
 
-    vec3 wi = lightVector(light, position);
-    vec3 wo = normalize(cameraPosition - position);
-    vec3 half = normalize(wo + wi);
+    fragColor = vec4(0);
 
-    float cosThetai = max(dot(normal, wi), 0);
-    float cosThetao = max(dot(normal, wo), 0);
+    for(int i = 0; i < lightCount; ++i) {
+        vec3 wi = lightVector(lights[i], position);
+        vec3 wo = normalize(cameraPosition - position);
+        vec3 halfv = normalize(wo + wi);
 
-    vec3 Li = light.color * attenuation(light, wi, position);
+        float cosThetai = max(dot(normal, wi), 0);
+        float cosThetao = max(dot(normal, wo), 0);
+
+        vec3 Li = lights[i].color * attenuation(lights[i], wi, position);
     
-    vec3 f0 = mix(vec3(0.04), albedo, metalness);
+        vec3 f0 = mix(vec3(0.04), albedo, metalness);
     
-    vec3 fresnel = fresnelSchlick(wo, half, f0);
-    vec3 kd = (1 - fresnel) * (1 - metalness);
+        vec3 fresnel = fresnelSchlick(wo, halfv, f0);
+        vec3 kd = (1 - fresnel) * (1 - metalness);
     
-    vec3 cookTorrance = distributionGGX(normal, half, roughness) * fresnel * geometrySmith(cosThetai, cosThetao, roughness);
-    vec3 lambert = albedo / PI;
+        vec3 cookTorrance = distributionGGX(normal, halfv, roughness) * fresnel * geometrySmith(cosThetai, cosThetao, roughness);
+        vec3 lambert = albedo / PI;
 
-    float denominator = max(4 * max(dot(wo, normal), 0) * max(dot(wi, normal), 0), 0.004);
+        float denominator = max(4 * max(dot(wo, normal), 0) * max(dot(wi, normal), 0), 0.004);
 
-    fragColor = vec4((kd * lambert + cookTorrance / denominator) * Li * cosThetai, 1.f);
-    fragColor = fragColor / (fragColor + 1);
+        fragColor += vec4((kd * lambert + cookTorrance / denominator) * Li * cosThetai, 1);
+    }
+
+    fragColor.rgb = fragColor.rgb / (fragColor.rgb + 1);
 }

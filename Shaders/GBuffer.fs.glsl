@@ -37,7 +37,7 @@ void main() {
 
     float alpha = material.hasAlphaMap ? texture(material.alphaMap, textureCoord).x : material.alpha;
 
-    if(alpha < 0.1)
+    if(alpha < 0.15)
         discard;
 
     float metalness = material.hasMetalnessMap ? texture(material.metalnessMap, textureCoord).x : material.metalness;

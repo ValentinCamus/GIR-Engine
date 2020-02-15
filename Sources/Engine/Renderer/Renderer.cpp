@@ -121,7 +121,7 @@ namespace gir
 
         switch (m_renderMode)
         {
-            case RenderMode::DEBUG:
+            case ERenderMode::DEBUG:
             {
                 shader = m_shaderManager.GetShader(EShaderType::DEBUG);
 
@@ -150,7 +150,7 @@ namespace gir
 
                 break;
             }
-            case RenderMode::RSM:
+            case ERenderMode::DIRECT:
             {
                 shader = m_shaderManager.GetShader(EShaderType::DEFERRED_LIGHTING);
 
@@ -164,7 +164,12 @@ namespace gir
                 vao->Bind();
 
                 shader->SetUniform("cameraPosition", Vec3f(camera.GetTransform()[3]));
-                scene->GetLights()[0]->SetUniforms("light", shader);
+
+                const auto& lights = scene->GetLights();
+                shader->SetUniform("lightCount", static_cast<unsigned>(lights.size()));
+
+                for (int i = 0; i < static_cast<int>(lights.size()); ++i)
+                    lights[i]->SetUniforms("lights[" + std::to_string(i) + "]", shader);
 
                 for (int i = 0; i < m_GBuffer.TextureCount(); ++i)
                 {
@@ -195,6 +200,6 @@ namespace gir
 
     void Renderer::ResizeGBuffer(unsigned width, unsigned height) { m_GBuffer.Resize(width, height); }
 
-    void Renderer::SetRenderMode(RenderMode mode) { m_renderMode = mode; }
+    void Renderer::SetRenderMode(ERenderMode mode) { m_renderMode = mode; }
 
 } // namespace gir
