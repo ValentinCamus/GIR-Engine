@@ -65,20 +65,22 @@ namespace gir
         unsigned width  = m_viewport.GetFramebuffer()->GetTexture(0)->GetWidth();
         unsigned height = m_viewport.GetFramebuffer()->GetTexture(0)->GetHeight();
 
-        Camera camera("Main camera", Mat4f(1.f), width, height);
+        Mat4f cameraTransform(1.f);
+        cameraTransform[3] = {0.f, 10.f, 0.f, 1.f};
+        Camera camera("Main camera", cameraTransform, width, height);
 
         Mat4f entityTransform(0.025f);
         entityTransform[3] = {0.f, 0.f, 0.f, 1.f};
 
         Mat4f lightTransform(glm::rotate(-PI / 3, Vec3f(1.f, 0.f, 0.f)));
-        lightTransform[3] = {0.f, 25.f, 0.f, 1.f};
+        lightTransform[3] = {0.f, 45.f, 0.f, 1.f};
 
         std::vector<std::unique_ptr<Light>> lights;
         lights.emplace_back(
-            std::make_unique<DirectionnalLight>("Sunlight", lightTransform, Vec3f {0.85f, 0.8f, 0.85f}));
+            std::make_unique<DirectionnalLight>("Sunlight", lightTransform, Vec3f {1.85f, 1.65f, 1.2f}));
 
-        lightTransform[3] = {0.f, 1.f, 0.5f, 1.f};
-        lights.emplace_back(std::make_unique<PointLight>("Point light 1", lightTransform, Vec3f {0.85f, 0.8f, 0.85f}));
+        lightTransform[3] = {0.f, 6.5f, 0.f, 1.f};
+        lights.emplace_back(std::make_unique<PointLight>("Point light 1", lightTransform, Vec3f {150.f, 130.f, 108.f}));
 
         m_scene = std::make_unique<Scene>(
             camera, std::move(lights), std::vector<Entity> {Entity("Scene 1", sponza, entityTransform)});

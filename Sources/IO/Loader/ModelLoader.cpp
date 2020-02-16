@@ -15,7 +15,7 @@ namespace gir
 
         // Read file via Assimp
         Assimp::Importer importer;
-        unsigned int flags   = aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace;
+        unsigned int flags   = aiProcess_FlipUVs | aiProcess_OptimizeMeshes | aiProcess_GenUVCoords;
         const aiScene* scene = importer.ReadFile(filepath, flags);
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
@@ -48,6 +48,7 @@ namespace gir
         // Data to fill
         std::vector<unsigned> indices;
         std::vector<Mesh::Vertex> vertices;
+        vertices.reserve(mesh->mNumVertices);
 
         // Walk through each of the mesh's vertices
         for (unsigned int i = 0; i < mesh->mNumVertices; ++i)
@@ -77,19 +78,7 @@ namespace gir
             else
                 texCoord = {0.0f, 0.0f};
 
-            // tangent
-            Vec3f tangent;
-            tangent.x = mesh->mTangents[i].x;
-            tangent.y = mesh->mTangents[i].y;
-            tangent.z = mesh->mTangents[i].z;
-
-            // bi-tangent
-            Vec3f bitangent;
-            bitangent.x = mesh->mBitangents[i].x;
-            bitangent.y = mesh->mBitangents[i].y;
-            bitangent.z = mesh->mBitangents[i].z;
-
-            vertices.push_back({vertex, normal, texCoord, tangent, bitangent});
+            vertices.push_back({vertex, normal, texCoord});
         }
 
         // Now wak through each of the mesh's faces (a face is a mesh its triangle)
@@ -107,7 +96,7 @@ namespace gir
         if (Mesh* mesh = Manager<Mesh>::Get(name))
             return {material, mesh};
         else
-            return {material, Manager<Mesh>::Add(name, vertices, indices)};
+            return {material, Manager<Mesh>::Add(name, std::move(indices), std::move(vertices))};
     }
 
     Material* ModelLoader::LoadMaterial(aiMesh* mesh, const aiScene* scene, Model* model)
@@ -118,18 +107,14 @@ namespace gir
 
         auto* material = Manager<Material>::Add(aiMat->GetName().C_Str());
 
-        // 1. normal maps
-        std::vector<Texture2D*> normalMaps = LoadMaterialTextures(aiMat, aiTextureType_HEIGHT);
-        // 2. albedo maps
+        // 1. albedo maps
         std::vector<Texture2D*> albedoMaps = LoadMaterialTextures(aiMat, aiTextureType_DIFFUSE);
-        // 3. metalness maps
+        // 2. metalness maps
         std::vector<Texture2D*> metalnessMaps = LoadMaterialTextures(aiMat, aiTextureType_AMBIENT);
-        // 4. roughness maps
+        // 3. roughness maps
         std::vector<Texture2D*> roughnessMaps = LoadMaterialTextures(aiMat, aiTextureType_SHININESS);
-        // 5. alpha maps
+        // 4. alpha maps
         std::vector<Texture2D*> alphaMaps = LoadMaterialTextures(aiMat, aiTextureType_OPACITY);
-
-        if (!normalMaps.empty()) material->SetAttribute(Material::EAttribute::NORMAL, normalMaps[0]);
 
         if (!albedoMaps.empty())
             material->SetAttribute(Material::EAttribute::ALBEDO, albedoMaps[0]);
@@ -163,7 +148,7 @@ namespace gir
         }
 
         if (!alphaMaps.empty())
-            material->SetAttribute(Material::EAttribute::ALPHA, roughnessMaps[0]);
+            material->SetAttribute(Material::EAttribute::ALPHA, alphaMaps[0]);
         else
         {
             float alpha;

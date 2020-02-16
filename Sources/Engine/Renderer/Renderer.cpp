@@ -47,15 +47,15 @@ namespace gir
     {
         // Creating screen quad
         std::vector<Mesh::Vertex> vertices = {
-            {{1.f, 1.f, 0.0f}, Vec3f(), {1.f, 1.f}, Vec3f(), Vec3f()},
-            {{1.f, -1.f, 0.0f}, Vec3f(), {1.f, 0.f}, Vec3f(), Vec3f()},
-            {{-1.f, -1.f, 0.0f}, Vec3f(), {0.f, 0.f}, Vec3f(), Vec3f()},
-            {{-1.f, 1.f, 0.0f}, Vec3f(), {0.f, 1.f}, Vec3f(), Vec3f()},
+            {{1.f, 1.f, 0.0f}, Vec3f(), {1.f, 1.f}},
+            {{1.f, -1.f, 0.0f}, Vec3f(), {1.f, 0.f}},
+            {{-1.f, -1.f, 0.0f}, Vec3f(), {0.f, 0.f}},
+            {{-1.f, 1.f, 0.0f}, Vec3f(), {0.f, 1.f}},
         };
 
         std::vector<unsigned> indices = {1, 0, 2, 2, 0, 3};
 
-        m_quad = std::make_unique<Mesh>("Deferred shading quad", std::move(vertices), std::move(indices));
+        m_quad = std::make_unique<Mesh>("Deferred shading quad", std::move(indices), std::move(vertices));
 
         // Filling GBuffer with textures
         m_GBuffer.Bind();
@@ -77,8 +77,6 @@ namespace gir
         GIR_ASSERT(m_GBuffer.IsComplete(), "Incomplete GBuffer framebuffer");
 
         m_GBuffer.Unbind();
-
-        glEnable(GL_CULL_FACE);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     }

@@ -1,6 +1,6 @@
 #version 410 core
 
-#define MAX_LIGHTS 4
+#define MAX_LIGHTS 5
 #define PI 3.14159265359f
 
 #include "Light.glsl"
@@ -23,7 +23,7 @@ float distributionGGX(vec3 normal, vec3 halfv, float roughness) {
     float ndoth = max(dot(normal, halfv), 0);
     float coefficiant = ndoth * ndoth * (roughnessSQ - 1) + 1;
 
-    return roughnessSQ / max(PI * coefficiant * coefficiant, 0.015);
+    return roughnessSQ / (PI * coefficiant * coefficiant);
 }
 
 float geometryGGXSchlickBeckmann(float ndotvec, float roughness) {
@@ -41,7 +41,6 @@ vec3 fresnelSchlick(vec3 view, vec3 halfv, vec3 f0) {
     return f0 + (1 - f0) * pow(1 - max(dot(view, halfv), 0), 5);
 }
 
-// Single light for now
 void main()
 {
     vec4 normalM = texture(normalMetalness, textureCoordinates);
@@ -61,8 +60,8 @@ void main()
         vec3 wo = normalize(cameraPosition - position);
         vec3 halfv = normalize(wo + wi);
 
-        float cosThetai = max(dot(normal, wi), 0);
-        float cosThetao = max(dot(normal, wo), 0);
+        float cosThetai = max(dot(normal, wi), 0.004);
+        float cosThetao = max(dot(normal, wo), 0.004);
 
         vec3 Li = lights[i].color * attenuation(lights[i], wi, position);
     
@@ -74,7 +73,7 @@ void main()
         vec3 cookTorrance = distributionGGX(normal, halfv, roughness) * fresnel * geometrySmith(cosThetai, cosThetao, roughness);
         vec3 lambert = albedo / PI;
 
-        float denominator = max(4 * max(dot(wo, normal), 0) * max(dot(wi, normal), 0), 0.004);
+        float denominator = 4 * cosThetai * cosThetao;
 
         fragColor += vec4((kd * lambert + cookTorrance / denominator) * Li * cosThetai, 1);
     }

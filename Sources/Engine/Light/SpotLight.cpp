@@ -19,6 +19,7 @@ namespace gir
     {
         Light::SetUniforms(name, shader);
         shader->SetUniform(name + ".type", static_cast<unsigned>(2));
+        shader->SetUniform(name + ".position", Vec3f(m_transform[3]));
         shader->SetUniform(name + ".direction", Vec3f(-m_transform[2]));
         shader->SetUniform(name + ".innerAngle", m_innerAngle);
         shader->SetUniform(name + ".outerAngle", m_outerAngle);

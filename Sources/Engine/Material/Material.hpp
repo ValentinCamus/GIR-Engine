@@ -12,11 +12,10 @@ namespace gir
     public:
         enum class EAttribute
         {
-            NORMAL    = 0,
-            ALBEDO    = 1,
-            METALNESS = 2,
-            ROUGHNESS = 3,
-            ALPHA     = 4,
+            ALBEDO    = 0,
+            METALNESS = 1,
+            ROUGHNESS = 2,
+            ALPHA     = 3,
             EAttributeCount
         };
 
@@ -46,13 +45,6 @@ namespace gir
 
                 switch (static_cast<EAttribute>(i))
                 {
-                    case EAttribute::NORMAL:
-                        shader->SetUniform(name + ".hasNormalMap", static_cast<bool>(attr.texture));
-
-                        if (attr.texture) shader->SetUniform(name + ".normalMap", i);
-
-                        break;
-
                     case EAttribute::ALBEDO:
                         shader->SetUniform(name + ".hasAlbedoMap", static_cast<bool>(attr.texture));
 

@@ -14,13 +14,11 @@ namespace gir
         {
             Vec3f position;
             Vec3f normal;
-            Vec2f textureCoordinate;
-            Vec3f tangent;
-            Vec3f bitangent;
+            Vec2f textureCoordinates;
         };
 
     public:
-        Mesh(const std::string &name, std::vector<Vertex> vertices, std::vector<unsigned> indices);
+        Mesh(const std::string &name, std::vector<unsigned> &&indices, std::vector<Vertex> &&vertices);
 
         ~Mesh() override = default;
 

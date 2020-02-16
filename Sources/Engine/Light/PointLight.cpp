@@ -13,6 +13,7 @@ namespace gir
     {
         Light::SetUniforms(name, shader);
         shader->SetUniform(name + ".type", static_cast<unsigned>(0));
+        shader->SetUniform(name + ".position", Vec3f(m_transform[3]));
     }
 
     const Mat4f& PointLight::GetProjection() const { return m_projection; }

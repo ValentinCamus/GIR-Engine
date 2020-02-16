@@ -12,13 +12,11 @@ layout (location = 2) out vec4 outAlbedoRoughness;
 
 
 struct Material {
-    bool hasNormalMap;
     bool hasAlbedoMap;
     bool hasMetalnessMap;
     bool hasRoughnessMap;
     bool hasAlphaMap;
 
-    sampler2D normalMap;
     sampler2D albedoMap;
     sampler2D metalnessMap;
     sampler2D roughnessMap;
@@ -43,6 +41,6 @@ void main() {
     float metalness = material.hasMetalnessMap ? texture(material.metalnessMap, textureCoord).x : material.metalness;
     float roughness = material.hasRoughnessMap ? texture(material.roughnessMap, textureCoord).x : material.roughness;
     
-    outNormalMetalness = vec4((material.hasNormalMap ? mat3(tangent, bitangent, normal) * normalize(texture(material.normalMap, textureCoord).xyz) : normal), metalness);
+    outNormalMetalness = vec4(normal, metalness);
     outAlbedoRoughness = vec4(material.hasAlbedoMap ? texture(material.albedoMap, textureCoord).xyz : material.albedo, roughness);
 }

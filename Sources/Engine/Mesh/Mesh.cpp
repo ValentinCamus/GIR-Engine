@@ -4,10 +4,10 @@
 
 namespace gir
 {
-    Mesh::Mesh(const std::string &name, std::vector<Vertex> vertices, std::vector<unsigned> indices)
-        : Component(name)
-        , m_indices(std::move(indices))
-        , m_vertices(std::move(vertices))
+    Mesh::Mesh(const std::string& name, std::vector<unsigned>&& indices, std::vector<Vertex>&& vertices) :
+        Component(name),
+        m_indices(std::move(indices)),
+        m_vertices(std::move(vertices))
     {
         m_vao.Bind();
 
@@ -26,33 +26,22 @@ namespace gir
 
         // Vertex positions
         glEnableVertexAttribArray(0);
-        void* positionOffset = (void*) offsetof(Vertex, position);
+        void* positionOffset = (void*)offsetof(Vertex, position);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), positionOffset);
 
         // Vertex normals
         glEnableVertexAttribArray(1);
-        void* normalOffset = (void*) offsetof(Vertex, normal);
+        void* normalOffset = (void*)offsetof(Vertex, normal);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), normalOffset);
 
         // Vertex texture coords
         glEnableVertexAttribArray(2);
-        void* texCoordOffset =  (void*) offsetof(Vertex, textureCoordinate);
+        void* texCoordOffset = (void*)offsetof(Vertex, textureCoordinates);
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), texCoordOffset);
-
-        // Vertex tangent
-        glEnableVertexAttribArray(3);
-        void* tangentOffset =  (void*) offsetof(Vertex, tangent);
-        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), tangentOffset);
-
-        // Vertex bitangent
-        glEnableVertexAttribArray(4);
-        void* biTangentOffset =  (void*) offsetof(Vertex, bitangent);
-        glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), biTangentOffset);
 
         m_vao.SetIndexBufferId(ibo);
         m_vao.AddVertexBufferId(vbo);
 
         m_vao.Unbind();
     }
-
 } // namespace gir
