@@ -37,6 +37,9 @@ namespace gir
         /// @return: the window's name/title.
         inline const char* GetName() const { return m_name; }
 
+        /// @return: the time elapsed since the window was initialized.
+        inline double GetTime() const { return glfwGetTime(); }
+
     private:
         const char* m_name = "Untitled";
 

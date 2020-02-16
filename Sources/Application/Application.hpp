@@ -65,7 +65,8 @@ namespace gir
     private:
         bool m_isRunning = false;
 
-        float m_time = 0.0f;
+        /// The timer measures time elapsed since the application was initialized.
+        double m_time = 0.0f;
 
         Window m_window = Window();
 

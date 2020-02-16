@@ -56,4 +56,22 @@ namespace gir
     {
         return (value - rangeMin) * (newRangeMax - newRangeMin) / (rangeMax - rangeMin + newRangeMin);
     }
+
+    /// @return: A transform matrix from the world location, the rotation and the 3D scale.
+    inline Mat4f MakeTransform(const Vec3f& location = Vec3f(0.0f),
+                               const Vec3f& rotation = Vec3f(0.0f),
+                               const Vec3f& scale    = Vec3f(1.0f))
+    {
+        Mat4f matrix(1.0f);
+
+        matrix = glm::translate(matrix, location);
+
+        matrix = glm::rotate(matrix, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+        matrix = glm::rotate(matrix, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+        matrix = glm::rotate(matrix, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+
+        matrix = glm::scale(matrix, scale);
+
+        return matrix;
+    }
 } // namespace gir

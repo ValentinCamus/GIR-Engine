@@ -20,9 +20,9 @@ namespace gir
     class Renderer
     {
     public:
-        Renderer(Framebuffer *defaultFramebuffer, unsigned width, unsigned height);
+        Renderer(unsigned width, unsigned height);
 
-        void Draw(const Scene *scene);
+        void Draw(Framebuffer* framebuffer, const Scene *scene);
 
         void ResizeGBuffer(unsigned width, unsigned height);
 
@@ -30,8 +30,6 @@ namespace gir
 
     private:
         ShaderManager m_shaderManager;
-
-        Framebuffer *m_defaultFramebuffer;
 
         Framebuffer m_GBuffer;
 

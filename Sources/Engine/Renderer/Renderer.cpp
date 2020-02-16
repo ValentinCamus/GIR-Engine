@@ -5,34 +5,9 @@
 #include "Engine/Mesh/Mesh.hpp"
 #include "Engine/Light/Light.hpp"
 
-#define GL_CHECK_ERROR()                                            \
-    {                                                               \
-        GLenum error;                                               \
-        while ((error = glGetError()) != GL_NO_ERROR)               \
-        {                                                           \
-            std::string errorMessage;                               \
-            switch (error)                                          \
-            {                                                       \
-                case GL_INVALID_ENUM:                               \
-                    errorMessage = "Invalid enum";                  \
-                    break;                                          \
-                case GL_INVALID_VALUE:                              \
-                    errorMessage = "Invalid value";                 \
-                    break;                                          \
-                case GL_INVALID_OPERATION:                          \
-                    errorMessage = "Invalid operation";             \
-                    break;                                          \
-                case GL_INVALID_FRAMEBUFFER_OPERATION:              \
-                    errorMessage = "Invalid framebuffer operation"; \
-                    break;                                          \
-            }                                                       \
-            Logger::Error(errorMessage);                            \
-        }                                                           \
-    }
-
 namespace gir
 {
-    Renderer::Renderer(Framebuffer* defaultFramebuffer, unsigned width, unsigned height) :
+    Renderer::Renderer(unsigned width, unsigned height) :
         m_shaderManager({{EShaderType::GBUFFER,
                           {{GL_VERTEX_SHADER, PROJECT_SOURCE_DIR "/Shaders/GBuffer.vs.glsl"},
                            {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR "/Shaders/GBuffer.fs.glsl"}}},
@@ -42,7 +17,6 @@ namespace gir
                          {EShaderType::DEBUG,
                           {{GL_VERTEX_SHADER, PROJECT_SOURCE_DIR "/Shaders/Debug.vs.glsl"},
                            {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR "/Shaders/Debug.fs.glsl"}}}}),
-        m_defaultFramebuffer(defaultFramebuffer),
         m_GBuffer("GBuffer")
     {
         // Creating screen quad
@@ -81,7 +55,7 @@ namespace gir
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     }
 
-    void Renderer::Draw(const Scene* scene)
+    void Renderer::Draw(Framebuffer* framebuffer, const Scene* scene)
     {
         auto* shader = m_shaderManager.GetShader(EShaderType::GBUFFER);
 
@@ -95,8 +69,8 @@ namespace gir
 
         for (const auto& entity : scene->GetEntities())
         {
-            shader->SetUniform("model", entity.GetTransform());
-            auto* model = entity.GetModel();
+            shader->SetUniform("model", entity->GetTransform());
+            auto* model = entity->GetModel();
 
             for (int i = 0; i < static_cast<int>(model->MaterialCount()); ++i)
             {
@@ -125,7 +99,7 @@ namespace gir
 
                 shader->Bind();
 
-                m_defaultFramebuffer->Bind();
+                framebuffer->Bind();
                 glClear(GL_COLOR_BUFFER_BIT);
                 glDisable(GL_DEPTH_TEST);
 
@@ -143,7 +117,7 @@ namespace gir
                 glEnable(GL_DEPTH_TEST);
 
                 vao->Unbind();
-                m_defaultFramebuffer->Unbind();
+                framebuffer->Unbind();
                 shader->Unbind();
 
                 break;
@@ -154,7 +128,7 @@ namespace gir
 
                 shader->Bind();
 
-                m_defaultFramebuffer->Bind();
+                framebuffer->Bind();
                 glClear(GL_COLOR_BUFFER_BIT);
                 glDisable(GL_DEPTH_TEST);
 
@@ -183,7 +157,7 @@ namespace gir
                 glEnable(GL_DEPTH_TEST);
 
                 vao->Unbind();
-                m_defaultFramebuffer->Unbind();
+                framebuffer->Unbind();
                 shader->Unbind();
 
                 break;
