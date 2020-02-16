@@ -41,6 +41,7 @@ namespace gir
         inline double GetTime() const { return glfwGetTime(); }
 
     private:
+        /// Window's title.
         const char* m_name = "Untitled";
 
         GLFWwindow* m_window = nullptr;

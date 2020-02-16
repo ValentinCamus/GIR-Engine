@@ -1,14 +1,8 @@
 #include "Application.hpp"
 
-#include <Engine/Shader/Shader.hpp>
-#include <Engine/Mesh/VertexArrayObject.hpp>
-#include <Engine/Manager/Manager.hpp>
-#include <IO/Loader/TextureLoader.hpp>
-#include <Engine/Texture/Texture2D.hpp>
 #include <IO/FileSystem/FileSystem.hpp>
 #include <IO/Loader/ModelLoader.hpp>
 #include <Engine/Camera/Camera.hpp>
-#include <Engine/Camera/CameraDebug.hpp>
 #include <Engine/Light/DirectionalLight.hpp>
 #include <Engine/Light/PointLight.hpp>
 
@@ -103,7 +97,7 @@ namespace gir
     {
         m_cameraController.SetCamera(&m_scene->GetCamera());
 
-        m_cameraController.SetMousePos(m_input.GetMouseX(), m_input.GetMouseY());
+        m_cameraController.SetMousePosition(m_input.GetMouseX(), m_input.GetMouseY());
 
         if (m_input.IsKeyPressed(GLFW_KEY_W)) m_cameraController.MoveForward(deltaTime);
         if (m_input.IsKeyPressed(GLFW_KEY_S)) m_cameraController.MoveBackward(deltaTime);

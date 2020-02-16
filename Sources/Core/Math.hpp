@@ -57,7 +57,7 @@ namespace gir
         return (value - rangeMin) * (newRangeMax - newRangeMin) / (rangeMax - rangeMin + newRangeMin);
     }
 
-    /// @return: A transform matrix from the world location, the rotation and the 3D scale.
+    /// @return: Create a transform matrix from the world location, rotation and the 3D scale.
     inline Mat4f MakeTransform(const Vec3f& location = Vec3f(0.0f),
                                const Vec3f& rotation = Vec3f(0.0f),
                                const Vec3f& scale    = Vec3f(1.0f))

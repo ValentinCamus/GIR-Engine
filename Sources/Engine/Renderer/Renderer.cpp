@@ -143,7 +143,7 @@ namespace gir
                 for (int i = 0; i < static_cast<int>(lights.size()); ++i)
                     lights[i]->SetUniforms("lights[" + std::to_string(i) + "]", shader);
 
-                for (int i = 0; i < m_GBuffer.TextureCount(); ++i)
+                for (int i = 0; i < m_GBuffer.GetTextureCount(); ++i)
                 {
                     auto* texture = m_GBuffer.GetTexture(i);
                     texture->Bind(i);
@@ -152,7 +152,7 @@ namespace gir
 
                 glDrawElements(GL_TRIANGLES, m_quad->GetIndices().size(), GL_UNSIGNED_INT, nullptr);
 
-                for (int i = 0; i < m_GBuffer.TextureCount(); ++i) { m_GBuffer.GetTexture(i)->Unbind(); }
+                for (int i = 0; i < m_GBuffer.GetTextureCount(); ++i) { m_GBuffer.GetTexture(i)->Unbind(); }
 
                 glEnable(GL_DEPTH_TEST);
 

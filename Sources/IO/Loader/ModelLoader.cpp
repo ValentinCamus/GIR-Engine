@@ -11,7 +11,7 @@ namespace gir
         Manager<Model>::Clear();
 
         std::string name = filepath.substr(filepath.find_last_of('/') + 1);
-        auto* model      = Manager<Model>::Add(name);
+        auto* model = Manager<Model>::Add(name);
 
         // Read file via Assimp
         Assimp::Importer importer;
@@ -43,37 +43,37 @@ namespace gir
         for (unsigned int i = 0; i < node->mNumChildren; ++i) { ProcessAssimpNode(node->mChildren[i], scene, model); }
     }
 
-    Element ModelLoader::ProcessAssimpMesh(aiMesh* mesh, const aiScene* scene, Model* model)
+    Element ModelLoader::ProcessAssimpMesh(aiMesh* aiMesh, const aiScene* scene, Model* model)
     {
         // Data to fill
         std::vector<unsigned> indices;
         std::vector<Mesh::Vertex> vertices;
-        vertices.reserve(mesh->mNumVertices);
+        vertices.reserve(aiMesh->mNumVertices);
 
         // Walk through each of the mesh's vertices
-        for (unsigned int i = 0; i < mesh->mNumVertices; ++i)
+        for (unsigned int i = 0; i < aiMesh->mNumVertices; ++i)
         {
             // Positions
             Vec3f vertex;
-            vertex.x = mesh->mVertices[i].x;
-            vertex.y = mesh->mVertices[i].y;
-            vertex.z = mesh->mVertices[i].z;
+            vertex.x = aiMesh->mVertices[i].x;
+            vertex.y = aiMesh->mVertices[i].y;
+            vertex.z = aiMesh->mVertices[i].z;
 
             // Normals
             Vec3f normal;
-            normal.x = mesh->mNormals[i].x;
-            normal.y = mesh->mNormals[i].y;
-            normal.z = mesh->mNormals[i].z;
+            normal.x = aiMesh->mNormals[i].x;
+            normal.y = aiMesh->mNormals[i].y;
+            normal.z = aiMesh->mNormals[i].z;
 
             // Texture coordinates
             Vec2f texCoord;
-            if (mesh->mTextureCoords[0]) // Does the mesh contain texture coordinates?
+            if (aiMesh->mTextureCoords[0]) // Does the mesh contain texture coordinates?
             {
                 // A vertex can contain up to 8 different texture coordinates.
                 // We thus make the assumption that we won't use models where a vertex
                 // can have multiple texture coordinates so we always take the first set (0).
-                texCoord.x = mesh->mTextureCoords[0][i].x;
-                texCoord.y = mesh->mTextureCoords[0][i].y;
+                texCoord.x = aiMesh->mTextureCoords[0][i].x;
+                texCoord.y = aiMesh->mTextureCoords[0][i].y;
             }
             else
                 texCoord = {0.0f, 0.0f};
@@ -81,31 +81,38 @@ namespace gir
             vertices.push_back({vertex, normal, texCoord});
         }
 
-        // Now wak through each of the mesh's faces (a face is a mesh its triangle)
-        // and retrieve the corresponding vertex indices.
-        for (unsigned int i = 0; i < mesh->mNumFaces; ++i)
+        // Now walk through each of the mesh's faces and retrieve the corresponding vertex indices.
+        for (unsigned int i = 0; i < aiMesh->mNumFaces; ++i)
         {
-            aiFace face = mesh->mFaces[i];
+            aiFace face = aiMesh->mFaces[i];
             // Retrieve all indices of the face and store them in the indices vector
             for (unsigned int j = 0; j < face.mNumIndices; ++j) { indices.push_back(face.mIndices[j]); }
         }
 
-        Material* material = LoadMaterial(mesh, scene, model);
-        std::string name   = mesh->mName.C_Str();
+        Material* material = LoadMaterial(aiMesh, scene, model);
+        std::string name   = aiMesh->mName.C_Str();
 
-        if (Mesh* mesh = Manager<Mesh>::Get(name))
+        Mesh* mesh = Manager<Mesh>::Get(name);
+        if (mesh)
+        {
             return {material, mesh};
+        }
         else
+        {
             return {material, Manager<Mesh>::Add(name, std::move(indices), std::move(vertices))};
+        }
     }
 
     Material* ModelLoader::LoadMaterial(aiMesh* mesh, const aiScene* scene, Model* model)
     {
         aiMaterial* aiMat = scene->mMaterials[mesh->mMaterialIndex];
+        const char* materialName = aiMat->GetName().C_Str();
 
-        if (Material* mat = Manager<Material>::Get(aiMat->GetName().C_Str())) return mat;
+        Material* material = Manager<Material>::Get(materialName);
 
-        auto* material = Manager<Material>::Add(aiMat->GetName().C_Str());
+        if (material) return material;
+
+        material = Manager<Material>::Add(materialName);
 
         // 1. albedo maps
         std::vector<Texture2D*> albedoMaps = LoadMaterialTextures(aiMat, aiTextureType_DIFFUSE);
@@ -117,7 +124,9 @@ namespace gir
         std::vector<Texture2D*> alphaMaps = LoadMaterialTextures(aiMat, aiTextureType_OPACITY);
 
         if (!albedoMaps.empty())
+        {
             material->SetAttribute(Material::EAttribute::ALBEDO, albedoMaps[0]);
+        }
         else
         {
             aiColor3D color;
@@ -128,27 +137,33 @@ namespace gir
         }
 
         if (!metalnessMaps.empty())
+        {
             material->SetAttribute(Material::EAttribute::METALNESS, metalnessMaps[0]);
+        }
         else
         {
             int metalness;
             aiMat->Get(AI_MATKEY_COLOR_AMBIENT, metalness);
 
-            material->SetAttribute(Material::EAttribute::ALBEDO, Vec4f(metalness));
+            material->SetAttribute(Material::EAttribute::METALNESS, Vec4f(metalness));
         }
 
         if (!roughnessMaps.empty())
+        {
             material->SetAttribute(Material::EAttribute::ROUGHNESS, roughnessMaps[0]);
+        }
         else
         {
             int roughness;
             aiMat->Get(AI_MATKEY_SHININESS, roughness);
 
-            material->SetAttribute(Material::EAttribute::ALBEDO, Vec4f(roughness));
+            material->SetAttribute(Material::EAttribute::ROUGHNESS, Vec4f(roughness));
         }
 
         if (!alphaMaps.empty())
+        {
             material->SetAttribute(Material::EAttribute::ALPHA, alphaMaps[0]);
+        }
         else
         {
             float alpha;

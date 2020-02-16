@@ -16,7 +16,7 @@ namespace gir
     public:
         Light(const std::string &name, const Mat4f &transform, const Vec3f &color);
 
-        virtual ~Light() = default;
+        ~Light() override = default;
 
         // TODO
         // void DrawShadowMap(const Scene& scene);
