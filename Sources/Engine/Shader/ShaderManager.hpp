@@ -1,8 +1,7 @@
 #pragma once
 
-#include <glad/glad.h>
-
 #include <Core/Core.hpp>
+#include <Engine/OpenGL/OpenGL.hpp>
 #include "Shader.hpp"
 
 namespace gir
@@ -12,7 +11,7 @@ namespace gir
     public:
         ShaderManager() = default;
 
-        ShaderManager(const std::unordered_map<EShaderType, std::unordered_map<GLenum, std::string>> &sources);
+        explicit ShaderManager(const std::unordered_map<EShaderType, std::unordered_map<GLenum, std::string>> &sources);
 
         inline Shader* GetShader(EShaderType type);
 

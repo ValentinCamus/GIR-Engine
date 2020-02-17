@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Core/Core.hpp>
+
 namespace gir
 {
     class ImGuiWidget

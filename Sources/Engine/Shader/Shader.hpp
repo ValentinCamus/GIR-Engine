@@ -1,10 +1,8 @@
 #pragma once
 
-#include <glad/glad.h>
-
 #include <Core/Core.hpp>
-
-#include "Engine/Component/OpenGLComponent.hpp"
+#include <Engine/OpenGL/OpenGL.hpp>
+#include <Engine/Component/OpenGLComponent.hpp>
 
 namespace gir
 {
@@ -26,7 +24,7 @@ namespace gir
 
         explicit Shader(const std::unordered_map<GLenum, std::string> &sources);
 
-        void operator=(Shader &&shader) noexcept;
+        Shader& operator=(Shader &&shader) noexcept;
 
         ~Shader() override;
 
@@ -47,8 +45,6 @@ namespace gir
         inline void SetUniform(const std::string &name, const Vec4f &value);
 
         inline void SetUniform(const std::string &name, const Mat4f &value);
-
-        static const char *prefix;
 
     private:
         unsigned ParseGLSL(GLenum shaderType, const std::string &filename);

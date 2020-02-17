@@ -15,11 +15,13 @@ namespace gir
         using ImGuiWidget::ImGuiWidget;
 
         /// Destructor.
-        ~ViewportWidget() override;
+        ~ViewportWidget() override = default;
 
         /// Initialize the widget.
         /// @warning: needs to be initialized after the renderer initialization (e.g glad).
         void Init(unsigned width, unsigned height);
+
+        void Shutdown();
 
         void Draw() override;
 

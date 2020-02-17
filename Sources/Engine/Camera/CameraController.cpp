@@ -105,11 +105,11 @@ namespace gir
         unsigned width  = m_camera->GetWidth();
         unsigned height = m_camera->GetHeight();
 
-        float x = xPos - m_xPrev + width / 2;
-        float y = yPos - m_yPrev + height / 2;
+        float x = xPos - m_prevMouseX + width / 2;
+        float y = yPos - m_prevMouseY + height / 2;
 
-        m_xPrev = xPos;
-        m_yPrev = yPos;
+        m_prevMouseX = xPos;
+        m_prevMouseY = yPos;
 
         // Map x and y to [-1, 1]
         Vec4f front(1 - 2 * x / width, 2 * y / height - 1, 0.f, 1.f);
@@ -126,9 +126,9 @@ namespace gir
         m_camera->SetTransform({right, up, -front, transform[3]});
     }
 
-    void CameraController::SetMousePos(float x, float y)
+    void CameraController::SetMousePosition(float x, float y)
     {
-        m_xPrev = x;
-        m_yPrev = y;
+        m_prevMouseX = x;
+        m_prevMouseY = y;
     }
 } // namespace gir

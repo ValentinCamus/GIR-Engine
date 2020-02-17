@@ -25,7 +25,7 @@ namespace gir
         ImGui::NewLine();
 
         ImGui::Text("Lighting mode:");
-        ImGui::ListBox("##modes", &m_selectedLightingMode, LIGHTING_MODES, IM_ARRAYSIZE(LIGHTING_MODES), 3);
+        ImGui::ListBox("##modes", &m_selectedLightingMode, LIGHTING_MODES, IM_ARRAYSIZE(LIGHTING_MODES), 4);
 
         ImGui::End();
     }

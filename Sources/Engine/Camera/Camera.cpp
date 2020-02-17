@@ -64,7 +64,7 @@ namespace gir
     {
         m_isProjectionDirty = false;
 
-        m_projection        = glm::perspective(m_vfov, float(m_width) / float(m_height), nearZ, farZ);
+        m_projection = glm::perspective(m_vfov, float(m_width) / float(m_height), nearZ, farZ);
         m_inverseProjection = glm::inverse(m_projection);
     }
 

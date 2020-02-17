@@ -4,10 +4,10 @@
 
 namespace gir
 {
-    class DirectionnalLight : public Light
+    class DirectionalLight : public Light
     {
     public:
-        DirectionnalLight(const std::string &name, const Mat4f &transform, const Vec3f &color);
+        DirectionalLight(const std::string &name, const Mat4f &transform, const Vec3f &color);
 
         void SetUniforms(const std::string &name, Shader *shader) override;
 
