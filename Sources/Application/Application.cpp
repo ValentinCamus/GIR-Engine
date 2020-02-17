@@ -91,6 +91,7 @@ namespace gir
     void Application::Prepare(float deltaTime)
     {
         m_cameraController.SetCamera(&m_scene->GetCamera());
+        m_cameraController.SetMousePos(m_input.GetMouseX(), m_input.GetMouseY());
 
         if (m_input.IsKeyPressed(GLFW_KEY_W)) m_cameraController.MoveForward(deltaTime);
         if (m_input.IsKeyPressed(GLFW_KEY_S)) m_cameraController.MoveBackward(deltaTime);
@@ -105,9 +106,6 @@ namespace gir
             unsigned height = m_viewport.GetFramebuffer()->GetTexture(0)->GetHeight();
             m_renderer      = std::make_unique<Renderer>(m_viewport.GetFramebuffer(), width, height);
         }
-
-        if (m_input.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_1))
-            m_cameraController.SetMousePos(m_input.GetMouseX(), m_input.GetMouseY());
     }
 
     void Application::Draw(float deltaTime)

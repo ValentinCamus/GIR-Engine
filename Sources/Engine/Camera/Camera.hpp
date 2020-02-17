@@ -24,6 +24,8 @@ namespace gir
 
         inline float GetVerticalFOV() const { return m_vfov; }
 
+        inline float GetHorizontalFOV() const { return m_vfov * m_width / m_height; }
+
         void SetWidth(unsigned width);
 
         void SetHeight(unsigned height);

@@ -101,29 +101,24 @@ namespace gir
     {
         if (!m_camera) return;
 
-        const Mat4f &transform(m_camera->GetTransform());
+        Mat4f transform(m_camera->GetTransform());
         unsigned width  = m_camera->GetWidth();
         unsigned height = m_camera->GetHeight();
 
-        float x = xPos - m_xPrev + width / 2;
-        float y = yPos - m_yPrev + height / 2;
+        float dx = (xPos - m_xPrev) / width;
+        float dy = (yPos - m_yPrev) / height;
 
         m_xPrev = xPos;
         m_yPrev = yPos;
 
-        // Map x and y to [-1, 1]
-        Vec4f front(1 - 2 * x / width, 2 * y / height - 1, 0.f, 1.f);
+        Vec3f position(transform[3]);
+        transform[3] = Vec4f(0.f, 0.f, 0.f, 1.f);
 
-        front = m_camera->GetInverseProjection() * front;
-        front /= front.w;
-        front.w = 0;
-        front   = transform * glm::normalize(front);
+        transform = glm::rotate(m_camera->GetHorizontalFOV() * dx, Vec3f(0.f, 1.f, 0.f)) *
+                    glm::rotate(m_camera->GetVerticalFOV() * dy, Vec3f(transform[0])) * transform;
+        transform[3] = Vec4f(position, 1.f);
 
-        Vec4f right(glm::normalize(glm::cross(Vec3f(front), Vec3f(0.f, 1.f, 0.f))), 0.f);
-
-        Vec4f up(glm::cross(Vec3f(right), Vec3f(front)), 0.f);
-
-        m_camera->SetTransform({right, up, -front, transform[3]});
+        m_camera->SetTransform(transform);
     }
 
     void CameraController::SetMousePos(float x, float y)
