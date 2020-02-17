@@ -16,6 +16,11 @@ namespace gir
         GIR_ASSERT(m_framebuffer->IsComplete(), "Framebuffer is not complete");
     }
 
+    void ViewportWidget::Shutdown()
+    {
+        delete m_framebuffer;
+    }
+
     void ViewportWidget::Draw()
     {
         ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
@@ -39,8 +44,6 @@ namespace gir
 
         ImGui::End();
     }
-
-    ViewportWidget::~ViewportWidget() { delete m_framebuffer; }
 
     ImVec2 ViewportWidget::GetFramebufferSize() const
     {
@@ -75,4 +78,5 @@ namespace gir
         ImGui::Image(id, winSize, ImVec2(0, 1), ImVec2(1, 0));
         m_framebuffer->Unbind();
     }
+
 } // namespace gir

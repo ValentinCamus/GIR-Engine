@@ -1,9 +1,7 @@
 #pragma once
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
 #include <Core/Core.hpp>
+#include <Engine/OpenGL/OpenGL.hpp>
 #include <IO/Input/Input.hpp>
 #include <Application/Window.hpp>
 #include <ImGui/ImGuiController.hpp>
@@ -12,8 +10,9 @@
 #include <Engine/Texture/Texture2D.hpp>
 #include <Engine/Scene/Scene.hpp>
 #include <Engine/Renderer/Renderer.hpp>
-
 #include <Engine/Camera/CameraController.hpp>
+
+#include <GLFW/glfw3.h>
 
 #define DEFAULT_APP_NAME "Application"
 #define DEFAULT_APP_WIDTH 800
@@ -40,6 +39,9 @@ namespace gir
 
         /// Define the base application setup.
         virtual void Setup();
+
+        /// Called when the application is closing.
+        virtual void Shutdown();
 
         /// Called just before the draw loop.
         virtual void Prepare(float deltaTime);

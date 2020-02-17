@@ -1,8 +1,7 @@
 #pragma once
 
-#include <glad/glad.h>
-
 #include <Core/Core.hpp>
+#include <Engine/OpenGL/OpenGL.hpp>
 #include "Shader.hpp"
 
 namespace gir

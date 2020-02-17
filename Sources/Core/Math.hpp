@@ -64,13 +64,13 @@ namespace gir
     {
         Mat4f matrix(1.0f);
 
+        matrix = glm::scale(matrix, scale);
+
         matrix = glm::translate(matrix, location);
 
         matrix = glm::rotate(matrix, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
         matrix = glm::rotate(matrix, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
         matrix = glm::rotate(matrix, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-
-        matrix = glm::scale(matrix, scale);
 
         return matrix;
     }

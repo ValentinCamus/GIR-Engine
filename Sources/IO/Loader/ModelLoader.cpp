@@ -142,10 +142,10 @@ namespace gir
         }
         else
         {
-            int metalness;
+            int metalness = 0;
             aiMat->Get(AI_MATKEY_COLOR_AMBIENT, metalness);
 
-            material->SetAttribute(Material::EAttribute::METALNESS, Vec4f(metalness));
+            material->SetAttribute(Material::EAttribute::METALNESS, Vec4f(float(metalness)));
         }
 
         if (!roughnessMaps.empty())
@@ -154,10 +154,10 @@ namespace gir
         }
         else
         {
-            int roughness;
+            int roughness = 0;
             aiMat->Get(AI_MATKEY_SHININESS, roughness);
 
-            material->SetAttribute(Material::EAttribute::ROUGHNESS, Vec4f(roughness));
+            material->SetAttribute(Material::EAttribute::ROUGHNESS, Vec4f(float(roughness)));
         }
 
         if (!alphaMaps.empty())
@@ -166,10 +166,10 @@ namespace gir
         }
         else
         {
-            float alpha;
+            float alpha = 0;
             aiMat->Get(AI_MATKEY_OPACITY, alpha);
 
-            material->SetAttribute(Material::EAttribute::ALPHA, Vec4f(alpha));
+            material->SetAttribute(Material::EAttribute::ALPHA, Vec4f(float(alpha)));
         }
 
         return material;

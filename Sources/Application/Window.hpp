@@ -1,11 +1,10 @@
 #pragma once
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
+#include <Core/Core.hpp>
+#include <Engine/OpenGL/OpenGL.hpp>
 #include <Application/WindowEventListener.hpp>
 
-#include <Core/Core.hpp>
+#include <GLFW/glfw3.h>
 
 namespace gir
 {

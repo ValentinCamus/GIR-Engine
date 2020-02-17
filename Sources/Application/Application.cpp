@@ -93,6 +93,11 @@ namespace gir
         m_renderer = std::make_unique<Renderer>(viewportWidth, viewportHeight);
     }
 
+    void Application::Shutdown()
+    {
+        m_viewport.Shutdown();
+    }
+
     void Application::Prepare(float deltaTime)
     {
         m_cameraController.SetCamera(&m_scene->GetCamera());
