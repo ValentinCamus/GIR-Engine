@@ -42,15 +42,11 @@ namespace gir
                          {EShaderType::SHADOW_MAPPING,
                           {{GL_VERTEX_SHADER, PROJECT_SOURCE_DIR "/Shaders/ShadowMapping.vs.glsl"},
                            {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR "/Shaders/ShadowMapping.fs.glsl"}}},
-                         {EShaderType::TONEMAPPING,
-                          {{GL_VERTEX_SHADER, PROJECT_SOURCE_DIR "/Shaders/Tonemapping.vs.glsl"},
-                           {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR "/Shaders/Tonemapping.fs.glsl"}}},
                          {EShaderType::DEBUG,
                           {{GL_VERTEX_SHADER, PROJECT_SOURCE_DIR "/Shaders/Debug.vs.glsl"},
                            {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR "/Shaders/Debug.fs.glsl"}}}}),
         m_default(defaultFramebuffer),
-        m_GBuffer("GBuffer"),
-        m_HDR("HDR")
+        m_GBuffer("GBuffer")
     {
         // Creating screen quad
         std::vector<Mesh::Vertex> vertices = {
@@ -84,23 +80,6 @@ namespace gir
         GIR_ASSERT(m_GBuffer.IsComplete(), "Incomplete GBuffer framebuffer");
 
         m_GBuffer.Unbind();
-
-        // Filling the HDR FBO with the color texture
-        m_HDR.Bind();
-
-        GLuint attachment = GL_COLOR_ATTACHMENT0;
-
-        m_HDR.AttachTexture(std::make_unique<Texture2D>("color", GL_RGBA32F, GL_RGBA, GL_FLOAT), attachments[0]);
-
-        glDrawBuffers(1, &attachment);
-
-        m_HDR.AttachRenderbuffer(GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT);
-
-        m_HDR.Resize(width, height);
-
-        GIR_ASSERT(m_HDR.IsComplete(), "Incomplete HDR framebuffer");
-
-        m_HDR.Unbind();
 
         glEnable(GL_FRAMEBUFFER_SRGB);
         glEnable(GL_POLYGON_OFFSET_FILL);
@@ -192,7 +171,7 @@ namespace gir
                 shader = m_shaderManager.GetShader(EShaderType::DEFERRED_LIGHTING);
                 shader->Bind();
 
-                m_HDR.Bind();
+                m_default->Bind();
                 glClear(GL_COLOR_BUFFER_BIT);
                 glDisable(GL_DEPTH_TEST);
 
@@ -228,22 +207,6 @@ namespace gir
                 for (int i = 0; i < static_cast<int>(lights.size()); ++i)
                 { lights[i]->GetShadowMap()->GetTexture(0)->Unbind(); }
 
-                m_HDR.Unbind();
-                shader->Unbind();
-
-                /// Tonemapping pass
-                shader = m_shaderManager.GetShader(EShaderType::TONEMAPPING);
-                shader->Bind();
-                m_default->Bind();
-
-                shader->SetUniform("hdrColor", 0);
-                m_HDR.GetTexture(0)->Bind(0);
-
-                // Draw the quad
-                glDrawElements(GL_TRIANGLES, m_quad->GetIndices().size(), GL_UNSIGNED_INT, nullptr);
-
-                m_HDR.GetTexture(0)->Unbind();
-
                 m_default->Unbind();
                 shader->Unbind();
 
@@ -260,11 +223,7 @@ namespace gir
         }
     }
 
-    void Renderer::ResizeGBuffer(unsigned width, unsigned height)
-    {
-        m_GBuffer.Resize(width, height);
-        m_HDR.Resize(width, height);
-    }
+    void Renderer::ResizeGBuffer(unsigned width, unsigned height) { m_GBuffer.Resize(width, height); }
 
     void Renderer::SetRenderMode(ERenderMode mode) { m_renderMode = mode; }
 

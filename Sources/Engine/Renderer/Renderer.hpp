@@ -35,8 +35,6 @@ namespace gir
 
         Framebuffer m_GBuffer;
 
-        Framebuffer m_HDR;
-
         std::unique_ptr<Mesh> m_quad = nullptr;
 
         ERenderMode m_renderMode = ERenderMode::DIRECT;

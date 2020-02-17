@@ -77,4 +77,6 @@ void main()
 
         fragColor += vec4((kd * lambert + cookTorrance / denominator) * Li * cosThetai, 1);
     }
+
+    fragColor.rgb = fragColor.rgb / (fragColor.rgb + 1);
 }
