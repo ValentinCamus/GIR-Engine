@@ -37,13 +37,13 @@ namespace gir
             // The node object only contains indices to index the actual objects in the scene.
             // The scene contains all the data, node is just to keep stuff organized (like relations between nodes).
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-            model->AddMesh(ProcessAssimpMesh(mesh, scene, model));
+            model->AddMesh(ProcessAssimpMesh(mesh, scene));
         }
         // after we've processed all of the meshes (if any) we then recursively process each of the children nodes
         for (unsigned int i = 0; i < node->mNumChildren; ++i) { ProcessAssimpNode(node->mChildren[i], scene, model); }
     }
 
-    Element ModelLoader::ProcessAssimpMesh(aiMesh* mesh, const aiScene* scene, Model* model)
+    Element ModelLoader::ProcessAssimpMesh(aiMesh* mesh, const aiScene* scene)
     {
         // Data to fill
         std::vector<unsigned> indices;
@@ -90,16 +90,16 @@ namespace gir
             for (unsigned int j = 0; j < face.mNumIndices; ++j) { indices.push_back(face.mIndices[j]); }
         }
 
-        Material* material = LoadMaterial(mesh, scene, model);
+        Material* material = LoadMaterial(mesh, scene);
         std::string name   = mesh->mName.C_Str();
 
-        if (Mesh* mesh = Manager<Mesh>::Get(name))
-            return {material, mesh};
+        if (Mesh* girmesh = Manager<Mesh>::Get(name))
+            return {material, girmesh};
         else
             return {material, Manager<Mesh>::Add(name, std::move(indices), std::move(vertices))};
     }
 
-    Material* ModelLoader::LoadMaterial(aiMesh* mesh, const aiScene* scene, Model* model)
+    Material* ModelLoader::LoadMaterial(aiMesh* mesh, const aiScene* scene)
     {
         aiMaterial* aiMat = scene->mMaterials[mesh->mMaterialIndex];
 

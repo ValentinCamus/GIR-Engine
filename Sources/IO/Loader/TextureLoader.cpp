@@ -5,7 +5,7 @@
 
 namespace gir
 {
-    Texture2D* TextureLoader::Load(const std::string &filename, bool flipYAxis)
+    Texture2D* TextureLoader::Load(const std::string &filename)
     {
         int width = 0;
         int height = 0;

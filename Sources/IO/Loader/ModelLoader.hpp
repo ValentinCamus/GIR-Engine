@@ -23,9 +23,9 @@ namespace gir
     private:
         static void ProcessAssimpNode(aiNode *node, const aiScene *scene, Model* model);
 
-        static Element ProcessAssimpMesh(aiMesh *mesh, const aiScene *scene, Model* model);
+        static Element ProcessAssimpMesh(aiMesh *mesh, const aiScene *scene);
 
-        static Material* LoadMaterial(aiMesh *mesh, const aiScene *scene, Model* model);
+        static Material* LoadMaterial(aiMesh *mesh, const aiScene *scene);
 
         static std::vector<Texture2D*> LoadMaterialTextures(aiMaterial *mat, aiTextureType type);
     };
