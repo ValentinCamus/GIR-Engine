@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Core/Core.hpp>
+#include <Engine/Renderer/Quad.hpp>
 #include <Engine/Shader/ShaderManager.hpp>
 #include <Engine/Framebuffer/Framebuffer.hpp>
 
@@ -24,16 +25,16 @@ namespace gir
 
         void Draw(Framebuffer* framebuffer, const Scene *scene);
 
-        void ResizeGBuffer(unsigned width, unsigned height);
+        inline void ResizeGBuffer(unsigned width, unsigned height) { m_GBuffer.Resize(width, height); }
 
-        void SetRenderMode(ERenderMode mode);
+        inline void SetRenderMode(ERenderMode mode) { m_renderMode = mode; }
 
     private:
         ShaderManager m_shaderManager;
 
         Framebuffer m_GBuffer;
 
-        std::unique_ptr<Mesh> m_quad = nullptr;
+        std::unique_ptr<Quad> m_quad = nullptr;
 
         ERenderMode m_renderMode = ERenderMode::DIRECT;
     };

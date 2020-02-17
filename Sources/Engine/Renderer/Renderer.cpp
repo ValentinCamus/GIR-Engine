@@ -19,17 +19,7 @@ namespace gir
                            {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR "/Shaders/Debug.fs.glsl"}}}}),
         m_GBuffer("GBuffer")
     {
-        // Creating screen quad
-        std::vector<Mesh::Vertex> vertices = {
-            {{1.f, 1.f, 0.0f}, Vec3f(), {1.f, 1.f}},
-            {{1.f, -1.f, 0.0f}, Vec3f(), {1.f, 0.f}},
-            {{-1.f, -1.f, 0.0f}, Vec3f(), {0.f, 0.f}},
-            {{-1.f, 1.f, 0.0f}, Vec3f(), {0.f, 1.f}},
-        };
-
-        std::vector<unsigned> indices = {1, 0, 2, 2, 0, 3};
-
-        m_quad = std::make_unique<Mesh>("Deferred shading quad", std::move(indices), std::move(vertices));
+        m_quad = std::make_unique<Quad>("DeferredShadingQuad");
 
         // Filling GBuffer with textures
         m_GBuffer.Bind();
@@ -169,9 +159,5 @@ namespace gir
             }
         }
     }
-
-    void Renderer::ResizeGBuffer(unsigned width, unsigned height) { m_GBuffer.Resize(width, height); }
-
-    void Renderer::SetRenderMode(ERenderMode mode) { m_renderMode = mode; }
 
 } // namespace gir
