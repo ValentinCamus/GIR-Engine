@@ -1,8 +1,8 @@
-#include "Texture2D.hpp"
+#include "Texture.hpp"
 
 namespace gir
 {
-    Texture2D::Texture2D(const std::string& name, int internalFormat, int format, int type, bool generateMipmap) :
+    Texture::Texture(const std::string& name, int internalFormat, int format, int type, bool generateMipmap) :
         OpenGLComponent(name),
         m_internalFormat(internalFormat),
         m_format(format),
@@ -22,7 +22,7 @@ namespace gir
         Unbind();
     }
 
-    Texture2D::Texture2D(const std::string& name, int format, int type, bool generateMipmap) :
+    Texture::Texture(const std::string& name, int format, int type, bool generateMipmap) :
         OpenGLComponent {name},
         m_internalFormat(format),
         m_format(format),
@@ -45,11 +45,11 @@ namespace gir
         Unbind();
     }
 
-    Texture2D::~Texture2D() { glDeleteTextures(1, &m_id); }
+    Texture::~Texture() { glDeleteTextures(1, &m_id); }
 
-    void Texture2D::Allocate(unsigned width, unsigned height, const unsigned char* pixels)
+    void Texture::Allocate(unsigned width, unsigned height, const unsigned char* pixels)
     {
-        GIR_ASSERT(IsBound(), "Texture2D::Resize: The texture needs to be bound to be resized");
+        GIR_ASSERT(IsBound(), "Texture::Resize: The texture needs to be bound to be resized");
         m_width  = width;
         m_height = height;
 
@@ -58,34 +58,34 @@ namespace gir
         if (m_generateMipmap) glGenerateMipmap(GL_TEXTURE_2D);
     }
 
-    void Texture2D::Bind()
+    void Texture::Bind()
     {
         OpenGLComponent::Bind();
         glBindTexture(GL_TEXTURE_2D, m_id);
     }
 
-    void Texture2D::Unbind()
+    void Texture::Unbind()
     {
         OpenGLComponent::Unbind();
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    void Texture2D::Bind(int slot)
+    void Texture::Bind(int slot)
     {
         m_slot = slot;
         glActiveTexture(GL_TEXTURE0 + (GLenum)slot);
         Bind();
     }
 
-    void Texture2D::SetParameter(int name, int value)
+    void Texture::SetParameter(int name, int value)
     {
-        GIR_ASSERT(IsBound(), "Texture2D::SetParameter (int): To set a parameter, the texture needs to be bound");
+        GIR_ASSERT(IsBound(), "Texture::SetParameter (int): To set a parameter, the texture needs to be bound");
         glTexParameteri(GL_TEXTURE_2D, name, value);
     }
 
-    void Texture2D::SetParameter(int name, float value)
+    void Texture::SetParameter(int name, float value)
     {
-        GIR_ASSERT(IsBound(), "Texture2D::SetParameter (float): To set a parameter, the texture needs to be bound");
+        GIR_ASSERT(IsBound(), "Texture::SetParameter (float): To set a parameter, the texture needs to be bound");
         glTexParameterf(GL_TEXTURE_2D, name, value);
     }
 } // namespace gir

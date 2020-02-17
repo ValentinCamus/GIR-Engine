@@ -6,7 +6,7 @@
 
 namespace gir
 {
-    class Texture2D : public OpenGLComponent
+    class Texture : public OpenGLComponent
     {
     public:
         /// Constructor.
@@ -14,7 +14,7 @@ namespace gir
         /// @format: specifies the number of color components in the texture.
         /// @internalFormat: ...
         /// @type: specifies the data type of the pixel data.
-        explicit Texture2D(const std::string& name,
+        explicit Texture(const std::string& name,
                            int internalFormat,
                            int format,
                            int type,
@@ -24,10 +24,10 @@ namespace gir
         /// @name: specifies the name of the component.
         /// @format: specifies the number of color components in the texture.
         /// @type: specifies the data type of the pixel data.
-        explicit Texture2D(const std::string& name, int format, int type, bool generateMipmap = false);
+        explicit Texture(const std::string& name, int format, int type, bool generateMipmap = false);
 
         /// Destructor.
-        ~Texture2D() override;
+        ~Texture() override;
 
         /// Allocate the texture with the given dimension.
         /// @pixels: specifies a pointer to the image data in memory.

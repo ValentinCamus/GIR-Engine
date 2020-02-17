@@ -5,7 +5,7 @@
 
 namespace gir
 {
-    Texture2D* TextureLoader::Load(const std::string &filename)
+    Texture* TextureLoader::Load(const std::string &filename)
     {
         int width = 0;
         int height = 0;
@@ -19,7 +19,7 @@ namespace gir
             return nullptr;
         }
 
-        auto* texture = Manager<Texture2D>::Add(filename, GetFormat(nChannels), GL_UNSIGNED_BYTE, true);
+        auto* texture = Manager<Texture>::Add(filename, GetFormat(nChannels), GL_UNSIGNED_BYTE, true);
         texture->Bind(0);
         texture->Allocate(width, height, pixels);
         texture->Unbind();

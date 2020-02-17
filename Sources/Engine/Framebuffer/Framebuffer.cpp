@@ -73,7 +73,7 @@ namespace gir
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, m_rbo);
     }
 
-    void Framebuffer::AttachTexture(std::unique_ptr<Texture2D>&& texture, int attachment)
+    void Framebuffer::AttachTexture(std::unique_ptr<Texture>&& texture, int attachment)
     {
         glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, texture->GetId(), 0);
         m_textures.emplace_back(std::move(texture));

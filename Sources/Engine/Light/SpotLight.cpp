@@ -14,7 +14,7 @@ namespace gir
         m_cosOuterAngle(cos(outerAngle))
     {
         m_shadowmap.Bind();
-        m_shadowmap.AttachTexture(std::make_unique<Texture2D>(name + "_shadowmap", GL_DEPTH_COMPONENT, GL_FLOAT),
+        m_shadowmap.AttachTexture(std::make_unique<Texture>(name + "_shadowmap", GL_DEPTH_COMPONENT, GL_FLOAT),
                                   GL_DEPTH_ATTACHMENT);
         glDrawBuffer(GL_NONE);
         glReadBuffer(GL_NONE);
@@ -29,7 +29,7 @@ namespace gir
         texture->SetParameter(GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
         texture->Unbind();
 
-        m_shadowmap.Resize(1000, 1000);
+        m_shadowmap.Resize(1200, 1200);
         m_shadowmap.Unbind();
     }
 

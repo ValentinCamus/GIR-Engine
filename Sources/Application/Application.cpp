@@ -1,14 +1,7 @@
 #include "Application.hpp"
 
-#include <Engine/Shader/Shader.hpp>
-#include <Engine/Mesh/VertexArrayObject.hpp>
-#include <Engine/Manager/Manager.hpp>
-#include <IO/Loader/TextureLoader.hpp>
-#include <Engine/Texture/Texture2D.hpp>
-#include <IO/FileSystem/FileSystem.hpp>
 #include <IO/Loader/ModelLoader.hpp>
 #include <Engine/Camera/Camera.hpp>
-#include <Engine/Camera/CameraDebug.hpp>
 #include <Engine/Light/DirectionnalLight.hpp>
 #include <Engine/Light/SpotLight.hpp>
 #include <Engine/Light/PointLight.hpp>
@@ -74,7 +67,7 @@ namespace gir
         entityTransform[3] = {0.f, 0.f, 0.f, 1.f};
 
         Mat4f lightTransform(glm::rotate(-PI / 3, Vec3f(1.f, 0.f, 0.f)));
-        lightTransform[3] = {0.f, 45.f, 0.f, 1.f};
+        lightTransform[3] = {0.f, 55.f, 0.f, 1.f};
 
         std::vector<std::unique_ptr<Light>> lights;
         lights.emplace_back(std::make_unique<DirectionnalLight>("Sunlight", lightTransform, Vec3f(0.8f, 0.6f, 0.45f)));
