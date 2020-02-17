@@ -15,7 +15,7 @@ namespace gir
 
         // Read file via Assimp
         Assimp::Importer importer;
-        unsigned int flags   = aiProcess_FlipUVs | aiProcess_OptimizeMeshes | aiProcess_GenUVCoords;
+        unsigned int flags   = aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_OptimizeMeshes | aiProcess_GenUVCoords;
         const aiScene* scene = importer.ReadFile(filepath, flags);
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
