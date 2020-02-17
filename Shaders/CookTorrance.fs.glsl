@@ -63,7 +63,7 @@ void main()
         float cosThetai = max(dot(normal, wi), 0.004);
         float cosThetao = max(dot(normal, wo), 0.004);
 
-        vec3 Li = lights[i].color * attenuation(lights[i], wi, position);
+        vec3 Li = lights[i].color * attenuation(lights[i], wi, position) * shadow(lights[i], vec4(position, 1.f), normal, wi);
     
         vec3 f0 = mix(vec3(0.04), albedo, metalness);
     
@@ -77,6 +77,4 @@ void main()
 
         fragColor += vec4((kd * lambert + cookTorrance / denominator) * Li * cosThetai, 1);
     }
-
-    fragColor.rgb = fragColor.rgb / (fragColor.rgb + 1);
 }

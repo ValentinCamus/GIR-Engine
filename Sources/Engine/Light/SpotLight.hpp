@@ -13,14 +13,14 @@ namespace gir
                   float innerAngle,
                   float outerAngle);
 
-        void SetUniforms(const std::string &name, Shader *shader) override;
+        void SetUniforms(const std::string &name, Shader *shader, int slot) override;
 
-        const Mat4f &GetProjection() const override;
-
-    private: 
+    private:
         static const Mat4f m_projection;
 
-        float m_innerAngle;
-        float m_outerAngle;
+        float m_cosInnerAngle;
+        float m_cosOuterAngle;
+
+        const Mat4f &GetProjection() override;
     };
 } // namespace gir

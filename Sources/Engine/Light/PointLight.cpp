@@ -9,12 +9,14 @@ namespace gir
     {
     }
 
-    void PointLight::SetUniforms(const std::string& name, Shader* shader)
+    void PointLight::SetUniforms(const std::string& name, Shader* shader, int slot)
     {
-        Light::SetUniforms(name, shader);
+        Light::SetUniforms(name, shader, slot);
         shader->SetUniform(name + ".type", static_cast<unsigned>(0));
         shader->SetUniform(name + ".position", Vec3f(m_transform[3]));
+
+        shader->SetUniform(name + ".shadowmapPL", slot);
     }
 
-    const Mat4f& PointLight::GetProjection() const { return m_projection; }
+    const Mat4f& PointLight::GetProjection() { return m_projection; }
 } // namespace gir

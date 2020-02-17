@@ -39,11 +39,18 @@ namespace gir
                          {EShaderType::DEFERRED_LIGHTING,
                           {{GL_VERTEX_SHADER, PROJECT_SOURCE_DIR "/Shaders/CookTorrance.vs.glsl"},
                            {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR "/Shaders/CookTorrance.fs.glsl"}}},
+                         {EShaderType::SHADOW_MAPPING,
+                          {{GL_VERTEX_SHADER, PROJECT_SOURCE_DIR "/Shaders/ShadowMapping.vs.glsl"},
+                           {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR "/Shaders/ShadowMapping.fs.glsl"}}},
+                         {EShaderType::TONEMAPPING,
+                          {{GL_VERTEX_SHADER, PROJECT_SOURCE_DIR "/Shaders/Tonemapping.vs.glsl"},
+                           {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR "/Shaders/Tonemapping.fs.glsl"}}},
                          {EShaderType::DEBUG,
                           {{GL_VERTEX_SHADER, PROJECT_SOURCE_DIR "/Shaders/Debug.vs.glsl"},
                            {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR "/Shaders/Debug.fs.glsl"}}}}),
-        m_defaultFramebuffer(defaultFramebuffer),
-        m_GBuffer("GBuffer")
+        m_default(defaultFramebuffer),
+        m_GBuffer("GBuffer"),
+        m_HDR("HDR")
     {
         // Creating screen quad
         std::vector<Mesh::Vertex> vertices = {
@@ -78,12 +85,32 @@ namespace gir
 
         m_GBuffer.Unbind();
 
+        // Filling the HDR FBO with the color texture
+        m_HDR.Bind();
+
+        GLuint attachment = GL_COLOR_ATTACHMENT0;
+
+        m_HDR.AttachTexture(std::make_unique<Texture2D>("color", GL_RGBA32F, GL_RGBA, GL_FLOAT), attachments[0]);
+
+        glDrawBuffers(1, &attachment);
+
+        m_HDR.AttachRenderbuffer(GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT);
+
+        m_HDR.Resize(width, height);
+
+        GIR_ASSERT(m_HDR.IsComplete(), "Incomplete HDR framebuffer");
+
+        m_HDR.Unbind();
+
         glEnable(GL_FRAMEBUFFER_SRGB);
+        glEnable(GL_POLYGON_OFFSET_FILL);
+        glPolygonOffset(.85f, .75f);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     }
 
     void Renderer::Draw(const Scene* scene)
     {
+        /// GBuffer pass
         auto* shader = m_shaderManager.GetShader(EShaderType::GBUFFER);
 
         shader->Bind();
@@ -114,6 +141,7 @@ namespace gir
                 material->UnbindTextures();
             }
         }
+        m_GBuffer.BlitDepthBuffer(m_default);
         m_GBuffer.Unbind();
 
         shader->Unbind();
@@ -126,7 +154,7 @@ namespace gir
 
                 shader->Bind();
 
-                m_defaultFramebuffer->Bind();
+                m_default->Bind();
                 glClear(GL_COLOR_BUFFER_BIT);
                 glDisable(GL_DEPTH_TEST);
 
@@ -144,18 +172,27 @@ namespace gir
                 glEnable(GL_DEPTH_TEST);
 
                 vao->Unbind();
-                m_defaultFramebuffer->Unbind();
+                m_default->Unbind();
                 shader->Unbind();
 
                 break;
             }
             case ERenderMode::DIRECT:
             {
-                shader = m_shaderManager.GetShader(EShaderType::DEFERRED_LIGHTING);
-
+                /// Shadow map pass
+                shader = m_shaderManager.GetShader(EShaderType::SHADOW_MAPPING);
                 shader->Bind();
 
-                m_defaultFramebuffer->Bind();
+                const auto& lights = scene->GetLights();
+                for (int i = 0; i < static_cast<int>(lights.size()); ++i) { lights[i]->DrawShadowMap(scene, shader); }
+
+                shader->Unbind();
+
+                /// Deferred shading pass
+                shader = m_shaderManager.GetShader(EShaderType::DEFERRED_LIGHTING);
+                shader->Bind();
+
+                m_HDR.Bind();
                 glClear(GL_COLOR_BUFFER_BIT);
                 glDisable(GL_DEPTH_TEST);
 
@@ -164,28 +201,54 @@ namespace gir
 
                 shader->SetUniform("cameraPosition", Vec3f(camera.GetTransform()[3]));
 
-                const auto& lights = scene->GetLights();
                 shader->SetUniform("lightCount", static_cast<unsigned>(lights.size()));
 
+                // Binding the light's uniforms and the shadowmap texture
                 for (int i = 0; i < static_cast<int>(lights.size()); ++i)
-                    lights[i]->SetUniforms("lights[" + std::to_string(i) + "]", shader);
+                {
+                    lights[i]->SetUniforms("lights[" + std::to_string(i) + "]", shader, i);
+                    lights[i]->GetShadowMap()->GetTexture(0)->Bind(i);
+                }
 
+                // Binding the GBuffer textures
                 for (int i = 0; i < static_cast<int>(m_GBuffer.TextureCount()); ++i)
                 {
                     auto* texture = m_GBuffer.GetTexture(i);
-                    texture->Bind(i);
-                    shader->SetUniform(texture->GetName(), i);
+                    texture->Bind(i + static_cast<int>(lights.size()));
+                    shader->SetUniform(texture->GetName(), i + static_cast<int>(lights.size()));
                 }
 
+                // Draw the quad
                 glDrawElements(GL_TRIANGLES, m_quad->GetIndices().size(), GL_UNSIGNED_INT, nullptr);
 
-                for (int i = 0; i < static_cast<int>(m_GBuffer.TextureCount()); ++i) { m_GBuffer.GetTexture(i)->Unbind(); }
+                // Unbind everything
+                for (int i = 0; i < static_cast<int>(m_GBuffer.TextureCount()); ++i)
+                { m_GBuffer.GetTexture(i)->Unbind(); }
+
+                for (int i = 0; i < static_cast<int>(lights.size()); ++i)
+                { lights[i]->GetShadowMap()->GetTexture(0)->Unbind(); }
+
+                m_HDR.Unbind();
+                shader->Unbind();
+
+                /// Tonemapping pass
+                shader = m_shaderManager.GetShader(EShaderType::TONEMAPPING);
+                shader->Bind();
+                m_default->Bind();
+
+                shader->SetUniform("hdrColor", 0);
+                m_HDR.GetTexture(0)->Bind(0);
+
+                // Draw the quad
+                glDrawElements(GL_TRIANGLES, m_quad->GetIndices().size(), GL_UNSIGNED_INT, nullptr);
+
+                m_HDR.GetTexture(0)->Unbind();
+
+                m_default->Unbind();
+                shader->Unbind();
 
                 glEnable(GL_DEPTH_TEST);
-
                 vao->Unbind();
-                m_defaultFramebuffer->Unbind();
-                shader->Unbind();
 
                 break;
             }
@@ -197,7 +260,11 @@ namespace gir
         }
     }
 
-    void Renderer::ResizeGBuffer(unsigned width, unsigned height) { m_GBuffer.Resize(width, height); }
+    void Renderer::ResizeGBuffer(unsigned width, unsigned height)
+    {
+        m_GBuffer.Resize(width, height);
+        m_HDR.Resize(width, height);
+    }
 
     void Renderer::SetRenderMode(ERenderMode mode) { m_renderMode = mode; }
 

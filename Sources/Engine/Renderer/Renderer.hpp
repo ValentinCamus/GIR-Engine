@@ -31,9 +31,11 @@ namespace gir
     private:
         ShaderManager m_shaderManager;
 
-        Framebuffer *m_defaultFramebuffer;
+        Framebuffer *m_default;
 
         Framebuffer m_GBuffer;
+
+        Framebuffer m_HDR;
 
         std::unique_ptr<Mesh> m_quad = nullptr;
 

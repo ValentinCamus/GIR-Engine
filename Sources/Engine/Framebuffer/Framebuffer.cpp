@@ -49,6 +49,13 @@ namespace gir
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
+    void Framebuffer::BlitDepthBuffer(const Framebuffer* target) const
+    {
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, m_id);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, target->m_id);
+        glBlitFramebuffer(0, 0, m_width, m_height, 0, 0, m_width, m_height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+    }
+
     float Framebuffer::GetAspectRatio() const { return float(m_width) / float(m_height); }
 
     void Framebuffer::AttachRenderbuffer(int format, int attachment)

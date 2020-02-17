@@ -32,6 +32,8 @@ namespace gir
 
         void Unbind() override;
 
+        void BlitDepthBuffer(const Framebuffer* target) const;
+
         /// @return: true if the framebuffer is complete.
         bool IsComplete() const;
 

@@ -2,11 +2,12 @@
 
 namespace gir
 {
-    Texture2D::Texture2D(const std::string& name, int internalFormat, int format, int type) :
+    Texture2D::Texture2D(const std::string& name, int internalFormat, int format, int type, bool generateMipmap) :
         OpenGLComponent(name),
         m_internalFormat(internalFormat),
         m_format(format),
-        m_type(type)
+        m_type(type),
+        m_generateMipmap(generateMipmap)
     {
         glGenTextures(1, &m_id);
 
