@@ -7,7 +7,7 @@ namespace gir
         m_framebuffer = new Framebuffer("Default framebuffer");
 
         m_framebuffer->Bind();
-        m_framebuffer->AttachTexture(std::make_unique<Texture2D>("Default texture", GL_RGB, GL_RGB, GL_UNSIGNED_INT),
+        m_framebuffer->AttachTexture(std::make_unique<Texture2D>("Default texture", GL_RGBA32F, GL_RGBA, GL_FLOAT),
                                      GL_COLOR_ATTACHMENT0);
         m_framebuffer->AttachRenderbuffer(GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT);
         m_framebuffer->Resize(width, height);
