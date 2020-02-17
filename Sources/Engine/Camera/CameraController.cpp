@@ -97,9 +97,9 @@ namespace gir
         m_camera->SetVerticalFOV(Clamp(zoom, m_minZoom, m_maxZoom));
     }
 
-    void CameraController::LookAt(float xPos, float yPos)
+    void CameraController::DragMouse(float xPos, float yPos)
     {
-        if (!m_camera) return;
+        if (!m_camera || !m_mouseDragged) return;
 
         Mat4f transform(m_camera->GetTransform());
         unsigned width  = m_camera->GetWidth();
@@ -108,8 +108,7 @@ namespace gir
         float dx = (xPos - m_xPrev) / width;
         float dy = (yPos - m_yPrev) / height;
 
-        m_xPrev = xPos;
-        m_yPrev = yPos;
+        SetMousePos(xPos, yPos);
 
         Vec3f position(transform[3]);
         transform[3] = Vec4f(0.f, 0.f, 0.f, 1.f);

@@ -77,21 +77,26 @@ namespace gir
 
         std::vector<std::unique_ptr<Light>> lights;
         lights.emplace_back(
-            std::make_unique<DirectionnalLight>("Sunlight", lightTransform, Vec3f {1.85f, 1.65f, 1.2f}));
+            std::make_unique<DirectionnalLight>("Sunlight", lightTransform, Vec3f {1.f, 0.8f, 0.6f}));
 
         lightTransform[3] = {0.f, 6.5f, 0.f, 1.f};
-        lights.emplace_back(std::make_unique<PointLight>("Point light 1", lightTransform, Vec3f {150.f, 130.f, 108.f}));
+        lights.emplace_back(std::make_unique<PointLight>("Point light 1", lightTransform, Vec3f {120.f, 100.f, 75.f}));
 
         m_scene = std::make_unique<Scene>(
             camera, std::move(lights), std::vector<Entity> {Entity("Scene 1", sponza, entityTransform)});
 
         m_renderer = std::make_unique<Renderer>(m_viewport.GetFramebuffer(), width, height);
     }
-
+    
     void Application::Prepare(float deltaTime)
     {
         m_cameraController.SetCamera(&m_scene->GetCamera());
-        m_cameraController.SetMousePos(m_input.GetMouseX(), m_input.GetMouseY());
+
+        bool dragging = m_input.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_1);
+        if (dragging && !m_cameraController.isMouseDragged())
+            m_cameraController.SetMousePos(m_input.GetMouseX(), m_input.GetMouseY());
+
+        m_cameraController.SetMouseDragged(dragging);
 
         if (m_input.IsKeyPressed(GLFW_KEY_W)) m_cameraController.MoveForward(deltaTime);
         if (m_input.IsKeyPressed(GLFW_KEY_S)) m_cameraController.MoveBackward(deltaTime);
@@ -140,8 +145,7 @@ namespace gir
     {
         if (m_scene)
         {
-            if (m_input.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_1))
-                m_cameraController.LookAt(static_cast<float>(xPos), static_cast<float>(yPos));
+            m_cameraController.DragMouse(static_cast<float>(xPos), static_cast<float>(yPos));
         }
     }
 

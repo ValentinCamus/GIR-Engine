@@ -25,13 +25,17 @@ namespace gir
 
         void Zoom(float delta);
 
-        void LookAt(float xPos, float yPos);
+        void DragMouse(float xPos, float yPos);
 
         void SetMousePos(float x, float y);
 
         inline const Camera* GetCamera() const { return m_camera; }
 
+        inline bool isMouseDragged() const { return m_mouseDragged; }
+
         inline void SetCamera(Camera* camera) { m_camera = camera; }
+
+        inline void SetMouseDragged(bool mouseDragged) { m_mouseDragged = mouseDragged; }
 
     private:
         Camera* m_camera;
@@ -46,5 +50,7 @@ namespace gir
 
         float m_xPrev = 0.f;
         float m_yPrev = 0.f;
+
+        bool m_mouseDragged = false;
     };
 } // namespace gir

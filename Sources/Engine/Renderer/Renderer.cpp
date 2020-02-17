@@ -78,6 +78,7 @@ namespace gir
 
         m_GBuffer.Unbind();
 
+        glEnable(GL_FRAMEBUFFER_SRGB);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     }
 
