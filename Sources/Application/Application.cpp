@@ -54,43 +54,32 @@ namespace gir
     {
         m_viewport.Init(500, 500);
 
-        std::vector<std::unique_ptr<Light>> lights;
-        lights.emplace_back(
-                std::make_unique<DirectionalLight>(
-                        "Sun light 1",
-                        MakeTransform(Vec3f(0.f, 45.f, 0.f), Vec3f(-180.f, 0.f, 0.f)),
-                        Vec3f(1.85f, 1.65f, 1.2f)
-                )
-        );
-
-        lights.emplace_back(
-                std::make_unique<PointLight>(
-                        "Point light 1",
-                        MakeTransform(Vec3f(0.f, 6.5f, 0.f), Vec3f(-180.f, 0.f, 0.f)),
-                        Vec3f(150.f, 130.f, 108.f)
-                )
-        );
-
         Model* sponza = ModelLoader::Load(FileSystem::GetAssetsDir() + "sponza.obj");
 
+        unsigned width  = m_viewport.GetFramebuffer()->GetTexture(0)->GetWidth();
+        unsigned height = m_viewport.GetFramebuffer()->GetTexture(0)->GetHeight();
+
+        Mat4f cameraTransform(1.f);
+        cameraTransform[3] = {0.f, 10.f, 0.f, 1.f};
+        Camera camera("Main camera", cameraTransform, width, height);
+
+        std::vector<std::unique_ptr<Light>> lights;
+        Mat4f lightTransform(glm::rotate(-PI / 3, Vec3f(1.f, 0.f, 0.f)));
+
+        lightTransform[3] = {0.f, 45.f, 0.f, 1.f};
+        lights.emplace_back(std::make_unique<DirectionalLight>("Sunlight", lightTransform, Vec3f {1.85f, 1.65f, 1.2f}));
+
+        lightTransform[3] = {0.f, 6.5f, 0.f, 1.f};
+        lights.emplace_back(std::make_unique<PointLight>("Point light 1", lightTransform, Vec3f {150.f, 130.f, 108.f}));
+
         std::vector<std::unique_ptr<Entity>> entities;
-
-        entities.emplace_back(
-                std::make_unique<Entity>(
-                        "Scene 1",
-                        sponza,
-                        MakeTransform(Vec3f(0.f, 0.f, 0.f), Vec3f(0.f), Vec3f(0.025f))
-                )
-        );
-
-        unsigned viewportWidth  = m_viewport.GetFramebuffer()->GetTexture(0)->GetWidth();
-        unsigned viewportHeight = m_viewport.GetFramebuffer()->GetTexture(0)->GetHeight();
-
-        Camera camera("Main camera", MakeTransform(Vec3f(0.f, 10.f, 0.f)), viewportWidth, viewportHeight);
+        Mat4f entityTransform(0.025f);
+        entityTransform[3] = {0.f, 0.f, 0.f, 1.f};
+        entities.emplace_back(std::make_unique<Entity>("Scene 1", sponza, entityTransform));
 
         m_scene = std::make_unique<Scene>(camera, std::move(lights), std::move(entities));
 
-        m_renderer = std::make_unique<Renderer>(viewportWidth, viewportHeight);
+        m_renderer = std::make_unique<Renderer>(width, height);
     }
 
     void Application::Shutdown()
