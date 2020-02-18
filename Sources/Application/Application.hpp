@@ -84,6 +84,10 @@ namespace gir
 
         LightingWidget m_lightingWidget = LightingWidget("Lighting");
 
+        TransformEditorWidget m_transformEditor = TransformEditorWidget("Transform");
+
+        SceneWidget m_sceneWidget = SceneWidget("Scene");
+
         std::unique_ptr<Scene> m_scene = nullptr;
 
         std::unique_ptr<Renderer> m_renderer = nullptr;

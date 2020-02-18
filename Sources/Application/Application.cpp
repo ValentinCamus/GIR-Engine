@@ -67,7 +67,7 @@ namespace gir
         Mat4f lightTransform(glm::rotate(-PI / 3, Vec3f(1.f, 0.f, 0.f)));
 
         lightTransform[3] = {0.f, 45.f, 0.f, 1.f};
-        lights.emplace_back(std::make_unique<DirectionalLight>("Sunlight", lightTransform, Vec3f {1.85f, 1.65f, 1.2f}));
+        lights.emplace_back(std::make_unique<DirectionalLight>("SunLight", lightTransform, Vec3f {1.85f, 1.65f, 1.2f}));
 
         lightTransform[3] = {0.f, 6.5f, 0.f, 1.f};
         lights.emplace_back(std::make_unique<PointLight>("Point light 1", lightTransform, Vec3f {150.f, 130.f, 108.f}));
@@ -108,7 +108,6 @@ namespace gir
 
             m_renderer = std::make_unique<Renderer>(width, height);
         }
-
     }
 
     void Application::Draw(float deltaTime)
@@ -132,9 +131,18 @@ namespace gir
 
     void Application::ImGuiDraw(float deltaTime)
     {
+        const Camera& camera = m_scene->GetCamera();
+        SceneComponent* selectedComponent = m_sceneWidget.GetSelectedComponent();
+
+        m_sceneWidget.SetScene(m_scene.get());
+        m_transformEditor.SetSceneComponent(selectedComponent);
+        m_viewport.DrawGizmo(camera.GetProjectionMatrix(), camera.GetViewMatrix(), selectedComponent);
+
         m_viewport.Draw();
         m_lightingWidget.Draw();
         m_statsWidget.Draw();
+        m_transformEditor.Draw();
+        m_sceneWidget.Draw();
     }
 
     void Application::OnWindowClosed()
@@ -146,7 +154,7 @@ namespace gir
     {
         if (m_scene)
         {
-            if (m_input.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_1))
+            if (m_input.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_3))
             {
                 m_cameraController.SetCamera(&m_scene->GetCamera());
                 m_cameraController.LookAt(static_cast<float>(xPos), static_cast<float>(yPos));

@@ -17,13 +17,6 @@ namespace gir
             return;
         }
 
-        std::vector<const char*> lights = {"<No Selection>"};
-        // TODO: Retrieve the array of Lights* from the scene and append each light's name to to @lights.
-        ImGui::Text("Lights:");
-        ImGui::ListBox("##lights", &m_selectedIndex, lights.data(), lights.size(), 8);
-
-        ImGui::NewLine();
-
         ImGui::Text("Lighting mode:");
         ImGui::ListBox("##modes", &m_selectedLightingMode, LIGHTING_MODES, IM_ARRAYSIZE(LIGHTING_MODES), 4);
 
