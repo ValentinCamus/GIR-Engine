@@ -8,6 +8,9 @@
 #include <Engine/Light/SpotLight.hpp>
 #include <Engine/Light/PointLight.hpp>
 
+#define INITIAL_VIEWPORT_WIDTH  500
+#define INITIAL_VIEWPORT_HEIGHT 500
+
 namespace gir
 {
     Application::Application(const char* name, unsigned int width, unsigned int height)
@@ -54,44 +57,10 @@ namespace gir
 
     void Application::Setup()
     {
-        m_viewport.Init(500, 500);
+        m_viewport.Init(INITIAL_VIEWPORT_WIDTH, INITIAL_VIEWPORT_HEIGHT);
 
-        m_scene = SceneLoader::Load(FileSystem::GetProjectDir() + "/Data/Sponza.json");
-
-        unsigned width  = m_viewport.GetFramebuffer()->GetTexture(0)->GetWidth();
-        unsigned height = m_viewport.GetFramebuffer()->GetTexture(0)->GetHeight();
-
-        /*
-        Model* sponza = ModelLoader::Load(FileSystem::GetAssetsDir() + "sponza.obj");
-
-        unsigned width  = m_viewport.GetFramebuffer()->GetTexture(0)->GetWidth();
-        unsigned height = m_viewport.GetFramebuffer()->GetTexture(0)->GetHeight();
-
-        Mat4f cameraTransform(1.f);
-        cameraTransform[3] = {0.f, 10.f, 0.f, 1.f};
-        Camera camera("Main camera", cameraTransform, width, height);
-
-        std::vector<std::unique_ptr<Light>> lights;
-        Mat4f lightTransform(glm::rotate(-PI / 3, Vec3f(1.f, 0.f, 0.f)));
-
-        lightTransform[3] = {0.f, 6.5f, 0.f, 1.f};
-        lights.emplace_back(std::make_unique<PointLight>("Pointlight", lightTransform, Vec3f(60.f, 40.f, 30.f)));
-        lightTransform[3] = {0.f, 55.f, 0.f, 1.f};
-        lights.emplace_back(std::make_unique<DirectionalLight>("Sunlight", lightTransform, Vec3f(0.8f, 0.6f, 0.45f)));
-
-        lightTransform    = glm::rotate(-PI / 3, Vec3f(1.f, 0.f, 0.f)) * glm::rotate(-PI / 2, Vec3f(0.f, 1.f, 0.f));
-        lightTransform[3] = {18.f, 4.5f, 0.f, 1.f};
-        lights.emplace_back(std::make_unique<SpotLight>("Spotlight", lightTransform, Vec3f(28.f, 20.f, 15.f), 0.5f * PI / 4, PI / 4));
-
-        std::vector<std::unique_ptr<Entity>> entities;
-        Mat4f entityTransform(0.025f);
-        entityTransform[3] = {0.f, 0.f, 0.f, 1.f};
-        entities.emplace_back(std::make_unique<Entity>("Scene 1", sponza, entityTransform));
-        */
-
-        // m_scene = std::make_unique<Scene>(camera, std::move(lights), std::move(entities));
-
-        m_renderer = std::make_unique<Renderer>(width, height);
+        m_scene = SceneLoader::Load(FileSystem::GetProjectDir() + "/Scenes/Sponza.json");
+        m_renderer = std::make_unique<Renderer>(INITIAL_VIEWPORT_WIDTH, INITIAL_VIEWPORT_HEIGHT);
     }
 
     void Application::Shutdown()
