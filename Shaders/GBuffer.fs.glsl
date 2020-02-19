@@ -1,5 +1,7 @@
 #version 410 core
 
+#include "Material.glsl"
+
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 normal;
 layout (location = 2) in vec2 textureCoord;
@@ -9,24 +11,6 @@ layout (location = 4) in vec3 bitangent;
 layout (location = 0) out vec3 outPosition;
 layout (location = 1) out vec4 outNormalMetalness;
 layout (location = 2) out vec4 outAlbedoRoughness;
-
-
-struct Material {
-    bool hasAlbedoMap;
-    bool hasMetalnessMap;
-    bool hasRoughnessMap;
-    bool hasAlphaMap;
-
-    sampler2D albedoMap;
-    sampler2D metalnessMap;
-    sampler2D roughnessMap;
-    sampler2D alphaMap;
-    
-    vec3 albedo;
-    float metalness;
-    float roughness;
-    float alpha;
-};
 
 uniform Material material;
 

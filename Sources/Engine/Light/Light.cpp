@@ -20,15 +20,29 @@ namespace gir
 
         glClear(GL_DEPTH_BUFFER_BIT);
 
+        const int slot = 0;
+        SetUniforms("light", shader, slot, false);
+        shader->SetUniform("albedo", slot);
+
         Mat4f vp(GetProjection() * GetView());
+        shader->SetUniform("viewProjection", vp);
 
         for (const auto &entity : scene->GetEntities())
         {
-            shader->SetUniform("mvp", vp * entity.GetTransform());
+            shader->SetUniform("model", entity.GetTransform());
             auto *model = entity.GetModel();
 
             for (int i = 0; i < static_cast<int>(model->MaterialCount()); ++i)
             {
+                auto *material = model->GetMaterial(i);
+
+                // We only need to bind the albedo from the material
+                auto attribute = material->GetAttribute(Material::EAttribute::ALBEDO);
+                if (attribute.texture)
+                    attribute.texture->Bind(slot);
+                else
+                    shader->SetUniform("albedo", Vec3f(attribute.color));
+
                 for (const auto &mesh : model->GetMeshes(i))
                 {
                     auto *vao = mesh->GetVertexArrayObject();
@@ -36,13 +50,15 @@ namespace gir
                     glDrawElements(GL_TRIANGLES, mesh->Size(), GL_UNSIGNED_INT, 0);
                     vao->Unbind();
                 }
+
+                if (attribute.texture) attribute.texture->Unbind();
             }
         }
 
         m_shadowmap.Unbind();
     }
 
-    void Light::SetUniforms(const std::string &name, Shader *shader, int)
+    void Light::SetUniforms(const std::string &name, Shader *shader, int, bool bindTextures)
     {
         shader->SetUniform(name + ".color", m_color);
     }

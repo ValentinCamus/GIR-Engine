@@ -9,9 +9,9 @@ layout (location = 0) in vec2 textureCoordinates;
 
 layout (location = 0) out vec4 fragColor;
 
-uniform bool drawIndirectLighting;
+uniform bool useIndirectLighting;
 
-uniform sampler2D position;
+uniform sampler2D positionMap;
 uniform sampler2D normalMetalness;
 uniform sampler2D albedoRoughness;
 
@@ -47,7 +47,7 @@ void main()
 {
     vec4 normalM = texture(normalMetalness, textureCoordinates);
     vec4 albedoR = texture(albedoRoughness, textureCoordinates);
-    vec3 position = texture(position, textureCoordinates).xyz;
+    vec3 position = texture(positionMap, textureCoordinates).xyz;
 
     vec3 normal = normalM.xyz;
     vec3 albedo = albedoR.rgb;
@@ -56,7 +56,7 @@ void main()
     float roughness = albedoR.w;
 
     fragColor = vec4(0);
-
+    
     for(int i = 0; i < lightCount; ++i) {
         vec3 wi = lightVector(lights[i], position);
         vec3 wo = normalize(cameraPosition - position);

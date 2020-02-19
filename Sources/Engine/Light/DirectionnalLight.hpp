@@ -9,7 +9,7 @@ namespace gir
     public:
         DirectionnalLight(const std::string &name, const Mat4f &transform, const Vec3f &color);
 
-        void SetUniforms(const std::string &name, Shader *shader, int slot) override;
+        void SetUniforms(const std::string &name, Shader *shader, int slot, bool bindTextures = true) override;
 
     private:
         static const Mat4f m_projection;

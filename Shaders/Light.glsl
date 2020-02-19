@@ -17,8 +17,15 @@ struct Light {
     float cosInnerAngle;
     float cosOuterAngle;
 
-    sampler2DShadow shadowmap;
-    samplerCubeShadow shadowmapPL;
+    sampler2DShadow depthSM;
+    sampler2D positionSM;
+    sampler2D normalSM;
+    sampler2D fluxSM;
+
+    samplerCubeShadow depthSMPL;
+    samplerCube positionSMPL;
+    samplerCube normalSMPL;
+    samplerCube fluxSMPL;
 
     // For spotlights and directionnal lights
     mat4 viewProjection;
@@ -82,7 +89,7 @@ float shadow(Light light, vec4 position, vec3 normal) {
                                                       vec3( 0,  1,  1), vec3( 0, -1,  1), vec3( 0, -1, -1), vec3( 0,  1, -1)); 
             
             for(int i = 0; i < 20; ++i) {
-                result += texture(light.shadowmapPL, vec4(direction + sampleOffsetDirections[i] * (1 + depth) / FAR_Z, depth));
+                result += texture(light.depthSMPL, vec4(direction + sampleOffsetDirections[i] * (1 + depth) / FAR_Z, depth));
             }
 
             result = result / 20;
@@ -94,11 +101,11 @@ float shadow(Light light, vec4 position, vec3 normal) {
             position = light.viewProjection * position;
             position /= position.w;
             position = position * 0.5 + 0.5;
-            vec2 texelSize = 1 / textureSize(light.shadowmap, 0);
+            vec2 texelSize = 1 / textureSize(light.depthSM, 0);
 
             for(int i = 0; i < 4; ++i) {
                 for(int j = 0; j < 4; ++j) {
-                    result += texture(light.shadowmap, vec3(position.xy + vec2(i - 1.5, j - 1.5) * texelSize, position.z));
+                    result += texture(light.depthSM, vec3(position.xy + vec2(i - 1.5, j - 1.5) * texelSize, position.z));
                 }
             }
 

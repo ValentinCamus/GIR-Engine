@@ -69,16 +69,16 @@ namespace gir
         Mat4f lightTransform(glm::rotate(-PI / 3, Vec3f(1.f, 0.f, 0.f)));
 
         std::vector<std::unique_ptr<Light>> lights;
+        /*lightTransform[3] = {0.f, 6.5f, 0.f, 1.f};
+        lights.emplace_back(std::make_unique<PointLight>("Pointlight", lightTransform, Vec3f(60.f, 40.f, 30.f)));
+
         lightTransform[3] = {0.f, 55.f, 0.f, 1.f};
-        lights.emplace_back(std::make_unique<DirectionnalLight>("Sunlight", lightTransform, Vec3f(0.8f, 0.6f, 0.45f)));
+        lights.emplace_back(std::make_unique<DirectionnalLight>("Sunlight", lightTransform, Vec3f(0.8f, 0.6f, 0.45f)));*/
 
         lightTransform    = glm::rotate(-PI / 3, Vec3f(1.f, 0.f, 0.f)) * glm::rotate(-PI / 2, Vec3f(0.f, 1.f, 0.f));
         lightTransform[3] = {18.f, 4.5f, 0.f, 1.f};
         lights.emplace_back(
             std::make_unique<SpotLight>("Spotlight", lightTransform, Vec3f(28.f, 20.f, 15.f), 0.5f * PI / 4, PI / 4));
-
-        lightTransform[3] = {0.f, 6.5f, 0.f, 1.f};
-        lights.emplace_back(std::make_unique<PointLight>("Pointlight", lightTransform, Vec3f(60.f, 40.f, 30.f)));
 
         m_scene = std::make_unique<Scene>(
             camera, std::move(lights), std::vector<Entity> {Entity("Scene", sponza, entityTransform)});

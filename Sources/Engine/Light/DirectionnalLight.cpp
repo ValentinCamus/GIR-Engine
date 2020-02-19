@@ -28,14 +28,20 @@ namespace gir
         m_shadowmap.Unbind();
     }
 
-    void DirectionnalLight::SetUniforms(const std::string &name, Shader *shader, int slot)
+    void DirectionnalLight::SetUniforms(const std::string &name, Shader *shader, int slot, bool bindTextures)
     {
         Light::SetUniforms(name, shader, slot);
         shader->SetUniform(name + ".type", static_cast<unsigned>(1));
         shader->SetUniform(name + ".direction", Vec3f(-m_transform[2]));
 
-        shader->SetUniform(name + ".shadowmap", slot);
-        shader->SetUniform(name + ".viewProjection", m_projection * GetView());
+        if (bindTextures)
+        {
+            shader->SetUniform(name + ".depthSM", slot);
+            shader->SetUniform(name + ".positionSM", slot + 1);
+            shader->SetUniform(name + ".normalSM", slot + 2);
+            shader->SetUniform(name + ".fluxSM", slot + 3);
+            shader->SetUniform(name + ".viewProjection", m_projection * GetView());
+        }
     }
 
     const Mat4f &DirectionnalLight::GetProjection() { return m_projection; }

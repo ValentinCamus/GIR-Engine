@@ -4,7 +4,7 @@ layout (location = 0) in vec2 textureCoordinates;
 
 layout (location = 0) out vec4 fragColor;
 
-uniform sampler2D position;
+uniform sampler2D positionMap;
 uniform sampler2D normalMetalness;
 uniform sampler2D albedoRoughness;
 

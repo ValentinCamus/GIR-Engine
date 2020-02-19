@@ -71,7 +71,7 @@ namespace gir
         m_shadowmap.Unbind();
     }
 
-    void PointLight::SetUniforms(const std::string& name, Shader* shader, int slot)
+    void PointLight::SetUniforms(const std::string& name, Shader* shader, int slot, bool bindTextures)
     {
         Light::SetUniforms(name, shader, slot);
         shader->SetUniform(name + ".type", static_cast<unsigned>(0));

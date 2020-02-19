@@ -40,12 +40,12 @@ namespace gir
         ERenderMode m_renderMode;
 
         void GBufferPrepass(const Scene *scene);
+        
+        void DeferredLightingPass(const Scene *scene, bool useIndirectLighting);
 
-        void DrawAlbedo(const Scene *scene);
+        void AlbedoDebugPass(const Scene *scene);
 
-        void DrawDirectLighting(const Scene *scene);
-
-        void DrawIndirectLightingRSM(const Scene *scene);
+        void DrawShadowMaps(const Scene *scene);
     };
 
 } // namespace gir
