@@ -2,7 +2,8 @@
 
 namespace gir
 {
-    Shader::Shader(const std::unordered_map<GLenum, std::string> &sources) : OpenGLComponent("Shader")
+    Shader::Shader(const std::unordered_map<GLenum, std::string> &sources)
+        : OpenGLComponent("Shader")
     {
         std::vector<GLuint> stages;
 
@@ -32,16 +33,20 @@ namespace gir
         }
     }
 
-    void Shader::operator=(Shader &&shader) noexcept
+    Shader& Shader::operator=(Shader &&shader) noexcept
     {
         m_name      = shader.m_name;
         m_id        = shader.m_id;
         m_isBound   = shader.m_isBound;
         shader.m_id = 0;
+
+        return *this;
     }
 
-    Shader::~Shader() { 
-        glDeleteProgram(m_id); }
+    Shader::~Shader()
+    {
+        glDeleteProgram(m_id);
+    }
 
     void Shader::Bind()
     {

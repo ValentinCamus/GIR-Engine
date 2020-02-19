@@ -1,8 +1,6 @@
 #pragma once
 
-#include <glad/glad.h>
-
-// #include "Engine/Mesh/Mesh.hpp"
+#include <Engine/OpenGL/OpenGL.hpp>
 #include "Engine/Component/OpenGLComponent.hpp"
 
 namespace gir

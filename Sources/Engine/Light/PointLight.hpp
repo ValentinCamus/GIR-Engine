@@ -11,7 +11,7 @@ namespace gir
 
         void DrawShadowMap(const Scene* scene, Shader* shader) override;
 
-        void SetUniforms(const std::string& name, Shader* shader, int slot, bool bindTextures = true) override;
+        void SetUniforms(const std::string& name, Shader* shader, int slot, bool bindTextures) override;
 
         bool HasCubemapShadowmap() const override;
 

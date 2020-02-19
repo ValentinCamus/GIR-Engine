@@ -1,11 +1,10 @@
 #pragma once
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
+#include <Core/Core.hpp>
+#include <Engine/OpenGL/OpenGL.hpp>
 #include <Application/WindowEventListener.hpp>
 
-#include <Core/Core.hpp>
+#include <GLFW/glfw3.h>
 
 namespace gir
 {
@@ -37,7 +36,11 @@ namespace gir
         /// @return: the window's name/title.
         inline const char* GetName() const { return m_name; }
 
+        /// @return: the time elapsed since the window was initialized.
+        inline double GetTime() const { return glfwGetTime(); }
+
     private:
+        /// Window's title.
         const char* m_name = "Untitled";
 
         GLFWwindow* m_window = nullptr;

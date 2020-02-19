@@ -53,8 +53,8 @@ namespace gir
 
         for (const auto& entity : scene->GetEntities())
         {
-            shader->SetUniform("model", entity.GetTransform());
-            auto* model = entity.GetModel();
+            shader->SetUniform("model", entity->GetTransform());
+            auto* model = entity->GetModel();
 
             for (int i = 0; i < static_cast<int>(model->MaterialCount()); ++i)
             {
@@ -73,7 +73,7 @@ namespace gir
 
     void PointLight::SetUniforms(const std::string& name, Shader* shader, int slot, bool bindTextures)
     {
-        Light::SetUniforms(name, shader, slot);
+        Light::SetUniforms(name, shader, slot, bindTextures);
         shader->SetUniform(name + ".type", static_cast<unsigned>(0));
         shader->SetUniform(name + ".position", Vec3f(m_transform[3]));
 

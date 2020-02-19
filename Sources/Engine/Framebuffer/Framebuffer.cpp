@@ -1,6 +1,6 @@
 #include "Framebuffer.hpp"
 
-#include <glad/glad.h>
+#include <Engine/OpenGL/OpenGL.hpp>
 
 namespace gir
 {

@@ -11,7 +11,7 @@ namespace gir
         Manager<Model>::Clear();
 
         std::string name = filepath.substr(filepath.find_last_of('/') + 1);
-        auto* model      = Manager<Model>::Add(name);
+        auto* model = Manager<Model>::Add(name);
 
         // Read file via Assimp
         Assimp::Importer importer;
@@ -76,7 +76,9 @@ namespace gir
                 texCoord.y = mesh->mTextureCoords[0][i].y;
             }
             else
+            {
                 texCoord = {0.0f, 0.0f};
+            }
 
             vertices.push_back({vertex, normal, texCoord});
         }
@@ -93,19 +95,20 @@ namespace gir
         Material* material = LoadMaterial(mesh, scene);
         std::string name   = mesh->mName.C_Str();
 
-        if (Mesh* girmesh = Manager<Mesh>::Get(name))
-            return {material, girmesh};
-        else
-            return {material, Manager<Mesh>::Add(name, std::move(indices), std::move(vertices))};
+        if (Mesh* girMesh = Manager<Mesh>::Get(name)) return {material, girMesh};
+        else return {material, Manager<Mesh>::Add(name, std::move(indices), std::move(vertices))};
     }
 
     Material* ModelLoader::LoadMaterial(aiMesh* mesh, const aiScene* scene)
     {
         aiMaterial* aiMat = scene->mMaterials[mesh->mMaterialIndex];
+        const char* materialName = aiMat->GetName().C_Str();
 
-        if (Material* mat = Manager<Material>::Get(aiMat->GetName().C_Str())) return mat;
+        Material* material = Manager<Material>::Get(materialName);
 
-        auto* material = Manager<Material>::Add(aiMat->GetName().C_Str());
+        if (material) return material;
+
+        material = Manager<Material>::Add(materialName);
 
         // 1. albedo maps
         std::vector<Texture*> albedoMaps = LoadMaterialTextures(aiMat, aiTextureType_DIFFUSE);
@@ -117,7 +120,9 @@ namespace gir
         std::vector<Texture*> alphaMaps = LoadMaterialTextures(aiMat, aiTextureType_OPACITY);
 
         if (!albedoMaps.empty())
+        {
             material->SetAttribute(Material::EAttribute::ALBEDO, albedoMaps[0]);
+        }
         else
         {
             aiColor3D color;
@@ -128,33 +133,39 @@ namespace gir
         }
 
         if (!metalnessMaps.empty())
+        {
             material->SetAttribute(Material::EAttribute::METALNESS, metalnessMaps[0]);
+        }
         else
         {
-            int metalness;
+            int metalness = 0;
             aiMat->Get(AI_MATKEY_COLOR_AMBIENT, metalness);
 
-            material->SetAttribute(Material::EAttribute::ALBEDO, Vec4f(metalness));
+            material->SetAttribute(Material::EAttribute::METALNESS, Vec4f(float(metalness)));
         }
 
         if (!roughnessMaps.empty())
+        {
             material->SetAttribute(Material::EAttribute::ROUGHNESS, roughnessMaps[0]);
+        }
         else
         {
-            int roughness;
+            int roughness = 0;
             aiMat->Get(AI_MATKEY_SHININESS, roughness);
 
-            material->SetAttribute(Material::EAttribute::ALBEDO, Vec4f(roughness));
+            material->SetAttribute(Material::EAttribute::ROUGHNESS, Vec4f(float(roughness)));
         }
 
         if (!alphaMaps.empty())
+        {
             material->SetAttribute(Material::EAttribute::ALPHA, alphaMaps[0]);
+        }
         else
         {
-            float alpha;
+            float alpha = 0;
             aiMat->Get(AI_MATKEY_OPACITY, alpha);
 
-            material->SetAttribute(Material::EAttribute::ALPHA, Vec4f(alpha));
+            material->SetAttribute(Material::EAttribute::ALPHA, Vec4f(float(alpha)));
         }
 
         return material;
@@ -175,4 +186,5 @@ namespace gir
         }
         return textures;
     }
+
 } // namespace gir

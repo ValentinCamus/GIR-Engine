@@ -29,8 +29,8 @@ namespace gir
 
         for (const auto &entity : scene->GetEntities())
         {
-            shader->SetUniform("model", entity.GetTransform());
-            auto *model = entity.GetModel();
+            shader->SetUniform("model", entity->GetTransform());
+            auto *model = entity->GetModel();
 
             for (int i = 0; i < static_cast<int>(model->MaterialCount()); ++i)
             {

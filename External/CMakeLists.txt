@@ -53,6 +53,12 @@ target_link_libraries (imgui glad)
 target_link_libraries (imgui glfw)
 
 #------------------------------------------------------------------------------
+# imgui
+add_library(imguizmo STATIC ${CMAKE_CURRENT_SOURCE_DIR}/ImGuizmo/ImGuizmo.cpp)
+target_include_directories(imguizmo SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/ImGuizmo/include)
+target_link_libraries (imguizmo imgui)
+
+#------------------------------------------------------------------------------
 # Assimp
 ExternalDownloadNowGit(assimp "https://github.com/assimp/assimp.git" "origin/master")
 add_subdirectory(assimp/src/assimp_download)

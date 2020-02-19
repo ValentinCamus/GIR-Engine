@@ -99,30 +99,28 @@ namespace gir
 
     void CameraController::DragMouse(float xPos, float yPos)
     {
-        if (!m_camera || !m_mouseDragged) return;
+        if (!m_camera) return;
 
         Mat4f transform(m_camera->GetTransform());
         unsigned width  = m_camera->GetWidth();
         unsigned height = m_camera->GetHeight();
 
-        float dx = (xPos - m_xPrev) / width;
-        float dy = (yPos - m_yPrev) / height;
+        float dx = (xPos - m_prevMouseX) / float(width);
+        float dy = (yPos - m_prevMouseY) / float(height);
 
-        SetMousePos(xPos, yPos);
+        SetMousePosition(xPos, yPos);
 
         Vec3f position(transform[3]);
         transform[3] = Vec4f(0.f, 0.f, 0.f, 1.f);
-
-        transform = glm::rotate(m_camera->GetHorizontalFOV() * dx, Vec3f(0.f, 1.f, 0.f)) *
-                    glm::rotate(m_camera->GetVerticalFOV() * dy, Vec3f(transform[0])) * transform;
+        transform = glm::rotate(m_camera->GetHorizontalFOV() * dx, Vec3f(0.f, 1.f, 0.f)) * glm::rotate(m_camera->GetVerticalFOV() * dy, Vec3f(transform[0])) * transform;
         transform[3] = Vec4f(position, 1.f);
 
         m_camera->SetTransform(transform);
     }
 
-    void CameraController::SetMousePos(float x, float y)
+    void CameraController::SetMousePosition(float x, float y)
     {
-        m_xPrev = x;
-        m_yPrev = y;
+        m_prevMouseX = x;
+        m_prevMouseY = y;
     }
 } // namespace gir
