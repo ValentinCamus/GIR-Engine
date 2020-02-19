@@ -6,10 +6,17 @@
 
 #include <IO/Loader/ModelLoader.hpp>
 
+#include <Engine/Manager/Manager.hpp>
+
 namespace gir
 {
     std::unique_ptr<Scene> SceneLoader::Load(const std::string &filepath)
     {
+        Manager<Texture>::Clear();
+        Manager<Material>::Clear();
+        Manager<Mesh>::Clear();
+        Manager<Model>::Clear();
+
         std::ifstream sceneFile(filepath);
         nlohmann::json jsonFile;
         sceneFile >> jsonFile;

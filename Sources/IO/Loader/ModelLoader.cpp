@@ -5,11 +5,6 @@ namespace gir
 {
     Model* ModelLoader::Load(const std::string& filepath)
     {
-        Manager<Texture>::Clear();
-        Manager<Material>::Clear();
-        Manager<Mesh>::Clear();
-        Manager<Model>::Clear();
-
         std::string name = filepath.substr(filepath.find_last_of('/') + 1);
         auto* model = Manager<Model>::Add(name);
 
