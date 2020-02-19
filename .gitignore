@@ -8,6 +8,7 @@ External/*
 !External/glad
 !External/stb
 !External/imgui
+!External/ImGuizmo
 
 *.sublime-workspace
 *.tags
