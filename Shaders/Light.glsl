@@ -8,6 +8,8 @@
 #define NEAR_Z 0.2f
 #define FAR_Z 100.f
 
+#define MAX_SAMPLE_COUNT 1024
+
 struct Light {
     uint type;
 
@@ -93,7 +95,6 @@ float shadow(Light light, vec4 position, vec3 normal) {
             }
 
             result = result / 20;
-
             break;
 
         case SPOT_LIGHT:
@@ -110,11 +111,43 @@ float shadow(Light light, vec4 position, vec3 normal) {
             }
 
             result = result / 16;
-
             break;
 
         default: 
             result = 1;
+            break;
+    }
+
+    return result;
+}
+
+vec3 indirect(Light light, vec4 position, vec3 normal, uint sampleCount, vec3 samples[MAX_SAMPLE_COUNT]){
+    vec3 result = vec3(0);
+    
+    switch(light.type) {
+        case POINT_LIGHT:
+            break;
+
+        case SPOT_LIGHT:
+        case DIRECTIONAL_LIGHT: 
+            position = light.viewProjection * position;
+            position /= position.w;
+            position = position * 0.5 + 0.5;
+
+            for(int i = 0; i < sampleCount; ++i) {
+                vec2 texCoord = position.xy + samples[i];
+
+                vec3 vplPosition = texture(light.positionSM, texCoord);
+                vec3 vplNormal = texture(light.normalSM, texCoord);
+                vec3 vplFlux = texture(light.fluxSM, texCoord);
+
+                vec3 lightVector = vplPosition - position;
+
+                result += vplFlux * max(-dot(vplNormal, lightVector), 0) * max(dot(normal, lightVector), 0) / pow(length(lightVector), 4);
+            }
+            break;
+
+        default: 
             break;
     }
 

@@ -1,6 +1,7 @@
 #version 410 core
 
 #define MAX_LIGHTS 5
+
 #define PI 3.14159265359f
 
 #include "Light.glsl"
@@ -9,8 +10,6 @@ layout (location = 0) in vec2 textureCoordinates;
 
 layout (location = 0) out vec4 fragColor;
 
-uniform bool useIndirectLighting;
-
 uniform sampler2D positionMap;
 uniform sampler2D normalMetalness;
 uniform sampler2D albedoRoughness;
@@ -18,6 +17,11 @@ uniform sampler2D albedoRoughness;
 uniform vec3 cameraPosition;
 uniform uint lightCount;
 uniform Light lights[MAX_LIGHTS];
+
+uniform bool useIndirectLighting;
+uniform uint sampleCount;
+uniform vec3 samples[MAX_SAMPLE_COUNT];
+
 
 float distributionGGX(vec3 normal, vec3 halfv, float roughness) {
     float roughnessSQ = roughness * roughness;
@@ -55,7 +59,7 @@ void main()
     float metalness = normalM.w;
     float roughness = albedoR.w;
 
-    fragColor = vec4(0);
+    fragColor = vec4(0, 0, 0, 1);
     
     for(int i = 0; i < lightCount; ++i) {
         vec3 wi = lightVector(lights[i], position);
@@ -65,7 +69,7 @@ void main()
         float cosThetai = max(dot(normal, wi), 0.004);
         float cosThetao = max(dot(normal, wo), 0.004);
 
-        vec3 Li = lights[i].color * attenuation(lights[i], wi, position) * shadow(lights[i], vec4(position, 1.f), normal);
+        vec3 Li = lights[i].color * attenuation(lights[i], wi, position) * shadow(lights[i], vec4(position, 1), normal);
     
         vec3 f0 = mix(vec3(0.04), albedo, metalness);
     
@@ -77,7 +81,10 @@ void main()
 
         float denominator = 4 * cosThetai * cosThetao;
 
-        fragColor += vec4((kd * lambert + cookTorrance / denominator) * Li * cosThetai, 1);
+        fragColor.rgb += (kd * lambert + cookTorrance / denominator) * Li * cosThetai;
+
+        if(useIndirectLighting)
+            fragColor.rgb += indirect(lights[i], vec4(position, 1), normal, sampleCount, samples);
     }
 
     fragColor.rgb = fragColor.rgb / (fragColor.rgb + 1);
