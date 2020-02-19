@@ -62,3 +62,8 @@ target_link_libraries (imguizmo imgui)
 # Assimp
 ExternalDownloadNowGit(assimp "https://github.com/assimp/assimp.git" "origin/master")
 add_subdirectory(assimp/src/assimp_download)
+
+#------------------------------------------------------------------------------
+# target_link_libraries (exampleApp PRIVATE json)
+# #include <nlohmann/json.hpp>
+ExternalHeaderOnly_Add(json "https://github.com/nlohmann/json.git" "master" "single_include")

@@ -1,0 +1,104 @@
+{
+  "Camera": {
+    "Name": "MainCamera",
+    "WorldLocation": {
+      "X": 0.0,
+      "Y": 10.0,
+      "Z": 0.0
+    },
+    "WorldRotation": {
+      "Roll": 0.0,
+      "Pitch": 0.0,
+      "Yaw": 0.0
+    },
+    "Width": 1080,
+    "Height": 720
+  },
+  "Lights": [
+    {
+      "Type": "SpotLight",
+      "Name": "SpotLight1",
+      "WorldLocation": {
+        "X": 18.0,
+        "Y": 4.5,
+        "Z": 0.0
+      },
+      "WorldRotation": {
+        "Pitch": 0.0,
+        "Yaw": -90.0,
+        "Roll": 90.0
+      },
+      "Color": {
+        "Red": 16.0,
+        "Green": 8.0,
+        "Blue": 8.0
+      },
+      "InnerAngle": 22.0,
+      "OuterAngle": 45.0
+    },
+    {
+      "Type": "SpotLight",
+      "Name": "SpotLight2",
+      "WorldLocation": {
+        "X": -18.0,
+        "Y": 4.5,
+        "Z": 0.0
+      },
+      "WorldRotation": {
+        "Pitch": 0.0,
+        "Yaw": 90.0,
+        "Roll": 0.0
+      },
+      "Color": {
+        "Red": 8.0,
+        "Green": 16.0,
+        "Blue": 8.0
+      },
+      "InnerAngle": 22.0,
+      "OuterAngle": 45.0
+    },
+    {
+      "Type": "SpotLight",
+      "Name": "SpotLight3",
+      "WorldLocation": {
+        "X": 0.0,
+        "Y": 20,
+        "Z": -1.5
+      },
+      "WorldRotation": {
+        "Pitch": -90.0,
+        "Yaw": 0.0,
+        "Roll": 0.0
+      },
+      "Color": {
+        "Red": 8.0,
+        "Green": 8.0,
+        "Blue": 16.0
+      },
+      "InnerAngle": 22.0,
+      "OuterAngle": 45.0
+    }
+  ],
+  "Entities": [
+    {
+      "UseProjectSourceDirectory": true,
+      "Filename": "/Assets/sponza.obj",
+      "Name": "Sponza",
+      "WorldLocation": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "WorldRotation": {
+        "Pitch": 0.0,
+        "Yaw": 0.0,
+        "Roll": 0.0
+      },
+      "WorldScale": {
+        "X": 0.025,
+        "Y": 0.025,
+        "Z": 0.025
+      }
+    }
+  ]
+}

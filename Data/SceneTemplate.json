@@ -1,0 +1,100 @@
+{
+  "Camera": {
+    "Name": "MainCamera",
+    "WorldLocation": {
+      "X": 0.0,
+      "Y": 0.0,
+      "Z": 0.0
+    },
+    "WorldRotation": {
+      "Pitch": 0.0,
+      "Yaw": 0.0,
+      "Roll": 0.0
+    },
+    "Width": 1080,
+    "Height": 720
+  },
+  "Lights": [
+    {
+      "Type": "DirectionalLight",
+      "Name": "...",
+      "WorldLocation": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "WorldRotation": {
+        "Pitch": 0.0,
+        "Yaw": 0.0,
+        "Roll": 0.0
+      },
+      "Color": {
+        "Red": 0.0,
+        "Green": 0.0,
+        "Blue": 0.0
+      }
+    },
+    {
+      "Type": "PointLight",
+      "Name": "...",
+      "WorldLocation": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "WorldRotation": {
+        "Pitch": 0.0,
+        "Yaw": 0.0,
+        "Roll": 0.0
+      },
+      "Color": {
+        "Red": 0.0,
+        "Green": 0.0,
+        "Blue": 0.0
+      }
+    },
+    {
+      "Type": "SpotLight",
+      "Name": "...",
+      "WorldLocation": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "WorldRotation": {
+        "Pitch": 0.0,
+        "Yaw": 0.0,
+        "Roll": 0.0
+      },
+      "Color": {
+        "Red": 0.0,
+        "Green": 0.0,
+        "Blue": 0.0
+      },
+      "InnerAngle": 0.0,
+      "OuterAngle": 0.0
+    }
+  ],
+  "Entities": [
+    {
+      "UseProjectSourceDirectory": true,
+      "Filename": "...",
+      "Name": "...",
+      "WorldLocation": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "WorldRotation": {
+        "Pitch": 0.0,
+        "Yaw": 0.0,
+        "Roll": 0.0
+      },
+      "WorldScale": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      }
+    }
+  ]
+}
