@@ -2,7 +2,7 @@
 
 #include <Core/Core.hpp>
 #include <Engine/Component/Component.hpp>
-#include <Engine/Texture/Texture2D.hpp>
+#include <Engine/Texture/Texture.hpp>
 #include <Engine/Shader/Shader.hpp>
 
 namespace gir
@@ -22,7 +22,7 @@ namespace gir
         struct Attribute
         {
             Vec4f color        = Vec4f(1.0f);
-            Texture2D* texture = nullptr;
+            Texture* texture = nullptr;
         };
 
     public:
@@ -104,7 +104,7 @@ namespace gir
             m_attributes[static_cast<int>(attribute)] = {color, nullptr};
         }
 
-        inline void SetAttribute(Material::EAttribute attribute, Texture2D* texture)
+        inline void SetAttribute(Material::EAttribute attribute, Texture* texture)
         {
             GIR_ASSERT(attribute < Material::EAttribute::EAttributeCount, "Invalid attribute");
             m_attributes[static_cast<int>(attribute)] = {Vec4f(1.0f), texture};

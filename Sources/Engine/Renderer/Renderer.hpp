@@ -25,18 +25,22 @@ namespace gir
 
         void Draw(Framebuffer* framebuffer, const Scene* scene);
 
-        void DrawTexture(Texture2D* texture, const Camera& camera, Framebuffer* framebuffer);
+        void SetRenderMode(ERenderMode mode);
 
         inline void ResizeGBuffer(unsigned width, unsigned height) { m_GBuffer.Resize(width, height); }
-
-        inline void SetRenderMode(ERenderMode mode) { m_renderMode = mode; }
 
     private:
         static ShaderManager GetDefaultShaderManager();
 
         void InitializeGBuffer(unsigned width, unsigned height);
 
-        void DrawGBuffer(const Scene* scene);
+        void GBufferPrepass(const Scene *scene, Framebuffer* framebuffer);
+
+        void DeferredLightingPass(const Scene *scene, bool useIndirectLighting, Framebuffer* framebuffer);
+
+        void AlbedoDebugPass(const Scene *scene, Framebuffer* framebuffer);
+
+        void DrawShadowMaps(const Scene *scene, Framebuffer* framebuffer);
 
     private:
         ShaderManager m_shaderManager;

@@ -27,7 +27,7 @@ namespace gir
 
         static Material* LoadMaterial(aiMesh *mesh, const aiScene *scene);
 
-        static std::vector<Texture2D*> LoadMaterialTextures(aiMaterial *mat, aiTextureType type);
+        static std::vector<Texture*> LoadMaterialTextures(aiMaterial *mat, aiTextureType type);
     };
 }
 

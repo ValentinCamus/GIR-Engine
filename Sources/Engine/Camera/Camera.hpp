@@ -26,13 +26,15 @@ namespace gir
 
         inline unsigned GetHeight() const { return m_height; }
 
+        inline float GetVerticalFOV() const { return m_vfov; }
+
+        inline float GetHorizontalFOV() const { return m_vfov * float(m_width) / float(m_height); }
+
+        void SetVerticalFOV(float vfov);
+
         void SetWidth(unsigned width);
 
         void SetHeight(unsigned height);
-
-        inline float GetVerticalFOV() const { return m_vfov; }
-
-        void SetVerticalFOV(float vfov);
 
         const Mat4f &GetProjectionMatrix() const;
 

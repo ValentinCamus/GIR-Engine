@@ -10,20 +10,41 @@ namespace gir
                          float innerAngle,
                          float outerAngle) :
         Light(name, transform, color),
-        m_innerAngle(innerAngle),
-        m_outerAngle(outerAngle)
+        m_cosInnerAngle(cos(innerAngle)),
+        m_cosOuterAngle(cos(outerAngle))
     {
+        m_shadowmap.Bind();
+        m_shadowmap.AttachTexture(std::make_unique<Texture>(name + "_shadowmap", GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT), GL_DEPTH_ATTACHMENT);
+        glDrawBuffer(GL_NONE);
+        glReadBuffer(GL_NONE);
+
+        auto *texture = m_shadowmap.GetTexture(0);
+
+        texture->Bind();
+        texture->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        texture->SetParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        texture->SetParameter(GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+        texture->Unbind();
+
+        m_shadowmap.Resize(1500, 1500);
+
+        GIR_ASSERT(m_shadowmap.IsComplete(), "Incomplete spotlight framebuffer");
+
+        m_shadowmap.Unbind();
     }
 
-    void SpotLight::SetUniforms(const std::string &name, Shader *shader)
+    void SpotLight::SetUniforms(const std::string &name, Shader *shader, int slot)
     {
-        Light::SetUniforms(name, shader);
+        Light::SetUniforms(name, shader, slot);
         shader->SetUniform(name + ".type", static_cast<unsigned>(2));
         shader->SetUniform(name + ".position", Vec3f(m_transform[3]));
         shader->SetUniform(name + ".direction", Vec3f(-m_transform[2]));
-        shader->SetUniform(name + ".innerAngle", m_innerAngle);
-        shader->SetUniform(name + ".outerAngle", m_outerAngle);
+        shader->SetUniform(name + ".cosInnerAngle", m_cosInnerAngle);
+        shader->SetUniform(name + ".cosOuterAngle", m_cosOuterAngle);
+
+        shader->SetUniform(name + ".shadowmap", slot);
+        shader->SetUniform(name + ".viewProjection", m_projection * GetView());
     }
 
-    const Mat4f &SpotLight::GetProjection() const { return m_projection; }
+    const Mat4f &SpotLight::GetProjection() { return m_projection; }
 } // namespace gir

@@ -5,7 +5,7 @@ namespace gir
 {
     Model* ModelLoader::Load(const std::string& filepath)
     {
-        Manager<Texture2D>::Clear();
+        Manager<Texture>::Clear();
         Manager<Material>::Clear();
         Manager<Mesh>::Clear();
         Manager<Model>::Clear();
@@ -111,13 +111,13 @@ namespace gir
         material = Manager<Material>::Add(materialName);
 
         // 1. albedo maps
-        std::vector<Texture2D*> albedoMaps = LoadMaterialTextures(aiMat, aiTextureType_DIFFUSE);
+        std::vector<Texture*> albedoMaps = LoadMaterialTextures(aiMat, aiTextureType_DIFFUSE);
         // 2. metalness maps
-        std::vector<Texture2D*> metalnessMaps = LoadMaterialTextures(aiMat, aiTextureType_AMBIENT);
+        std::vector<Texture*> metalnessMaps = LoadMaterialTextures(aiMat, aiTextureType_AMBIENT);
         // 3. roughness maps
-        std::vector<Texture2D*> roughnessMaps = LoadMaterialTextures(aiMat, aiTextureType_SHININESS);
+        std::vector<Texture*> roughnessMaps = LoadMaterialTextures(aiMat, aiTextureType_SHININESS);
         // 4. alpha maps
-        std::vector<Texture2D*> alphaMaps = LoadMaterialTextures(aiMat, aiTextureType_OPACITY);
+        std::vector<Texture*> alphaMaps = LoadMaterialTextures(aiMat, aiTextureType_OPACITY);
 
         if (!albedoMaps.empty())
         {
@@ -172,9 +172,9 @@ namespace gir
     }
 
     // Checks all material textures of a given type and loads the textures if they're not loaded yet.
-    std::vector<Texture2D*> ModelLoader::LoadMaterialTextures(aiMaterial* mat, aiTextureType type)
+    std::vector<Texture*> ModelLoader::LoadMaterialTextures(aiMaterial* mat, aiTextureType type)
     {
-        std::vector<Texture2D*> textures;
+        std::vector<Texture*> textures;
 
         for (unsigned int i = 0; i < mat->GetTextureCount(type); ++i)
         {

@@ -9,6 +9,8 @@ layout (location = 0) in vec2 textureCoordinates;
 
 layout (location = 0) out vec4 fragColor;
 
+uniform bool drawIndirectLighting;
+
 uniform sampler2D position;
 uniform sampler2D normalMetalness;
 uniform sampler2D albedoRoughness;
@@ -63,7 +65,7 @@ void main()
         float cosThetai = max(dot(normal, wi), 0.004);
         float cosThetao = max(dot(normal, wo), 0.004);
 
-        vec3 Li = lights[i].color * attenuation(lights[i], wi, position);
+        vec3 Li = lights[i].color * attenuation(lights[i], wi, position) * shadow(lights[i], vec4(position, 1.f), normal);
     
         vec3 f0 = mix(vec3(0.04), albedo, metalness);
     

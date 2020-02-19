@@ -11,28 +11,32 @@
 
 namespace gir
 {
+    class Scene;
+
     class Light : public SceneComponent
     {
     public:
         Light(const std::string &name, const Mat4f &transform, const Vec3f &color);
 
         ~Light() override = default;
+        
+        Framebuffer *GetShadowMap();
 
-        // TODO
-        // void DrawShadowMap(const Scene& scene);
+        virtual void DrawShadowMap(const Scene *scene, Shader *shader);
+
+        virtual void SetUniforms(const std::string &name, Shader *shader, int);
+
+        virtual bool HasCubemapShadowmap() const;
+
+        constexpr static int rsmTextureCount = 4;
+
+    protected:
+        Framebuffer m_shadowmap;
+
+        Vec3f m_color;
 
         Mat4f GetView() const;
 
-        // TODO
-        // const Framebuffer *GetShadowMap() const;
-
-        virtual void SetUniforms(const std::string &name, Shader *shader);
-
-        virtual const Mat4f &GetProjection() const = 0;
-
-    protected:
-        // Framebuffer m_shadowMap;
-
-        Vec3f m_color;
+        virtual const Mat4f &GetProjection() = 0;
     };
 } // namespace gir

@@ -4,6 +4,7 @@
 #include <IO/Loader/ModelLoader.hpp>
 #include <Engine/Camera/Camera.hpp>
 #include <Engine/Light/DirectionalLight.hpp>
+#include <Engine/Light/SpotLight.hpp>
 #include <Engine/Light/PointLight.hpp>
 
 namespace gir
@@ -66,11 +67,15 @@ namespace gir
         std::vector<std::unique_ptr<Light>> lights;
         Mat4f lightTransform(glm::rotate(-PI / 3, Vec3f(1.f, 0.f, 0.f)));
 
-        lightTransform[3] = {0.f, 45.f, 0.f, 1.f};
-        lights.emplace_back(std::make_unique<DirectionalLight>("SunLight", lightTransform, Vec3f {1.85f, 1.65f, 1.2f}));
+        lightTransform[3] = {0.f, 55.f, 0.f, 1.f};
+        lights.emplace_back(std::make_unique<DirectionalLight>("Sunlight", lightTransform, Vec3f(0.8f, 0.6f, 0.45f)));
+
+        lightTransform    = glm::rotate(-PI / 3, Vec3f(1.f, 0.f, 0.f)) * glm::rotate(-PI / 2, Vec3f(0.f, 1.f, 0.f));
+        lightTransform[3] = {18.f, 4.5f, 0.f, 1.f};
+        lights.emplace_back(std::make_unique<SpotLight>("Spotlight", lightTransform, Vec3f(28.f, 20.f, 15.f), 0.5f * PI / 4, PI / 4));
 
         lightTransform[3] = {0.f, 6.5f, 0.f, 1.f};
-        lights.emplace_back(std::make_unique<PointLight>("Point light 1", lightTransform, Vec3f {150.f, 130.f, 108.f}));
+        lights.emplace_back(std::make_unique<PointLight>("Pointlight", lightTransform, Vec3f(60.f, 40.f, 30.f)));
 
         std::vector<std::unique_ptr<Entity>> entities;
         Mat4f entityTransform(0.025f);
@@ -157,7 +162,7 @@ namespace gir
             if (m_input.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_3))
             {
                 m_cameraController.SetCamera(&m_scene->GetCamera());
-                m_cameraController.LookAt(static_cast<float>(xPos), static_cast<float>(yPos));
+                m_cameraController.DragMouse(static_cast<float>(xPos), static_cast<float>(yPos));
             }
         }
     }

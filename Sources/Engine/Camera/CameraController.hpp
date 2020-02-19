@@ -32,7 +32,7 @@ namespace gir
         /// Zoom/Un-zoom the camera.
         void Zoom(float delta);
 
-        void LookAt(float xPos, float yPos);
+        void DragMouse(float xPos, float yPos);
 
         void SetMousePosition(float x, float y);
 
@@ -45,7 +45,7 @@ namespace gir
         Camera* m_camera;
 
         /// Camera speed.
-        float m_speed = 2.5f;
+        float m_speed = 5.5f;
 
         float m_zoomSensitivity = 2.0f;
         float m_minZoom = 0.1f * DEG2RAD;
@@ -53,5 +53,7 @@ namespace gir
 
         float m_prevMouseX = 0.f;
         float m_prevMouseY = 0.f;
+
+        // bool m_mouseDragged = false;
     };
 } // namespace gir

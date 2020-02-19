@@ -7,7 +7,7 @@
 #include <ImGui/ImGuiController.hpp>
 #include <ImGui/Widget/Widget.hpp>
 #include <Application/WindowEventListener.hpp>
-#include <Engine/Texture/Texture2D.hpp>
+#include <Engine/Texture/Texture.hpp>
 #include <Engine/Scene/Scene.hpp>
 #include <Engine/Renderer/Renderer.hpp>
 #include <Engine/Camera/CameraController.hpp>

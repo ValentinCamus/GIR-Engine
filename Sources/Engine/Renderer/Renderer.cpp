@@ -10,6 +10,8 @@ namespace gir
         m_shaderManager(GetDefaultShaderManager()),
         m_GBuffer("GBuffer")
     {
+        SetRenderMode(ERenderMode::DIRECT);
+
         m_quad = std::make_unique<Quad>("DeferredShadingQuad");
 
         InitializeGBuffer(width, height);
@@ -19,66 +21,25 @@ namespace gir
 
     void Renderer::Draw(Framebuffer* framebuffer, const Scene* scene)
     {
-        DrawGBuffer(scene);
+        GBufferPrepass(scene, framebuffer);
 
         switch (m_renderMode)
         {
             case ERenderMode::UNLIT:
-            {
-                const auto& camera = scene->GetCamera();
-                DrawTexture(m_GBuffer.GetTexture(2), camera, framebuffer);
+                AlbedoDebugPass(scene, framebuffer);
                 break;
-            }
+
             case ERenderMode::DIRECT:
-            {
-                const auto& camera = scene->GetCamera();
-                auto* shader = m_shaderManager.GetShader(EShaderType::DEFERRED_LIGHTING);
-
-                shader->Bind();
-
-                framebuffer->Bind();
-                glClear(GL_COLOR_BUFFER_BIT);
-                glDisable(GL_DEPTH_TEST);
-
-                auto* vao = m_quad->GetVertexArrayObject();
-                vao->Bind();
-
-                shader->SetUniform("cameraPosition", Vec3f(camera.GetTransform()[3]));
-
-                const auto& lights = scene->GetLights();
-                shader->SetUniform("lightCount", static_cast<unsigned>(lights.size()));
-                for (int i = 0; i < static_cast<int>(lights.size()); ++i)
-                {
-                    lights[i]->SetUniforms("lights[" + std::to_string(i) + "]", shader);
-                }
-
-                for (int i = 0; i < static_cast<int>(m_GBuffer.GetTextureCount()); ++i)
-                {
-                    auto* texture = m_GBuffer.GetTexture(i);
-                    texture->Bind(i);
-                    shader->SetUniform(texture->GetName(), i);
-                }
-
-                glDrawElements(GL_TRIANGLES, m_quad->GetIndices().size(), GL_UNSIGNED_INT, nullptr);
-
-                for (int i = 0; i < static_cast<int>(m_GBuffer.GetTextureCount()); ++i)
-                {
-                    m_GBuffer.GetTexture(i)->Unbind();
-                }
-
-                glEnable(GL_DEPTH_TEST);
-
-                vao->Unbind();
-                framebuffer->Unbind();
-                shader->Unbind();
-
+                DeferredLightingPass(scene, false, framebuffer);
                 break;
-            }
+
+            case ERenderMode::RSM:
+                DeferredLightingPass(scene, true, framebuffer);
+                break;
+
             default:
-            {
                 Logger::Error("Invalid render mode");
                 break;
-            }
         }
     }
 
@@ -115,9 +76,9 @@ namespace gir
 
         std::vector<GLuint> attachments {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};
 
-        m_GBuffer.AttachTexture(std::make_unique<Texture2D>("position", GL_RGB32F, GL_RGB, GL_FLOAT), attachments[0]);
-        m_GBuffer.AttachTexture(std::make_unique<Texture2D>("normalMetalness", GL_RGBA32F, GL_RGBA, GL_FLOAT), attachments[1]);
-        m_GBuffer.AttachTexture(std::make_unique<Texture2D>("albedoRoughness", GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE), attachments[2]);
+        m_GBuffer.AttachTexture(std::make_unique<Texture>("position", GL_RGB32F, GL_RGB, GL_FLOAT), attachments[0]);
+        m_GBuffer.AttachTexture(std::make_unique<Texture>("normalMetalness", GL_RGBA32F, GL_RGBA, GL_FLOAT), attachments[1]);
+        m_GBuffer.AttachTexture(std::make_unique<Texture>("albedoRoughness", GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE), attachments[2]);
 
         glDrawBuffers(attachments.size(), attachments.data());
 
@@ -128,11 +89,25 @@ namespace gir
         GIR_ASSERT(m_GBuffer.IsComplete(), "Incomplete GBuffer framebuffer");
 
         m_GBuffer.Unbind();
+
+        glEnable(GL_FRAMEBUFFER_SRGB);
+        glEnable(GL_POLYGON_OFFSET_FILL);
+        glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+        glPolygonOffset(.85f, .75f);
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+
     }
 
-    void Renderer::DrawGBuffer(const Scene* scene)
+    void Renderer::SetRenderMode(ERenderMode mode)
     {
-        const auto& camera = scene->GetCamera();
+        m_renderMode = mode;
+
+        auto shader = m_shaderManager.GetShader(EShaderType::DEFERRED_LIGHTING);
+        shader->SetUniform("useIndirectLighting", mode == ERenderMode::RSM || mode == ERenderMode::RSMGS);
+    }
+
+    void Renderer::GBufferPrepass(const Scene* scene, Framebuffer* framebuffer)
+    {
         auto* shader = m_shaderManager.GetShader(EShaderType::GBUFFER);
 
         shader->Bind();
@@ -140,6 +115,7 @@ namespace gir
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        const auto& camera = scene->GetCamera();
         shader->SetUniform("vp", camera.GetProjectionMatrix() * camera.GetViewMatrix());
 
         for (const auto& entity : scene->GetEntities())
@@ -156,38 +132,134 @@ namespace gir
                 {
                     auto* vao = mesh->GetVertexArrayObject();
                     vao->Bind();
-                    glDrawElements(GL_TRIANGLES, mesh->Size(), GL_UNSIGNED_INT, nullptr);
+                    glDrawElements(GL_TRIANGLES, mesh->Size(), GL_UNSIGNED_INT, 0);
                     vao->Unbind();
                 }
                 material->UnbindTextures();
             }
         }
+        m_GBuffer.BlitDepthBuffer(framebuffer);
         m_GBuffer.Unbind();
 
         shader->Unbind();
     }
 
-    void Renderer::DrawTexture(Texture2D* texture, const Camera& camera, Framebuffer* framebuffer)
+    void Renderer::AlbedoDebugPass(const Scene* scene, Framebuffer* framebuffer)
     {
         auto* shader = m_shaderManager.GetShader(EShaderType::DEBUG);
 
+        shader->Bind();
+
+        framebuffer->Bind();
         glClear(GL_COLOR_BUFFER_BIT);
         glDisable(GL_DEPTH_TEST);
 
-        shader->Bind();
-        framebuffer->Bind();
-        m_quad->GetVertexArrayObject()->Bind();
-        texture->Bind(2);
+        auto* vao = m_quad->GetVertexArrayObject();
+        vao->Bind();
 
+        auto* texture = m_GBuffer.GetTexture(2);
+        texture->Bind(2);
         shader->SetUniform(texture->GetName(), 2);
+
         glDrawElements(GL_TRIANGLES, m_quad->GetIndices().size(), GL_UNSIGNED_INT, nullptr);
 
-        texture->Unbind();
-        m_quad->GetVertexArrayObject()->Unbind();
+        m_GBuffer.GetTexture(2)->Unbind();
+
+        glEnable(GL_DEPTH_TEST);
+
+        vao->Unbind();
+        framebuffer->Unbind();
+        shader->Unbind();
+    }
+
+    void Renderer::DeferredLightingPass(const Scene* scene, bool useIndirectLighting, Framebuffer* framebuffer)
+    {
+        /// Shadow map pass
+        const auto& lights = scene->GetLights();
+
+        DrawShadowMaps(scene, framebuffer);
+
+        auto shader = m_shaderManager.GetShader(EShaderType::DEFERRED_LIGHTING);
+        shader->Bind();
+
+        framebuffer->Bind();
+        glClear(GL_COLOR_BUFFER_BIT);
+        glDisable(GL_DEPTH_TEST);
+
+        const auto& camera = scene->GetCamera();
+        shader->SetUniform("cameraPosition", Vec3f(camera.GetTransform()[3]));
+
+        shader->SetUniform("lightCount", static_cast<unsigned>(lights.size()));
+
+        // Binding the light's uniforms and the shadowmap texture
+        for (int i = 0; i < static_cast<int>(lights.size()); ++i)
+        {
+            const int index = Light::rsmTextureCount * i + 1;
+            lights[i]->SetUniforms("lights[" + std::to_string(i) + "]", shader, index);
+            for (int j = 0; j < Light::rsmTextureCount; ++j)
+            {
+                lights[i]->GetShadowMap()->GetTexture(j)->Bind(index + j);
+            }
+        }
+
+        // Binding the GBuffer textures
+        for (int i = 0; i < static_cast<int>(m_GBuffer.GetTextureCount()); ++i)
+        {
+            auto* texture   = m_GBuffer.GetTexture(i);
+            const int index = i + Light::rsmTextureCount * static_cast<int>(lights.size()) + 1;
+            texture->Bind(index);
+            shader->SetUniform(texture->GetName(), index);
+        }
+
+        auto* vao = m_quad->GetVertexArrayObject();
+        vao->Bind();
+
+        // Draw the quad
+        glDrawElements(GL_TRIANGLES, m_quad->GetIndices().size(), GL_UNSIGNED_INT, nullptr);
+
+        vao->Unbind();
+
+        // Unbind everything
+        for (int i = 0; i < static_cast<int>(m_GBuffer.GetTextureCount()); ++i)
+        {
+            m_GBuffer.GetTexture(i)->Unbind();
+        }
+
+        for (const auto & light : lights)
+        {
+            for (int j = 0; j < Light::rsmTextureCount; ++j)
+            {
+                light->GetShadowMap()->GetTexture(j)->Unbind();
+            }
+        }
+
         framebuffer->Unbind();
         shader->Unbind();
 
         glEnable(GL_DEPTH_TEST);
+    }
+
+    void Renderer::DrawShadowMaps(const Scene* scene, Framebuffer* framebuffer)
+    {
+        const auto& lights = scene->GetLights();
+
+        // Quick and dirty, but faster than potentially switching programs every iteration
+        auto* shader = m_shaderManager.GetShader(EShaderType::SHADOW_MAPPING);
+        shader->Bind();
+        for (const auto & light : lights)
+        {
+            if (!light->HasCubemapShadowmap()) light->DrawShadowMap(scene, shader);
+        }
+        shader->Unbind();
+
+        shader = m_shaderManager.GetShader(EShaderType::SHADOW_MAPPING_PL);
+        shader->Bind();
+
+        for (const auto & light : lights)
+        {
+            if (light->HasCubemapShadowmap()) light->DrawShadowMap(scene, shader);
+        }
+        shader->Unbind();
     }
 
 } // namespace gir
