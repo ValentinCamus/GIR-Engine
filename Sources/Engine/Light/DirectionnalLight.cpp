@@ -8,7 +8,7 @@ namespace gir
         Light(name, transform, color)
     {
         m_shadowmap.Bind();
-        m_shadowmap.AttachTexture(std::make_unique<Texture>(name + "_shadowmap", GL_DEPTH_COMPONENT, GL_FLOAT),
+        m_shadowmap.AttachTexture(std::make_unique<Texture>(name + "_shadowmap", GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT),
                                   GL_DEPTH_ATTACHMENT);
         glDrawBuffer(GL_NONE);
         glReadBuffer(GL_NONE);
@@ -16,14 +16,15 @@ namespace gir
         auto *texture = m_shadowmap.GetTexture(0);
 
         texture->Bind();
-        texture->SetParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        texture->SetParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         texture->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
         texture->SetParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
         texture->SetParameter(GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
         texture->Unbind();
 
         m_shadowmap.Resize(4850, 3200);
+
+        GIR_ASSERT(m_shadowmap.IsComplete(), "Incomplete directionnal light framebuffer");
+
         m_shadowmap.Unbind();
     }
 

@@ -40,7 +40,7 @@ namespace gir
     private:
         Camera* m_camera;
 
-        float m_speed = 2.5f;
+        float m_speed = 5.5f;
 
         // float m_mouseSensitivity = 0.1f;
 

@@ -14,7 +14,6 @@ struct Light {
     vec3 color;
     vec3 position;
     vec3 direction;
-    // float range;
     float cosInnerAngle;
     float cosOuterAngle;
 
@@ -22,9 +21,6 @@ struct Light {
     samplerCubeShadow shadowmapPL;
 
     // For spotlights and directionnal lights
-    mat4 projection;
-
-    // For point lights
     mat4 viewProjection;
 };
 
@@ -50,10 +46,8 @@ vec3 lightVector(Light light, vec3 position) {
     }
 }
 
-float distanceAttenuation(Light light, float dist) {
-    // float distToRange = dist / light.range;
-    // float attenuation = max(1 - (distToRange * distToRange * distToRange * distToRange), 0);
-
+float distanceAttenuation(vec3 position, Light light) {
+    float dist = distance(position, light.position);
     return 1 / (dist * dist);
 }
 
@@ -65,35 +59,59 @@ float radialAttenuation(const Light light, const vec3 lightVector) {
 
 float attenuation(Light light, vec3 lightVector, vec3 position) {
     switch(light.type) {
-        case POINT_LIGHT: return distanceAttenuation(light, distance(position, light.position));
-        case SPOT_LIGHT: return distanceAttenuation(light, distance(position, light.position)) * radialAttenuation(light, lightVector);
+        case POINT_LIGHT: return distanceAttenuation(position, light);
+        case SPOT_LIGHT: return distanceAttenuation(position, light) * radialAttenuation(light, lightVector);
         default: return 1;
     }
 }
 
-float shadow(Light light, vec4 position, vec3 normal, vec3 wi) {
+float shadow(Light light, vec4 position, vec3 normal) {
+    float result = 0;
     position.xyz += normal * 0.125;
 
     switch(light.type) {
+        case POINT_LIGHT:
+            // LearnOpenGL PCF, not perfect but does the job for now
+            vec3 direction = position.xyz - light.position;
+            float depth = length(direction) / FAR_Z;
+            
+            vec3 sampleOffsetDirections[20] = vec3[]( vec3( 1,  1,  1), vec3( 1, -1,  1), vec3(-1, -1,  1), vec3(-1,  1,  1), 
+                                                      vec3( 1,  1, -1), vec3( 1, -1, -1), vec3(-1, -1, -1), vec3(-1,  1, -1),
+                                                      vec3( 1,  1,  0), vec3( 1, -1,  0), vec3(-1, -1,  0), vec3(-1,  1,  0),
+                                                      vec3( 1,  0,  1), vec3(-1,  0,  1), vec3( 1,  0, -1), vec3(-1,  0, -1),
+                                                      vec3( 0,  1,  1), vec3( 0, -1,  1), vec3( 0, -1, -1), vec3( 0,  1, -1)); 
+            
+            for(int i = 0; i < 20; ++i) {
+                result += texture(light.shadowmapPL, vec4(direction + sampleOffsetDirections[i] * (1 + depth) / FAR_Z, depth));
+            }
+
+            result = result / 20;
+
+            break;
+
         case SPOT_LIGHT:
         case DIRECTIONAL_LIGHT: 
             position = light.viewProjection * position;
             position /= position.w;
-            position = position * 0.5f + 0.5f;
-            vec2 texelSize = 1.f / textureSize(light.shadowmap, 0);
+            position = position * 0.5 + 0.5;
+            vec2 texelSize = 1 / textureSize(light.shadowmap, 0);
 
-            float result = 0.f;
             for(int i = 0; i < 4; ++i) {
                 for(int j = 0; j < 4; ++j) {
                     result += texture(light.shadowmap, vec3(position.xy + vec2(i - 1.5, j - 1.5) * texelSize, position.z));
                 }
             }
 
-            return result / 16;
+            result = result / 16;
+
+            break;
 
         default: 
-            return 1;
+            result = 1;
+            break;
     }
+
+    return result;
 }
 
 #endif

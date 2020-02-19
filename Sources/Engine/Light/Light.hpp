@@ -22,9 +22,11 @@ namespace gir
         
         Framebuffer *GetShadowMap();
 
+        virtual void DrawShadowMap(const Scene *scene, Shader *shader);
+
         virtual void SetUniforms(const std::string &name, Shader *shader, int);
 
-        void DrawShadowMap(const Scene *scene, Shader *shader);
+        virtual bool HasCubemapShadowmap() const;
 
     protected:
         Framebuffer m_shadowmap;

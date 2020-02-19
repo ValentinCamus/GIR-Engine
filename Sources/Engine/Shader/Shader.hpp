@@ -13,8 +13,9 @@ namespace gir
         GBUFFER           = 0,
         DEFERRED_LIGHTING = 1,
         SHADOW_MAPPING    = 2,
-        DEBUG             = 3,
-        COUNT             = 4
+        SHADOW_MAPPING_PL = 3,
+        DEBUG             = 4,
+        COUNT             = 5
     };
 
     class Shader : public OpenGLComponent

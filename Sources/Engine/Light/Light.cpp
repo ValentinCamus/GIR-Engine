@@ -2,7 +2,6 @@
 #include <Engine/Scene/Scene.hpp>
 #include <Engine/Mesh/Model.hpp>
 #include <Engine/Mesh/Mesh.hpp>
-#include <Engine/Scene/Scene.hpp>
 
 namespace gir
 {
@@ -14,11 +13,6 @@ namespace gir
     }
 
     Framebuffer *Light::GetShadowMap() { return &m_shadowmap; }
-
-    void Light::SetUniforms(const std::string &name, Shader *shader, int)
-    {
-        shader->SetUniform(name + ".color", m_color);
-    }
 
     void Light::DrawShadowMap(const Scene *scene, Shader *shader)
     {
@@ -47,6 +41,13 @@ namespace gir
 
         m_shadowmap.Unbind();
     }
+
+    void Light::SetUniforms(const std::string &name, Shader *shader, int)
+    {
+        shader->SetUniform(name + ".color", m_color);
+    }
+
+    bool Light::HasCubemapShadowmap() const { return false; }
 
     Mat4f Light::GetView() const
     {

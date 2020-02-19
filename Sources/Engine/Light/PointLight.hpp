@@ -9,7 +9,11 @@ namespace gir
     public:
         PointLight(const std::string& name, const Mat4f& transform, const Vec3f& color);
 
+        void DrawShadowMap(const Scene* scene, Shader* shader) override;
+
         void SetUniforms(const std::string& name, Shader* shader, int slot) override;
+
+        bool HasCubemapShadowmap() const override;
 
     private:
         static const Mat4f m_projection;

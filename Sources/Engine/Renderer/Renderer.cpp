@@ -42,12 +42,18 @@ namespace gir
                          {EShaderType::SHADOW_MAPPING,
                           {{GL_VERTEX_SHADER, PROJECT_SOURCE_DIR "/Shaders/ShadowMapping.vs.glsl"},
                            {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR "/Shaders/ShadowMapping.fs.glsl"}}},
+                         {EShaderType::SHADOW_MAPPING_PL,
+                          {{GL_VERTEX_SHADER, PROJECT_SOURCE_DIR "/Shaders/ShadowMappingPL.vs.glsl"},
+                           {GL_GEOMETRY_SHADER, PROJECT_SOURCE_DIR "/Shaders/ShadowMappingPL.gs.glsl"},
+                           {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR "/Shaders/ShadowMappingPL.fs.glsl"}}},
                          {EShaderType::DEBUG,
                           {{GL_VERTEX_SHADER, PROJECT_SOURCE_DIR "/Shaders/Debug.vs.glsl"},
                            {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR "/Shaders/Debug.fs.glsl"}}}}),
         m_default(defaultFramebuffer),
         m_GBuffer("GBuffer")
     {
+        SetRenderMode(ERenderMode::DIRECT);
+
         // Creating screen quad
         std::vector<Mesh::Vertex> vertices = {
             {{1.f, 1.f, 0.0f}, Vec3f(), {1.f, 1.f}},
@@ -83,13 +89,58 @@ namespace gir
 
         glEnable(GL_FRAMEBUFFER_SRGB);
         glEnable(GL_POLYGON_OFFSET_FILL);
+        glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
         glPolygonOffset(.85f, .75f);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     }
 
     void Renderer::Draw(const Scene* scene)
     {
-        /// GBuffer pass
+        GBufferPrepass(scene);
+
+        switch (m_renderMode)
+        {
+            case ERenderMode::DEBUG:
+                DrawAlbedo(scene);
+                break;
+
+            case ERenderMode::DIRECT:
+                DrawDirectLighting(scene);
+                break;
+
+            case ERenderMode::RSM:
+                DrawIndirectLightingRSM(scene);
+                break;
+
+            default:
+                Logger::Error("Invalid render mode");
+                break;
+        }
+    }
+
+    void Renderer::ResizeGBuffer(unsigned width, unsigned height) { m_GBuffer.Resize(width, height); }
+
+    void Renderer::SetRenderMode(ERenderMode mode)
+    {
+        m_renderMode = mode;
+        auto shader  = m_shaderManager.GetShader(EShaderType::DEFERRED_LIGHTING);
+        switch (m_renderMode)
+        {
+            case ERenderMode::DIRECT:
+                // shader->SetUniform("drawIndirectLighting", false);
+                break;
+
+            case ERenderMode::RSM:
+                // shader->SetUniform("drawIndirectLighting", true);
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    void Renderer::GBufferPrepass(const Scene* scene)
+    {
         auto* shader = m_shaderManager.GetShader(EShaderType::GBUFFER);
 
         shader->Bind();
@@ -124,107 +175,108 @@ namespace gir
         m_GBuffer.Unbind();
 
         shader->Unbind();
-
-        switch (m_renderMode)
-        {
-            case ERenderMode::DEBUG:
-            {
-                shader = m_shaderManager.GetShader(EShaderType::DEBUG);
-
-                shader->Bind();
-
-                m_default->Bind();
-                glClear(GL_COLOR_BUFFER_BIT);
-                glDisable(GL_DEPTH_TEST);
-
-                auto* vao = m_quad->GetVertexArrayObject();
-                vao->Bind();
-
-                auto* texture = m_GBuffer.GetTexture(2);
-                texture->Bind(2);
-                shader->SetUniform(texture->GetName(), 2);
-
-                glDrawElements(GL_TRIANGLES, m_quad->GetIndices().size(), GL_UNSIGNED_INT, nullptr);
-
-                m_GBuffer.GetTexture(2)->Unbind();
-
-                glEnable(GL_DEPTH_TEST);
-
-                vao->Unbind();
-                m_default->Unbind();
-                shader->Unbind();
-
-                break;
-            }
-            case ERenderMode::DIRECT:
-            {
-                /// Shadow map pass
-                shader = m_shaderManager.GetShader(EShaderType::SHADOW_MAPPING);
-                shader->Bind();
-
-                const auto& lights = scene->GetLights();
-                for (int i = 0; i < static_cast<int>(lights.size()); ++i) { lights[i]->DrawShadowMap(scene, shader); }
-
-                shader->Unbind();
-
-                /// Deferred shading pass
-                shader = m_shaderManager.GetShader(EShaderType::DEFERRED_LIGHTING);
-                shader->Bind();
-
-                m_default->Bind();
-                glClear(GL_COLOR_BUFFER_BIT);
-                glDisable(GL_DEPTH_TEST);
-
-                auto* vao = m_quad->GetVertexArrayObject();
-                vao->Bind();
-
-                shader->SetUniform("cameraPosition", Vec3f(camera.GetTransform()[3]));
-
-                shader->SetUniform("lightCount", static_cast<unsigned>(lights.size()));
-
-                // Binding the light's uniforms and the shadowmap texture
-                for (int i = 0; i < static_cast<int>(lights.size()); ++i)
-                {
-                    lights[i]->SetUniforms("lights[" + std::to_string(i) + "]", shader, i);
-                    lights[i]->GetShadowMap()->GetTexture(0)->Bind(i);
-                }
-
-                // Binding the GBuffer textures
-                for (int i = 0; i < static_cast<int>(m_GBuffer.TextureCount()); ++i)
-                {
-                    auto* texture = m_GBuffer.GetTexture(i);
-                    texture->Bind(i + static_cast<int>(lights.size()));
-                    shader->SetUniform(texture->GetName(), i + static_cast<int>(lights.size()));
-                }
-
-                // Draw the quad
-                glDrawElements(GL_TRIANGLES, m_quad->GetIndices().size(), GL_UNSIGNED_INT, nullptr);
-
-                // Unbind everything
-                for (int i = 0; i < static_cast<int>(m_GBuffer.TextureCount()); ++i)
-                { m_GBuffer.GetTexture(i)->Unbind(); }
-
-                for (int i = 0; i < static_cast<int>(lights.size()); ++i)
-                { lights[i]->GetShadowMap()->GetTexture(0)->Unbind(); }
-
-                m_default->Unbind();
-                shader->Unbind();
-
-                glEnable(GL_DEPTH_TEST);
-                vao->Unbind();
-
-                break;
-            }
-            default:
-            {
-                Logger::Error("Invalid render mode");
-                break;
-            }
-        }
     }
 
-    void Renderer::ResizeGBuffer(unsigned width, unsigned height) { m_GBuffer.Resize(width, height); }
+    void Renderer::DrawAlbedo(const Scene* scene)
+    {
+        auto* shader = m_shaderManager.GetShader(EShaderType::DEBUG);
 
-    void Renderer::SetRenderMode(ERenderMode mode) { m_renderMode = mode; }
+        shader->Bind();
+
+        m_default->Bind();
+        glClear(GL_COLOR_BUFFER_BIT);
+        glDisable(GL_DEPTH_TEST);
+
+        auto* vao = m_quad->GetVertexArrayObject();
+        vao->Bind();
+
+        auto* texture = m_GBuffer.GetTexture(2);
+        texture->Bind(2);
+        shader->SetUniform(texture->GetName(), 2);
+
+        glDrawElements(GL_TRIANGLES, m_quad->GetIndices().size(), GL_UNSIGNED_INT, nullptr);
+
+        m_GBuffer.GetTexture(2)->Unbind();
+
+        glEnable(GL_DEPTH_TEST);
+
+        vao->Unbind();
+        m_default->Unbind();
+        shader->Unbind();
+    }
+
+    void Renderer::DrawDirectLighting(const Scene* scene)
+    {
+        /// Shadow map pass
+        const auto& lights = scene->GetLights();
+
+        // Quick and dirty, but faster than potentially switching programs every iteration
+        auto* shader = m_shaderManager.GetShader(EShaderType::SHADOW_MAPPING);
+        shader->Bind();
+        for (int i = 0; i < static_cast<int>(lights.size()); ++i)
+        {
+            if (!lights[i]->HasCubemapShadowmap()) lights[i]->DrawShadowMap(scene, shader);
+        }
+        shader->Unbind();
+
+        shader = m_shaderManager.GetShader(EShaderType::SHADOW_MAPPING_PL);
+        shader->Bind();
+
+        for (int i = 0; i < static_cast<int>(lights.size()); ++i)
+        {
+            if (lights[i]->HasCubemapShadowmap()) lights[i]->DrawShadowMap(scene, shader);
+        }
+        shader->Unbind();
+
+        /// Deferred shading pass
+        shader = m_shaderManager.GetShader(EShaderType::DEFERRED_LIGHTING);
+        shader->Bind();
+
+        m_default->Bind();
+        glClear(GL_COLOR_BUFFER_BIT);
+        glDisable(GL_DEPTH_TEST);
+
+        const auto& camera = scene->GetCamera();
+        shader->SetUniform("cameraPosition", Vec3f(camera.GetTransform()[3]));
+
+        shader->SetUniform("lightCount", static_cast<unsigned>(lights.size()));
+
+        // Binding the light's uniforms and the shadowmap texture
+        for (int i = 0; i < static_cast<int>(lights.size()); ++i)
+        {
+            lights[i]->SetUniforms("lights[" + std::to_string(i) + "]", shader, i);
+            lights[i]->GetShadowMap()->GetTexture(0)->Bind(i);
+        }
+
+        // Binding the GBuffer textures
+        for (int i = 0; i < static_cast<int>(m_GBuffer.TextureCount()); ++i)
+        {
+            auto* texture = m_GBuffer.GetTexture(i);
+            int index     = i + static_cast<int>(lights.size());
+            texture->Bind(index);
+            shader->SetUniform(texture->GetName(), index);
+        }
+
+        auto* vao = m_quad->GetVertexArrayObject();
+        vao->Bind();
+
+        // Draw the quad
+        glDrawElements(GL_TRIANGLES, m_quad->GetIndices().size(), GL_UNSIGNED_INT, nullptr);
+
+        vao->Unbind();
+
+        // Unbind everything
+        for (int i = 0; i < static_cast<int>(m_GBuffer.TextureCount()); ++i) { m_GBuffer.GetTexture(i)->Unbind(); }
+
+        for (int i = 0; i < static_cast<int>(lights.size()); ++i)
+        { lights[i]->GetShadowMap()->GetTexture(0)->Unbind(); }
+
+        m_default->Unbind();
+        shader->Unbind();
+
+        glEnable(GL_DEPTH_TEST);
+    }
+
+    void Renderer::DrawIndirectLightingRSM(const Scene* scene) {}
 
 } // namespace gir

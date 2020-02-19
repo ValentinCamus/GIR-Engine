@@ -11,20 +11,16 @@ namespace gir
     public:
         /// Constructor.
         /// @name: specifies the name of the component.
+        /// @internalFormat: specifies the actual data format of the texture.
         /// @format: specifies the number of color components in the texture.
-        /// @internalFormat: ...
+        /// @textureType: specifies the kind of texture created, either GL_TEXTURE_2D or GL_TEXTURE_CUBE_MAP
         /// @type: specifies the data type of the pixel data.
         explicit Texture(const std::string& name,
-                           int internalFormat,
-                           int format,
-                           int type,
-                           bool generateMipmap = false);
-
-        /// Constructor.
-        /// @name: specifies the name of the component.
-        /// @format: specifies the number of color components in the texture.
-        /// @type: specifies the data type of the pixel data.
-        explicit Texture(const std::string& name, int format, int type, bool generateMipmap = false);
+                         int internalFormat,
+                         int format,
+                         int type,
+                         int textureType     = GL_TEXTURE_2D,
+                         bool generateMipmap = false);
 
         /// Destructor.
         ~Texture() override;
@@ -51,8 +47,11 @@ namespace gir
         /// @return: the number of color components in the texture.
         inline int GetFormat() const { return m_format; }
 
-        /// @return: the data type of the pixel data.
-        inline int GetType() const { return m_type; }
+        /// @return: the data type of the texels.
+        inline int GetDataType() const { return m_dataType; }
+
+        /// @return: the texture type.
+        inline int GetTextureType() const { return m_textureType; }
 
         /// @setter: Define an int texture parameter.
         void SetParameter(int name, int value);
@@ -75,8 +74,10 @@ namespace gir
         int m_format = GL_RGBA;
 
         /// The data type of the pixel data.
-        int m_type = GL_UNSIGNED_INT;
+        int m_dataType = GL_UNSIGNED_INT;
 
-        bool m_generateMipmap = false;
+        int m_textureType;
+
+        bool m_generateMipmap;
     };
 } // namespace gir

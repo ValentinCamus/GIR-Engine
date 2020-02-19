@@ -25,7 +25,7 @@ namespace gir
             glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
         }
 
-        for (auto &texture : m_textures)
+        for (auto& texture : m_textures)
         {
             texture->Bind();
             texture->Allocate(width, height);
@@ -75,7 +75,11 @@ namespace gir
 
     void Framebuffer::AttachTexture(std::unique_ptr<Texture>&& texture, int attachment)
     {
-        glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, texture->GetId(), 0);
+        if (texture->GetTextureType() == GL_TEXTURE_2D)
+            glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, texture->GetId(), 0);
+        else
+            glFramebufferTexture(GL_FRAMEBUFFER, attachment, texture->GetId(), 0);
+
         m_textures.emplace_back(std::move(texture));
     }
 

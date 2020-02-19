@@ -5,12 +5,12 @@
 
 namespace gir
 {
-    Texture* TextureLoader::Load(const std::string &filename)
+    Texture* TextureLoader::Load(const std::string& filename)
     {
-        int width = 0;
-        int height = 0;
-        int nChannels = 0;
-        const char * cPath = filename.c_str();
+        int width         = 0;
+        int height        = 0;
+        int nChannels     = 0;
+        const char* cPath = filename.c_str();
 
         const unsigned char* pixels = stbi_load(cPath, &width, &height, &nChannels, 0);
         if (!pixels)
@@ -18,8 +18,8 @@ namespace gir
             Logger::Warn("TextureLoader::Load: Image not found " + filename);
             return nullptr;
         }
-
-        auto* texture = Manager<Texture>::Add(filename, GetFormat(nChannels), GL_UNSIGNED_BYTE, true);
+        auto format   = GetFormat(nChannels);
+        auto* texture = Manager<Texture>::Add(filename, format, format, GL_UNSIGNED_BYTE, GL_TEXTURE_2D, true);
         texture->Bind(0);
         texture->Allocate(width, height, pixels);
         texture->Unbind();
@@ -35,10 +35,14 @@ namespace gir
 
         switch (nChannels)
         {
-            case 1: return GL_RED;
-            case 2: return GL_RG;
-            case 3: return GL_RGB;
-            default: return GL_RGBA;
+            case 1:
+                return GL_RED;
+            case 2:
+                return GL_RG;
+            case 3:
+                return GL_RGB;
+            default:
+                return GL_RGBA;
         }
     }
-}
+} // namespace gir

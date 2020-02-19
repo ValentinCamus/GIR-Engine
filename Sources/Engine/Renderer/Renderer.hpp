@@ -37,7 +37,15 @@ namespace gir
 
         std::unique_ptr<Mesh> m_quad = nullptr;
 
-        ERenderMode m_renderMode = ERenderMode::DIRECT;
+        ERenderMode m_renderMode;
+
+        void GBufferPrepass(const Scene *scene);
+
+        void DrawAlbedo(const Scene *scene);
+
+        void DrawDirectLighting(const Scene *scene);
+
+        void DrawIndirectLightingRSM(const Scene *scene);
     };
 
 } // namespace gir
