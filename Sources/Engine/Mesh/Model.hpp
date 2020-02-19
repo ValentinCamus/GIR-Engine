@@ -16,7 +16,7 @@ namespace gir
 
         void AddMesh(Element element);
 
-        unsigned MaterialCount() const;
+        unsigned GetMaterialCount() const;
 
         Material *GetMaterial(unsigned i) const;
 

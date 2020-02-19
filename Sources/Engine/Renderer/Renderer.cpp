@@ -89,7 +89,8 @@ namespace gir
     {
         m_GBuffer.Bind();
 
-        constexpr int colorAttachmentsCount       = 3;
+        constexpr int colorAttachmentsCount = 3;
+
         GLenum attachments[colorAttachmentsCount] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};
 
         m_GBuffer.AttachTexture(std::make_unique<Texture>("positionMap", GL_RGB32F, GL_RGB, GL_FLOAT), attachments[0]);
@@ -138,7 +139,7 @@ namespace gir
             shader->SetUniform("model", entity->GetTransform());
             auto* model = entity->GetModel();
 
-            for (int i = 0; i < static_cast<int>(model->MaterialCount()); ++i)
+            for (int i = 0; i < static_cast<int>(model->GetMaterialCount()); ++i)
             {
                 auto* material = model->GetMaterial(i);
                 material->SetUniforms("material", shader, 0);
@@ -209,10 +210,10 @@ namespace gir
         // Binding the light's uniforms and the shadowmap texture
         for (int i = 0; i < static_cast<int>(lights.size()); ++i)
         {
-            const int index = Light::rsmTextureCount * i + 1;
+            const int index = Light::RSM_TEXTURES_COUNT * i + 1;
             lights[i]->SetUniforms("lights[" + std::to_string(i) + "]", shader, index, true);
 
-            for (int j = 0; j < Light::rsmTextureCount; ++j)
+            for (int j = 0; j < Light::RSM_TEXTURES_COUNT; ++j)
             {
                 lights[i]->GetShadowMap()->GetTexture(j)->Bind(index + j);
             }
@@ -222,7 +223,7 @@ namespace gir
         for (int i = 0; i < static_cast<int>(m_GBuffer.GetTextureCount()); ++i)
         {
             auto* texture   = m_GBuffer.GetTexture(i);
-            const int index = i + Light::rsmTextureCount * static_cast<int>(lights.size()) + 1;
+            const int index = i + Light::RSM_TEXTURES_COUNT * static_cast<int>(lights.size()) + 1;
             texture->Bind(index);
             shader->SetUniform(texture->GetName(), index);
         }
@@ -243,7 +244,7 @@ namespace gir
 
         for (const auto & light : lights)
         {
-            for (int j = 0; j < Light::rsmTextureCount; ++j)
+            for (int j = 0; j < Light::RSM_TEXTURES_COUNT; ++j)
             {
                 light->GetShadowMap()->GetTexture(j)->Unbind();
             }

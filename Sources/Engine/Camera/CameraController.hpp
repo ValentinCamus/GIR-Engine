@@ -53,7 +53,5 @@ namespace gir
 
         float m_prevMouseX = 0.f;
         float m_prevMouseY = 0.f;
-
-        // bool m_mouseDragged = false;
     };
 } // namespace gir

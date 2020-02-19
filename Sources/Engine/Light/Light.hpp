@@ -28,7 +28,7 @@ namespace gir
 
         virtual bool HasCubemapShadowmap() const;
 
-        constexpr static int rsmTextureCount = 4;
+        constexpr static int RSM_TEXTURES_COUNT = 4;
 
     protected:
         Framebuffer m_shadowmap;

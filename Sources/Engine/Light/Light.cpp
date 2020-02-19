@@ -32,7 +32,7 @@ namespace gir
             shader->SetUniform("model", entity->GetTransform());
             auto *model = entity->GetModel();
 
-            for (int i = 0; i < static_cast<int>(model->MaterialCount()); ++i)
+            for (int i = 0; i < static_cast<int>(model->GetMaterialCount()); ++i)
             {
                 auto *material = model->GetMaterial(i);
 

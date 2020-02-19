@@ -13,7 +13,7 @@ namespace gir
             m_cosInnerAngle(cos(innerAngle)),
             m_cosOuterAngle(cos(outerAngle))
     {
-        constexpr int colorAttachmentsCount = Light::rsmTextureCount - 1;
+        constexpr int colorAttachmentsCount = Light::RSM_TEXTURES_COUNT - 1;
 
         GLuint attachments[colorAttachmentsCount] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};
 

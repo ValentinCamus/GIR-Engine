@@ -11,8 +11,8 @@ namespace gir
     {
     public:
         Scene(const Camera &camera,
-              std::vector<std::unique_ptr<Light>> &&lights,
-              std::vector<std::unique_ptr<Entity>> &&entities);
+              std::vector<std::unique_ptr<Light>>&& lights,
+              std::vector<std::unique_ptr<Entity>>&& entities);
 
         ~Scene() = default;
 
@@ -28,6 +28,7 @@ namespace gir
         Camera m_camera;
 
         std::vector<std::unique_ptr<Light>> m_lights;
+
         std::vector<std::unique_ptr<Entity>> m_entities;
     };
 } // namespace gir
