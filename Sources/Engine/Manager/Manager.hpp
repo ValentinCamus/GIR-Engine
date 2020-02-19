@@ -89,4 +89,5 @@ namespace gir
     {
         m_elements.clear();
     }
+
 } // namespace gir

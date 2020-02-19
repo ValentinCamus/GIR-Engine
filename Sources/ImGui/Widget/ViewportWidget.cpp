@@ -1,5 +1,7 @@
 #include "ViewportWidget.hpp"
 
+#include <ImGui/Widget/TransformEditorWidget.hpp>
+
 namespace gir
 {
     void ViewportWidget::Init(unsigned width, unsigned height)
@@ -14,6 +16,11 @@ namespace gir
         m_framebuffer->Unbind();
 
         GIR_ASSERT(m_framebuffer->IsComplete(), "Framebuffer is not complete");
+    }
+
+    void ViewportWidget::Shutdown()
+    {
+        delete m_framebuffer;
     }
 
     void ViewportWidget::Draw()
@@ -31,21 +38,27 @@ namespace gir
             return;
         }
 
-        if (ShouldResizeFramebuffer()) { ResizeFramebuffer(); }
+        if (ShouldResizeFramebuffer())
+        {
+            ResizeFramebuffer();
+        }
         else
         {
             DrawFramebuffer();
         }
 
+        if (m_projection && m_view && m_component)
+        {
+            DrawGizmo();
+        }
+
         ImGui::End();
     }
 
-    ViewportWidget::~ViewportWidget() { delete m_framebuffer; }
-
     ImVec2 ViewportWidget::GetFramebufferSize() const
     {
-        auto fbWidth  = (float)m_framebuffer->GetTexture(0)->GetWidth();
-        auto fbHeight = (float)m_framebuffer->GetTexture(0)->GetHeight();
+        auto fbWidth  = (float) m_framebuffer->GetTexture(0)->GetWidth();
+        auto fbHeight = (float) m_framebuffer->GetTexture(0)->GetHeight();
         return {fbWidth, fbHeight};
     }
 
@@ -75,4 +88,32 @@ namespace gir
         ImGui::Image(id, winSize, ImVec2(0, 1), ImVec2(1, 0));
         m_framebuffer->Unbind();
     }
+
+    void ViewportWidget::DrawGizmo()
+    {
+        Mat4f model = m_component->GetTransform();
+        float* imGuizmoModel = glm::value_ptr(model);
+
+        ImVec2 winPos = ImGui::GetWindowPos();
+        ImVec2 winSize = ImGui::GetWindowSize();
+
+        ImGuizmo::MODE mode = TransformEditorWidget::currentGizmoMode;
+        ImGuizmo::OPERATION operation = TransformEditorWidget::currentGizmoOperation;
+
+        ImGuizmo::SetRect(winPos.x, winPos.y, winSize.x, winSize.y);
+        ImGuizmo::SetDrawlist();
+        ImGuizmo::Manipulate(m_view, m_projection, operation, mode, imGuizmoModel);
+
+        // Update the component model matrix
+        m_component->SetTransform(glm::make_mat4(imGuizmoModel));
+    }
+
+    void ViewportWidget::DrawGizmo(const Mat4f &projection, const Mat4f &view, SceneComponent *component)
+    {
+        m_component = component;
+
+        m_view = glm::value_ptr(view);
+        m_projection = glm::value_ptr(projection);
+    }
+
 } // namespace gir

@@ -19,7 +19,7 @@ namespace gir
             it->second.emplace_back(element.second);
     }
 
-    unsigned Model::MaterialCount() const { return static_cast<unsigned>(m_meshesByMaterial.size()); }
+    unsigned Model::GetMaterialCount() const { return static_cast<unsigned>(m_meshesByMaterial.size()); }
 
     Material *Model::GetMaterial(unsigned i) const { return m_meshesByMaterial[i].first; }
 

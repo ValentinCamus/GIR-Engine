@@ -18,17 +18,17 @@ namespace gir
     public:
         Light(const std::string &name, const Mat4f &transform, const Vec3f &color);
 
-        virtual ~Light() = default;
+        ~Light() override = default;
 
         Framebuffer *GetShadowMap();
 
         virtual void DrawShadowMap(const Scene *scene, Shader *shader);
 
-        virtual void SetUniforms(const std::string &name, Shader *shader, int, bool bindTextures = true);
+        virtual void SetUniforms(const std::string &name, Shader *shader, int, bool bindTextures);
 
         virtual bool HasCubemapShadowmap() const;
 
-        constexpr static int rsmTextureCount = 4;
+        constexpr static int RSM_TEXTURES_COUNT = 4;
 
     protected:
         Framebuffer m_shadowmap;

@@ -21,7 +21,8 @@ namespace gir
 
         struct Attribute
         {
-            Vec4f color        = Vec4f(1.0f);
+            Vec4f color = Vec4f(1.0f);
+
             Texture* texture = nullptr;
         };
 

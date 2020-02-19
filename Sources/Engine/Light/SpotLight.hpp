@@ -13,7 +13,7 @@ namespace gir
                   float innerAngle,
                   float outerAngle);
 
-        void SetUniforms(const std::string &name, Shader *shader, int slot, bool bindTextures = true) override;
+        void SetUniforms(const std::string &name, Shader *shader, int slot, bool bindTextures) override;
 
     private:
         static const Mat4f m_projection;

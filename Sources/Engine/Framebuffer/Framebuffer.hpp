@@ -43,7 +43,7 @@ namespace gir
 
         inline Texture* GetTexture(unsigned i) { return m_textures[i].get(); }
 
-        inline unsigned TextureCount() const { return static_cast<unsigned>(m_textures.size()); }
+        inline unsigned GetTextureCount() const { return static_cast<unsigned>(m_textures.size()); }
 
         float GetAspectRatio() const;
 

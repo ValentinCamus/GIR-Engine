@@ -8,9 +8,9 @@ namespace gir
     class OpenGLComponent : public Component
     {
     public:
-        OpenGLComponent(const std::string& name);
+        explicit OpenGLComponent(const std::string& name);
 
-        virtual ~OpenGLComponent() = default;
+        ~OpenGLComponent() override = default;
 
         virtual inline void Bind();
 

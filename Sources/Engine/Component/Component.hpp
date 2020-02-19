@@ -1,5 +1,4 @@
-#ifndef COMPONENT_HPP
-#define COMPONENT_HPP
+#pragma once
 
 #include <Core/Core.hpp>
 
@@ -17,6 +16,5 @@ namespace gir
     protected:
         std::string m_name;
     };
-} // namespace gir
 
-#endif
+} // namespace gir
