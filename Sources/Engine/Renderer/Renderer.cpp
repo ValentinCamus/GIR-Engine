@@ -5,8 +5,8 @@
 
 #include <random>
 
-#define RSM_MAX_SAMPLE_COUNT 100 // Make sure it matches the Light.glsl's #define
-#define RSM_SAMPLE_COUNT 60
+#define RSM_MAX_SAMPLE_COUNT 400 // Make sure it matches the Light.glsl's #define
+#define RSM_SAMPLE_COUNT 140
 
 namespace gir
 {
@@ -110,7 +110,7 @@ namespace gir
         std::default_random_engine gen;
         std::uniform_real_distribution<float> distribution(0.f, 1.f);
 
-        const float rmax = 0.025f;
+        const float rmax = 0.065f;
         std::vector<Vec3f> samples(count);
 
         for (int i = 0; i < count; ++i)

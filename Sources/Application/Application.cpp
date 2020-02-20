@@ -68,15 +68,15 @@ namespace gir
         lights.emplace_back(std::make_unique<PointLight>("Pointlight", lightTransform, Vec3f(60.f, 40.f, 30.f)));*/
 
         lightTransform[3] = {0.f, 20.1f, 0.f, 1.f};
-        lights.emplace_back(std::make_unique<DirectionalLight>("Sunlight", lightTransform, Vec3f(5.f, 3.2f, 1.5f)));
+        // lights.emplace_back(std::make_unique<DirectionalLight>("Sunlight", lightTransform, Vec3f(5.f, 3.2f, 1.5f)));
 
         lightTransform    = glm::rotate(-PI / 3, Vec3f(1.f, 0.f, 0.f)) * glm::rotate(-PI / 2, Vec3f(0.f, 1.f, 0.f));
         lightTransform[3] = {0.f, 1.5f, -0.5f, 1.f};
         lights.emplace_back(
-            std::make_unique<SpotLight>("Spotlight", lightTransform, Vec3f(50.f, 32.f, 16.f), PI / 16, PI / 8));
+            std::make_unique<SpotLight>("Spotlight", lightTransform, Vec3f(55.f, 34.f, 18.f), PI / 16, PI / 8));
 
         std::vector<std::unique_ptr<Entity>> entities;
-        Mat4f entityTransform(0.01f);
+        Mat4f entityTransform(0.0085f);
         entityTransform[3] = {0.f, 0.f, 0.05f, 1.f};
         entities.emplace_back(std::make_unique<Entity>("Sponza", sponza, entityTransform));
 

@@ -18,7 +18,7 @@ void main() {
     outPosition = position;
     outNormal = normal;
 
-    float attenuation = (light.type == SPOT_LIGHT ? attenuation(light, lightVector(light, position), position) : 1.f);
+    float attenuation = (light.type == SPOT_LIGHT ? radialAttenuation(light, lightVector(light, position)) : 1.f);
 
     outFlux = light.color * texture(albedo, textureCoordinates).rgb * attenuation;
 }
