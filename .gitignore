@@ -3,6 +3,8 @@ Build/*
 .idea/*
 tags/
 
+Images/*
+
 External/*
 !External/CMakeLists.txt
 !External/glad

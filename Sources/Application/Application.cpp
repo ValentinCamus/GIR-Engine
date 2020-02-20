@@ -8,6 +8,8 @@
 #include <Engine/Light/SpotLight.hpp>
 #include <Engine/Light/PointLight.hpp>
 
+#include <IO/Saver/ImageWriter.hpp>
+
 #define INITIAL_VIEWPORT_WIDTH  500
 #define INITIAL_VIEWPORT_HEIGHT 500
 
@@ -88,6 +90,14 @@ namespace gir
             unsigned height = m_viewport.GetFramebuffer()->GetTexture(0)->GetHeight();
 
             m_renderer = std::make_unique<Renderer>(width, height);
+        }
+
+        if (m_input.IsKeyPressed(GLFW_KEY_F6))
+        {
+            Framebuffer* framebuffer = m_viewport.GetFramebuffer();
+            framebuffer->Bind();
+            ImageWriter::Save(framebuffer);
+            framebuffer->Unbind();
         }
     }
 

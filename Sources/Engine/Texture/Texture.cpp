@@ -20,10 +20,8 @@ namespace gir
         Bind();
 
         // Default parameters:
-        if (m_generateMipmap)
-            SetParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        else
-            SetParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        if (m_generateMipmap) SetParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        else SetParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         SetParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         if (m_textureType == GL_TEXTURE_2D)
@@ -54,8 +52,11 @@ namespace gir
         m_height = height;
 
         if (m_textureType == GL_TEXTURE_2D)
+        {
             glTexImage2D(m_textureType, 0, m_internalFormat, m_width, m_height, 0, m_format, m_dataType, pixels);
+        }
         else
+        {
             for (int i = 0; i < 6; ++i)
                 glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
                              0,
@@ -65,7 +66,8 @@ namespace gir
                              0,
                              m_format,
                              m_dataType,
-                             0);
+                             nullptr);
+        }
 
         if (m_generateMipmap) glGenerateMipmap(m_textureType);
     }
