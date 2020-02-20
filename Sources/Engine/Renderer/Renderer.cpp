@@ -36,7 +36,7 @@ namespace gir
         switch (m_renderMode)
         {
             case ERenderMode::UNLIT:
-                AlbedoUnlitPass(scene, framebuffer);
+                AlbedoUnlitPass(framebuffer);
                 break;
 
             case ERenderMode::DIRECT:
@@ -177,7 +177,7 @@ namespace gir
         shader->Unbind();
     }
 
-    void Renderer::AlbedoUnlitPass(const Scene* scene, Framebuffer* framebuffer)
+    void Renderer::AlbedoUnlitPass(Framebuffer* framebuffer)
     {
         auto* shader = m_shaderManager.GetShader(EShaderType::UNLIT);
 
@@ -210,7 +210,7 @@ namespace gir
         /// Shadow map pass
         const auto& lights = scene->GetLights();
 
-        DrawShadowMaps(scene, framebuffer);
+        DrawShadowMaps(scene);
 
         auto shader = m_shaderManager.GetShader(EShaderType::DEFERRED_LIGHTING);
         shader->Bind();
@@ -265,7 +265,7 @@ namespace gir
         glEnable(GL_DEPTH_TEST);
     }
 
-    void Renderer::DrawShadowMaps(const Scene* scene, Framebuffer* framebuffer)
+    void Renderer::DrawShadowMaps(const Scene* scene)
     {
         const auto& lights = scene->GetLights();
 

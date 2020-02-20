@@ -92,7 +92,11 @@ namespace gir
     {
         m_cameraController.SetCamera(&m_scene->GetCamera());
 
-        m_cameraController.SetMousePosition(m_input.GetMouseX(), m_input.GetMouseY());
+        bool dragging = m_input.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_MIDDLE);
+        if (dragging && !m_cameraController.isMouseDragged())
+            m_cameraController.SetMousePosition(m_input.GetMouseX(), m_input.GetMouseY());
+
+        m_cameraController.SetMouseDragged(dragging);
 
         if (m_input.IsKeyPressed(GLFW_KEY_W)) m_cameraController.MoveForward(deltaTime);
         if (m_input.IsKeyPressed(GLFW_KEY_S)) m_cameraController.MoveBackward(deltaTime);

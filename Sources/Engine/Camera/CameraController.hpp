@@ -38,20 +38,26 @@ namespace gir
 
         inline const Camera* GetCamera() const { return m_camera; }
 
+        inline bool isMouseDragged() const { return m_mouseDragged; }
+
         inline void SetCamera(Camera* camera) { m_camera = camera; }
 
+        inline void SetMouseDragged(bool mouseDragged) { m_mouseDragged = mouseDragged; }
+
     private:
-        /// Controlled camera.
         Camera* m_camera;
 
-        /// Camera speed.
         float m_speed = 2.5f;
 
-        float m_zoomSensitivity = 2.0f;
-        float m_minZoom = 0.1f * DEG2RAD;
-        float m_maxZoom = 90.0f * DEG2RAD;
+        // float m_mouseSensitivity = 0.1f;
 
-        float m_prevMouseX = 0.f;
-        float m_prevMouseY = 0.f;
+        float m_zoomSensitivity = 2.0f;
+        float m_minZoom         = 0.1f * DEG2RAD;
+        float m_maxZoom         = 90.0f * DEG2RAD;
+
+        float m_xPrev = 0.f;
+        float m_yPrev = 0.f;
+
+        bool m_mouseDragged = false;
     };
 } // namespace gir

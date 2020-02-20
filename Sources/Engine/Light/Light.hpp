@@ -24,7 +24,7 @@ namespace gir
 
         virtual void DrawShadowMap(const Scene *scene, Shader *shader);
 
-        virtual void SetUniforms(const std::string &name, Shader *shader, int, bool bindTextures);
+        virtual void SetUniforms(const std::string &name, Shader *shader, int, bool);
 
         virtual bool HasCubemapShadowmap() const;
 

@@ -58,7 +58,7 @@ namespace gir
         m_shadowmap.Unbind();
     }
 
-    void Light::SetUniforms(const std::string &name, Shader *shader, int, bool bindTextures)
+    void Light::SetUniforms(const std::string &name, Shader *shader, int, bool)
     {
         shader->SetUniform(name + ".color", m_color);
     }

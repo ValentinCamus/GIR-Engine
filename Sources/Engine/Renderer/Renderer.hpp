@@ -41,9 +41,9 @@ namespace gir
 
         void DeferredLightingPass(const Scene* scene, Framebuffer* framebuffer);
 
-        void AlbedoUnlitPass(const Scene* scene, Framebuffer* framebuffer);
+        void AlbedoUnlitPass(Framebuffer* framebuffer);
 
-        void DrawShadowMaps(const Scene* scene, Framebuffer* framebuffer);
+        void DrawShadowMaps(const Scene* scene);
 
     private:
         ShaderManager m_shaderManager;
