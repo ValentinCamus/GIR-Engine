@@ -77,7 +77,7 @@ float attenuation(Light light, vec3 lightVector, vec3 position) {
 
 float shadow(Light light, vec4 position, vec3 normal) {
     float result = 0;
-    position.xyz += normal * 0.025;
+    position.xyz += normal * 0.1;
 
     switch(light.type) {
         case POINT_LIGHT:
@@ -85,14 +85,14 @@ float shadow(Light light, vec4 position, vec3 normal) {
             vec3 direction = position.xyz - light.position;
             float depth = length(direction) / FAR_Z;
             
-            vec3 sampleOffsetDirections[20] = vec3[]( vec3( 1,  1,  1), vec3( 1, -1,  1), vec3(-1, -1,  1), vec3(-1,  1,  1), 
-                                                      vec3( 1,  1, -1), vec3( 1, -1, -1), vec3(-1, -1, -1), vec3(-1,  1, -1),
-                                                      vec3( 1,  1,  0), vec3( 1, -1,  0), vec3(-1, -1,  0), vec3(-1,  1,  0),
-                                                      vec3( 1,  0,  1), vec3(-1,  0,  1), vec3( 1,  0, -1), vec3(-1,  0, -1),
-                                                      vec3( 0,  1,  1), vec3( 0, -1,  1), vec3( 0, -1, -1), vec3( 0,  1, -1)); 
+            vec3 sampleOffsetDirections[20] = vec3[]( vec3( 1.f,  1.f,  1.f), vec3( 1.f, -1.f,  1.f), vec3(-1.f, -1.f,  1.f), vec3(-1.f,  1.f,  1.f), 
+                                                      vec3( 1.f,  1.f, -1.f), vec3( 1.f, -1.f, -1.f), vec3(-1.f, -1.f, -1.f), vec3(-1.f,  1.f, -1.f),
+                                                      vec3( 1.f,  1.f,  0.f), vec3( 1.f, -1.f,  0.f), vec3(-1.f, -1.f,  0.f), vec3(-1.f,  1.f,  0.f),
+                                                      vec3( 1.f,  0.f,  1.f), vec3(-1.f,  0.f,  1.f), vec3( 1.f,  0.f, -1.f), vec3(-1.f,  0.f, -1.f),
+                                                      vec3( 0.f,  1.f,  1.f), vec3( 0.f, -1.f,  1.f), vec3( 0.f, -1.f, -1.f), vec3( 0.f,  1.f, -1.f)); 
             
             for(int i = 0; i < 20; ++i) {
-                result += texture(light.depthSMPL, vec4(direction + sampleOffsetDirections[i] * (1 + depth) / FAR_Z, depth));
+                result += texture(light.depthSMPL, vec4(direction + sampleOffsetDirections[i] * (1.f + depth) / FAR_Z, depth));
             }
 
             result = result / 20;
@@ -102,20 +102,20 @@ float shadow(Light light, vec4 position, vec3 normal) {
         case DIRECTIONAL_LIGHT: 
             position = light.viewProjection * position;
             position /= position.w;
-            position = position * 0.5 + 0.5;
-            vec2 texelSize = 1 / textureSize(light.depthSM, 0);
+            position = position * 0.5f + 0.5f;
+            vec2 texelSize = 1.f / textureSize(light.depthSM, 0);
 
             for(int i = 0; i < 4; ++i) {
                 for(int j = 0; j < 4; ++j) {
-                    result += texture(light.depthSM, vec3(position.xy + vec2(i - 1.5, j - 1.5) * texelSize, position.z));
+                    result += texture(light.depthSM, vec3(position.xy + vec2(i - 1.5f, j - 1.5f) * texelSize, position.z));
                 }
             }
 
-            result = result / 16;
+            result = result / 16.f;
             break;
 
         default: 
-            result = 1;
+            result = 1.f;
             break;
     }
 
@@ -123,7 +123,7 @@ float shadow(Light light, vec4 position, vec3 normal) {
 }
 
 vec3 indirect(Light light, vec4 position, vec3 normal, uint sampleCount, vec3 samples[RSM_MAX_SAMPLE_COUNT]){
-    vec3 result = vec3(0);
+    vec3 result = vec3(0.f);
     
     switch(light.type) {
         case POINT_LIGHT:
@@ -133,7 +133,7 @@ vec3 indirect(Light light, vec4 position, vec3 normal, uint sampleCount, vec3 sa
         case DIRECTIONAL_LIGHT: 
             vec4 textureCoord = light.viewProjection * position;
             textureCoord /= textureCoord.w;
-            textureCoord = textureCoord * 0.5 + 0.5;
+            textureCoord = textureCoord * 0.5f + 0.5f;
 
             for(int i = 0; i < sampleCount; ++i) {
                 vec2 texCoord = textureCoord.xy + samples[i].xy;
@@ -144,7 +144,7 @@ vec3 indirect(Light light, vec4 position, vec3 normal, uint sampleCount, vec3 sa
 
                 vec3 lightVector = vplPosition - position.xyz;
 
-                result += samples[i].z * vplFlux * max(dot(vplNormal, lightVector), 0) * max(-dot(normal, lightVector), 0) / pow(length(lightVector), 4);
+                result += samples[i].z * vplFlux * max(dot(vplNormal, lightVector), 0.f) * max(-dot(normal, lightVector), 0.f) / pow(length(lightVector), 4.f);
             }
 
             result /= sampleCount;

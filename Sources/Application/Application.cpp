@@ -64,8 +64,8 @@ namespace gir
         std::vector<std::unique_ptr<Light>> lights;
         Mat4f lightTransform(glm::rotate(-53.5f * PI / 180, Vec3f(1.f, 0.f, 0.f)));
 
-        /*lightTransform[3] = {0.f, 6.5f, 0.f, 1.f};
-        lights.emplace_back(std::make_unique<PointLight>("Pointlight", lightTransform, Vec3f(60.f, 40.f, 30.f)));*/
+        lightTransform[3] = {0.f, 6.5f, 0.f, 1.f};
+        // lights.emplace_back(std::make_unique<PointLight>("Pointlight", lightTransform, Vec3f(60.f, 40.f, 30.f)));*/
 
         lightTransform[3] = {0.f, 20.1f, 0.f, 1.f};
         // lights.emplace_back(std::make_unique<DirectionalLight>("Sunlight", lightTransform, Vec3f(5.f, 3.2f, 1.5f)));
