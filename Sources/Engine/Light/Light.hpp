@@ -6,8 +6,8 @@
 #include <Engine/Shader/Shader.hpp>
 #include <Engine/Framebuffer/Framebuffer.hpp>
 
-#define NEAR_Z 0.2f
-#define FAR_Z 100.f
+#define NEAR_Z 0.4f
+#define FAR_Z 45.f
 
 namespace gir
 {

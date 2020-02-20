@@ -26,7 +26,7 @@ namespace gir
         texture->SetParameter(GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
         texture->Unbind();
 
-        m_shadowmap.Resize(1200, 1200);
+        m_shadowmap.Resize(1000, 1000);
 
         GIR_ASSERT(m_shadowmap.IsComplete(), "Incomplete pointlight framebuffer");
 

@@ -15,13 +15,14 @@ namespace gir
         UNLIT  = 0,
         DIRECT = 1,
         RSM    = 2,
-        RSMGS  = 3
+        RSMGS  = 3,
+        NONE
     };
 
     class Renderer
     {
     public:
-        Renderer(unsigned width, unsigned height);
+        Renderer(ERenderMode mode, unsigned width, unsigned height);
 
         void Draw(Framebuffer* framebuffer, const Scene* scene);
 
@@ -34,13 +35,15 @@ namespace gir
 
         void InitializeGBuffer(unsigned width, unsigned height);
 
-        void GBufferPrepass(const Scene *scene, Framebuffer* framebuffer);
+        void GenerateRSMSamples(int count);
 
-        void DeferredLightingPass(const Scene *scene, bool useIndirectLighting, Framebuffer* framebuffer);
+        void GBufferPrepass(const Scene* scene, Framebuffer* framebuffer);
 
-        void AlbedoUnlitPass(const Scene *scene, Framebuffer* framebuffer);
+        void DeferredLightingPass(const Scene* scene, Framebuffer* framebuffer);
 
-        void DrawShadowMaps(const Scene *scene, Framebuffer* framebuffer);
+        void AlbedoUnlitPass(const Scene* scene, Framebuffer* framebuffer);
+
+        void DrawShadowMaps(const Scene* scene, Framebuffer* framebuffer);
 
     private:
         ShaderManager m_shaderManager;
@@ -49,7 +52,7 @@ namespace gir
 
         std::unique_ptr<Quad> m_quad = nullptr;
 
-        ERenderMode m_renderMode = ERenderMode::DIRECT;
+        ERenderMode m_renderMode = ERenderMode::NONE;
     };
 
 } // namespace gir

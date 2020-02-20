@@ -15,7 +15,8 @@ void main() {
     position = vec3(model * vec4(inPosition, 1.f));
 
     gl_Position = viewProjection * vec4(position, 1.f);
-
-    normal = inNormal;
+    
+    // Incorrect for non uniform scaling
+    normal = normalize(mat3(model) * inNormal);
     textureCoordinates = inTextureCoordinates;
 }

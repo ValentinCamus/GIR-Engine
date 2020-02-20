@@ -4,7 +4,7 @@
 namespace gir
 {
     Model* ModelLoader::Load(const std::string& filepath)
-    {
+    {   
         Manager<Texture>::Clear();
         Manager<Material>::Clear();
         Manager<Mesh>::Clear();
@@ -102,7 +102,7 @@ namespace gir
     Material* ModelLoader::LoadMaterial(aiMesh* mesh, const aiScene* scene)
     {
         aiMaterial* aiMat = scene->mMaterials[mesh->mMaterialIndex];
-        const char* materialName = aiMat->GetName().C_Str();
+        std::string materialName(std::to_string(mesh->mMaterialIndex));
 
         Material* material = Manager<Material>::Get(materialName);
 

@@ -2,7 +2,7 @@
 
 namespace gir
 {
-    const Mat4f SpotLight::m_projection = glm::perspective(3 * PI / 4, 1.f, NEAR_Z, FAR_Z);
+    const Mat4f SpotLight::m_projection = glm::perspective(6 * PI / 7, 1.f, NEAR_Z, FAR_Z);
 
     SpotLight::SpotLight(const std::string &name,
                          const Mat4f &transform,
@@ -29,20 +29,21 @@ namespace gir
         auto* texture = m_shadowmap.GetTexture(0);
 
         texture->Bind();
-        texture->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-        texture->SetParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        texture->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        texture->SetParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         texture->SetParameter(GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
         texture->Unbind();
 
         for (int i = 1; i < colorAttachmentsCount + 1; ++i)
         {
-            m_shadowmap.GetTexture(i)->Bind();
-            m_shadowmap.GetTexture(i)->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-            m_shadowmap.GetTexture(i)->SetParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-            m_shadowmap.GetTexture(i)->Unbind();
+            texture = m_shadowmap.GetTexture(i);
+            texture->Bind();
+            texture->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            texture->SetParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            texture->Unbind();
         }
 
-        m_shadowmap.Resize(1500, 1500);
+        m_shadowmap.Resize(1200, 1200);
 
         GIR_ASSERT(m_shadowmap.IsComplete(), "Incomplete spotlight framebuffer");
 

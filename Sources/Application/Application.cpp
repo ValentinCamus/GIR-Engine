@@ -27,8 +27,8 @@ namespace gir
         {
             // Per-frame time logic
             auto currentTime = m_window.GetTime();
-            auto deltaTime = float(m_time - currentTime);
-            m_time = currentTime;
+            auto deltaTime   = float(m_time - currentTime);
+            m_time           = currentTime;
 
             m_window.PollEvents();
 
@@ -46,10 +46,7 @@ namespace gir
         m_window.Shutdown();
     }
 
-    void Application::Stop()
-    {
-        m_isRunning = false;
-    }
+    void Application::Stop() { m_isRunning = false; }
 
     void Application::Setup()
     {
@@ -61,35 +58,35 @@ namespace gir
         unsigned height = m_viewport.GetFramebuffer()->GetTexture(0)->GetHeight();
 
         Mat4f cameraTransform(1.f);
-        cameraTransform[3] = {0.f, 10.f, 0.f, 1.f};
+        cameraTransform[3] = {0.f, 5.f, 0.f, 1.f};
         Camera camera("Main camera", cameraTransform, width, height);
 
         std::vector<std::unique_ptr<Light>> lights;
-        Mat4f lightTransform(glm::rotate(-PI / 3, Vec3f(1.f, 0.f, 0.f)));
+        Mat4f lightTransform(glm::rotate(-53.5f * PI / 180, Vec3f(1.f, 0.f, 0.f)));
 
         /*lightTransform[3] = {0.f, 6.5f, 0.f, 1.f};
-        lights.emplace_back(std::make_unique<PointLight>("Pointlight", lightTransform, Vec3f(60.f, 40.f, 30.f)));
-        lightTransform[3] = {0.f, 55.f, 0.f, 1.f};
-        lights.emplace_back(std::make_unique<DirectionalLight>("Sunlight", lightTransform, Vec3f(0.8f, 0.6f, 0.45f)));*/
+        lights.emplace_back(std::make_unique<PointLight>("Pointlight", lightTransform, Vec3f(60.f, 40.f, 30.f)));*/
+
+        lightTransform[3] = {0.f, 20.1f, 0.f, 1.f};
+        lights.emplace_back(std::make_unique<DirectionalLight>("Sunlight", lightTransform, Vec3f(5.f, 3.2f, 1.5f)));
 
         lightTransform    = glm::rotate(-PI / 3, Vec3f(1.f, 0.f, 0.f)) * glm::rotate(-PI / 2, Vec3f(0.f, 1.f, 0.f));
-        lightTransform[3] = {18.f, 4.5f, 0.f, 1.f};
-        lights.emplace_back(std::make_unique<SpotLight>("Spotlight", lightTransform, Vec3f(28.f, 20.f, 15.f), 0.5f * PI / 4, PI / 4));
+        lightTransform[3] = {0.f, 1.5f, -0.5f, 1.f};
+        lights.emplace_back(
+            std::make_unique<SpotLight>("Spotlight", lightTransform, Vec3f(50.f, 32.f, 16.f), PI / 16, PI / 8));
 
         std::vector<std::unique_ptr<Entity>> entities;
-        Mat4f entityTransform(0.025f);
-        entityTransform[3] = {0.f, 0.f, 0.f, 1.f};
-        entities.emplace_back(std::make_unique<Entity>("Scene 1", sponza, entityTransform));
+        Mat4f entityTransform(0.01f);
+        entityTransform[3] = {0.f, 0.f, 0.05f, 1.f};
+        entities.emplace_back(std::make_unique<Entity>("Sponza", sponza, entityTransform));
 
         m_scene = std::make_unique<Scene>(camera, std::move(lights), std::move(entities));
 
-        m_renderer = std::make_unique<Renderer>(width, height);
+        m_renderer =
+            std::make_unique<Renderer>(static_cast<ERenderMode>(m_lightingWidget.GetLightingMode()), width, height);
     }
 
-    void Application::Shutdown()
-    {
-        m_viewport.Shutdown();
-    }
+    void Application::Shutdown() { m_viewport.Shutdown(); }
 
     void Application::Prepare(float deltaTime)
     {
@@ -110,7 +107,8 @@ namespace gir
             unsigned width  = m_viewport.GetFramebuffer()->GetTexture(0)->GetWidth();
             unsigned height = m_viewport.GetFramebuffer()->GetTexture(0)->GetHeight();
 
-            m_renderer = std::make_unique<Renderer>(width, height);
+            m_renderer =
+                std::make_unique<Renderer>(static_cast<ERenderMode>(m_lightingWidget.GetLightingMode()), width, height);
         }
     }
 
@@ -135,7 +133,7 @@ namespace gir
 
     void Application::ImGuiDraw(float deltaTime)
     {
-        const Camera& camera = m_scene->GetCamera();
+        const Camera& camera              = m_scene->GetCamera();
         SceneComponent* selectedComponent = m_sceneWidget.GetSelectedComponent();
 
         m_sceneWidget.SetScene(m_scene.get());
@@ -149,10 +147,7 @@ namespace gir
         m_sceneWidget.Draw();
     }
 
-    void Application::OnWindowClosed()
-    {
-        Stop();
-    }
+    void Application::OnWindowClosed() { Stop(); }
 
     void Application::OnMouseMoved(double xPos, double yPos)
     {

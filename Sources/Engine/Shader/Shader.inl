@@ -21,7 +21,7 @@ namespace gir
     inline void Shader::SetUniform(const std::string &name, bool value)
     {
         int location = GetUniformLocation(name);
-        glUniform1i(location, value);
+        glUniform1i(location, (value ? 1 : 0));
     }
 
     inline void Shader::SetUniform(const std::string &name, const Vec3f &value)

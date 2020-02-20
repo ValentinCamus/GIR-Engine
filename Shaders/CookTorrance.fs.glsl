@@ -1,7 +1,5 @@
 #version 410 core
 
-#define MAX_LIGHTS 5
-
 #define PI 3.14159265359f
 
 #include "Light.glsl"
@@ -18,9 +16,9 @@ uniform vec3 cameraPosition;
 uniform uint lightCount;
 uniform Light lights[MAX_LIGHTS];
 
-uniform bool useIndirectLighting;
-uniform uint sampleCount;
-uniform vec3 samples[MAX_SAMPLE_COUNT];
+uniform bool computeIndirectLighting;
+uniform int sampleCount;
+uniform vec3 samples[RSM_MAX_SAMPLE_COUNT];
 
 
 float distributionGGX(vec3 normal, vec3 halfv, float roughness) {
@@ -83,8 +81,8 @@ void main()
 
         fragColor.rgb += (kd * lambert + cookTorrance / denominator) * Li * cosThetai;
 
-        if(useIndirectLighting)
-            fragColor.rgb += indirect(lights[i], vec4(position, 1), normal, sampleCount, samples);
+        if(computeIndirectLighting)
+            fragColor.rgb += indirect(lights[i], vec4(position, 1), normal, sampleCount, samples) * albedo;
     }
 
     fragColor.rgb = fragColor.rgb / (fragColor.rgb + 1);

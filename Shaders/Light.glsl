@@ -5,10 +5,11 @@
 #define DIRECTIONAL_LIGHT 1
 #define SPOT_LIGHT 2
 
-#define NEAR_Z 0.2f
-#define FAR_Z 100.f
+#define NEAR_Z 0.4f
+#define FAR_Z 45.f
 
-#define MAX_SAMPLE_COUNT 1024
+#define MAX_LIGHTS 3
+#define RSM_MAX_SAMPLE_COUNT 100
 
 struct Light {
     uint type;
@@ -76,7 +77,7 @@ float attenuation(Light light, vec3 lightVector, vec3 position) {
 
 float shadow(Light light, vec4 position, vec3 normal) {
     float result = 0;
-    position.xyz += normal * 0.125;
+    position.xyz += normal * 0.025;
 
     switch(light.type) {
         case POINT_LIGHT:
@@ -121,7 +122,7 @@ float shadow(Light light, vec4 position, vec3 normal) {
     return result;
 }
 
-vec3 indirect(Light light, vec4 position, vec3 normal, uint sampleCount, vec3 samples[MAX_SAMPLE_COUNT]){
+vec3 indirect(Light light, vec4 position, vec3 normal, uint sampleCount, vec3 samples[RSM_MAX_SAMPLE_COUNT]){
     vec3 result = vec3(0);
     
     switch(light.type) {
@@ -130,21 +131,25 @@ vec3 indirect(Light light, vec4 position, vec3 normal, uint sampleCount, vec3 sa
 
         case SPOT_LIGHT:
         case DIRECTIONAL_LIGHT: 
-            position = light.viewProjection * position;
-            position /= position.w;
-            position = position * 0.5 + 0.5;
+            vec4 textureCoord = light.viewProjection * position;
+            textureCoord /= textureCoord.w;
+            textureCoord = textureCoord * 0.5 + 0.5;
 
             for(int i = 0; i < sampleCount; ++i) {
-                vec2 texCoord = position.xy + samples[i];
+                vec2 texCoord = textureCoord.xy + samples[i].xy;
 
-                vec3 vplPosition = texture(light.positionSM, texCoord);
-                vec3 vplNormal = texture(light.normalSM, texCoord);
-                vec3 vplFlux = texture(light.fluxSM, texCoord);
+                vec3 vplPosition = texture(light.positionSM, texCoord).xyz;
+                vec3 vplNormal = texture(light.normalSM, texCoord).xyz;
+                vec3 vplFlux = texture(light.fluxSM, texCoord).rgb;
+                
+                vplPosition -= 0.05 * vplNormal;
 
-                vec3 lightVector = vplPosition - position;
+                vec3 lightVector = vplPosition - position.xyz;
 
-                result += vplFlux * max(-dot(vplNormal, lightVector), 0) * max(dot(normal, lightVector), 0) / pow(length(lightVector), 4);
+                result += samples[i].z * vplFlux * max(dot(vplNormal, lightVector), 0) * max(-dot(normal, lightVector), 0) / pow(length(lightVector), 4);
             }
+
+            result /= sampleCount;
             break;
 
         default: 

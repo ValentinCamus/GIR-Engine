@@ -45,7 +45,7 @@ namespace gir
         Camera* m_camera;
 
         /// Camera speed.
-        float m_speed = 5.5f;
+        float m_speed = 2.5f;
 
         float m_zoomSensitivity = 2.0f;
         float m_minZoom = 0.1f * DEG2RAD;
