@@ -70,8 +70,8 @@ namespace gir
         lightTransform[3] = {0.f, 20.1f, 0.f, 1.f};
         // lights.emplace_back(std::make_unique<DirectionalLight>("Sunlight", lightTransform, Vec3f(5.f, 3.2f, 1.5f)));
 
-        lightTransform    = glm::rotate(-PI / 3, Vec3f(1.f, 0.f, 0.f)) * glm::rotate(-PI / 2, Vec3f(0.f, 1.f, 0.f));
-        lightTransform[3] = {0.f, 1.5f, -0.5f, 1.f};
+        lightTransform    = glm::rotate(-PI / 2, Vec3f(0.f, 1.f, 0.f));
+        lightTransform[3] = {1.8f, 1.5f, -0.4f, 1.f};
         lights.emplace_back(
             std::make_unique<SpotLight>("Spotlight", lightTransform, Vec3f(55.f, 34.f, 18.f), PI / 16, PI / 8));
 

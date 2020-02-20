@@ -6,7 +6,7 @@
 #include <random>
 
 #define RSM_MAX_SAMPLE_COUNT 400 // Make sure it matches the Light.glsl's #define
-#define RSM_SAMPLE_COUNT 140
+#define RSM_SAMPLE_COUNT 80
 
 namespace gir
 {
