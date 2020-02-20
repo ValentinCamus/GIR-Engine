@@ -28,6 +28,10 @@ namespace gir
 
         virtual bool HasCubemapShadowmap() const;
 
+        inline const Vec3f& GetColor() const { return m_color; }
+
+        inline void SetColor(const Vec3f& color) { m_color = color; }
+
         constexpr static int RSM_TEXTURES_COUNT = 4;
 
     protected:

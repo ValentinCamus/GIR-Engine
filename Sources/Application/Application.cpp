@@ -117,6 +117,7 @@ namespace gir
 
         m_sceneWidget.SetScene(m_scene.get());
         m_transformEditor.SetSceneComponent(selectedComponent);
+        m_lightingWidget.SetLight(dynamic_cast<Light*>(selectedComponent));
         m_viewport.DrawGizmo(camera.GetProjectionMatrix(), camera.GetViewMatrix(), selectedComponent);
 
         m_viewport.Draw();
