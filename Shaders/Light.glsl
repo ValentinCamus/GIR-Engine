@@ -9,7 +9,7 @@
 #define FAR_Z 45.f
 
 #define MAX_LIGHTS 3
-#define RSM_MAX_SAMPLE_COUNT 400
+#define RSM_MAX_SAMPLE_COUNT 600
 
 struct Light {
     uint type;
@@ -111,7 +111,7 @@ float shadow(Light light, vec4 position, vec3 normal) {
                 }
             }
 
-            result = result / 16.f;
+            result = result / 16;
             break;
 
         default: 
@@ -141,6 +141,8 @@ vec3 indirect(Light light, vec4 position, vec3 normal, uint sampleCount, vec3 sa
                 vec3 vplPosition = texture(light.positionSM, texCoord).xyz;
                 vec3 vplNormal = texture(light.normalSM, texCoord).xyz;
                 vec3 vplFlux = texture(light.fluxSM, texCoord).rgb;
+
+                vplPosition -= 0.05 * vplNormal;
 
                 vec3 lightVector = vplPosition - position.xyz;
 

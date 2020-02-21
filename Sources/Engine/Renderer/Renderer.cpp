@@ -5,8 +5,8 @@
 
 #include <random>
 
-#define RSM_MAX_SAMPLE_COUNT 400 // Make sure it matches the Light.glsl's #define
-#define RSM_SAMPLE_COUNT 80
+#define RSM_MAX_SAMPLE_COUNT 600 // Make sure it matches the Light.glsl's #define
+#define RSM_SAMPLE_COUNT 200
 
 namespace gir
 {
@@ -59,8 +59,8 @@ namespace gir
                                {{GL_VERTEX_SHADER, PROJECT_SOURCE_DIR "/Shaders/GBuffer.vs.glsl"},
                                 {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR "/Shaders/GBuffer.fs.glsl"}}},
                               {EShaderType::DEFERRED_LIGHTING,
-                               {{GL_VERTEX_SHADER, PROJECT_SOURCE_DIR "/Shaders/CookTorrance.vs.glsl"},
-                                {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR "/Shaders/CookTorrance.fs.glsl"}}},
+                               {{GL_VERTEX_SHADER, PROJECT_SOURCE_DIR "/Shaders/DeferredLighting.vs.glsl"},
+                                {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR "/Shaders/DeferredLighting.fs.glsl"}}},
                               {EShaderType::SHADOW_MAPPING,
                                {{GL_VERTEX_SHADER, PROJECT_SOURCE_DIR "/Shaders/ShadowMapping.vs.glsl"},
                                 {GL_FRAGMENT_SHADER, PROJECT_SOURCE_DIR "/Shaders/ShadowMapping.fs.glsl"}}},

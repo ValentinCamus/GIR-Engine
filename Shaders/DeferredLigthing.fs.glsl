@@ -8,18 +8,16 @@ layout (location = 0) in vec2 textureCoordinates;
 
 layout (location = 0) out vec4 fragColor;
 
+uniform bool useIndirectLighting;
+
 uniform sampler2D positionMap;
 uniform sampler2D normalMetalness;
 uniform sampler2D albedoRoughness;
+uniform sampler2D indirectLighting;
 
 uniform vec3 cameraPosition;
 uniform uint lightCount;
 uniform Light lights[MAX_LIGHTS];
-
-uniform bool computeIndirectLighting;
-uniform int sampleCount;
-uniform vec3 samples[RSM_MAX_SAMPLE_COUNT];
-
 
 float distributionGGX(vec3 normal, vec3 halfv, float roughness) {
     float roughnessSQ = roughness * roughness;
@@ -80,10 +78,10 @@ void main()
         float denominator = 4 * cosThetai * cosThetao;
 
         fragColor.rgb += (kd * lambert + cookTorrance / denominator) * Li * cosThetai;
-
-        if(computeIndirectLighting)
-            fragColor.rgb += indirect(lights[i], vec4(position, 1), normal, sampleCount, samples) * albedo;
     }
 
-    fragColor.rgb = fragColor.rgb / (fragColor.rgb + 1);
+    if(useIndirectLighting)
+        fragColor.rgb += texture(indirectLighting, textureCoordinates).rgb;
+
+    fragColor.rgb /= fragColor.rgb + 1;
 }
