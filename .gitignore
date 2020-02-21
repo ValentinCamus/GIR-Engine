@@ -4,6 +4,7 @@ Build/*
 tags/
 
 Images/*
+!Images/CMakeLists.txt
 
 External/*
 !External/CMakeLists.txt

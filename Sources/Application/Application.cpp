@@ -97,7 +97,7 @@ namespace gir
         {
             Framebuffer* framebuffer = m_viewport.GetFramebuffer();
             framebuffer->Bind();
-            ImageWriter::Save(framebuffer);
+            ImageWriter::Save(framebuffer, false);
             framebuffer->Unbind();
         }
     }

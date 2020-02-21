@@ -42,16 +42,15 @@ namespace gir
     std::string ImageWriter::GenerateFileName()
     {
         time_t currentTime;
-        struct tm localTime {};
         time (&currentTime);
-        localtime_s(&localTime, &currentTime);
+        auto* localTime = std::localtime(&currentTime);
 
-        int year   = localTime.tm_year + 1900;
-        int month  = localTime.tm_mon + 1;
-        int day    = localTime.tm_mday;
-        int hour   = localTime.tm_hour;
-        int min    = localTime.tm_min;
-        int sec    = localTime.tm_sec;
+        int year   = localTime->tm_year + 1900;
+        int month  = localTime->tm_mon + 1;
+        int day    = localTime->tm_mday;
+        int hour   = localTime->tm_hour;
+        int min    = localTime->tm_min;
+        int sec    = localTime->tm_sec;
 
         std::stringstream ss;
         ss << year << "-" << month << "-" << day << "_" << hour << "." << min << "." << sec;
