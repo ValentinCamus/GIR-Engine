@@ -85,5 +85,18 @@ void main()
             fragColor.rgb += indirect(lights[i], vec4(position, 1), normal, sampleCount, samples) * albedo;
     }
 
-    fragColor.rgb = fragColor.rgb / (fragColor.rgb + 1);
+	// config pour mettre en évidence les contributions des RSMs, rendu pas naturelle du tout par contre
+	//float gamma = 2.0;
+	//float exposure = 10.0;
+
+	// config pour un rendu visuellement réaliste
+	float gamma = 0.5;
+	float exposure = 40.0;
+
+
+	// correction gamma
+	fragColor.rgb = vec3(1.0) - exp(-fragColor.rgb * exposure);
+	fragColor.rgb = pow(fragColor.rgb, vec3(1.0 / gamma));
+
+	//fragColor.rgb = fragColor.rgb / (fragColor.rgb + 1);
 }
