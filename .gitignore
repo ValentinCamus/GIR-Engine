@@ -3,6 +3,8 @@ Build/*
 .idea/*
 tags/
 
+Images/*
+
 External/*
 !External/CMakeLists.txt
 !External/glad
@@ -18,4 +20,3 @@ External/*
 *.iml
 *.DS_Store
 *.vs
-*.json

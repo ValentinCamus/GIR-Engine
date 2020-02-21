@@ -10,6 +10,8 @@ namespace gir
                          float innerAngle,
                          float outerAngle) :
             Light(name, transform, color),
+            m_innerAngle(innerAngle),
+            m_outerAngle(outerAngle),
             m_cosInnerAngle(cos(innerAngle)),
             m_cosOuterAngle(cos(outerAngle))
     {

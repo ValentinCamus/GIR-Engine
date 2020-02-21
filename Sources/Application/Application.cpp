@@ -2,10 +2,16 @@
 
 #include <IO/FileSystem/FileSystem.hpp>
 #include <IO/Loader/ModelLoader.hpp>
+#include <IO/Loader/SceneLoader.hpp>
 #include <Engine/Camera/Camera.hpp>
 #include <Engine/Light/DirectionalLight.hpp>
 #include <Engine/Light/SpotLight.hpp>
 #include <Engine/Light/PointLight.hpp>
+
+#include <IO/Saver/ImageWriter.hpp>
+
+#define INITIAL_VIEWPORT_WIDTH 500
+#define INITIAL_VIEWPORT_HEIGHT 500
 
 namespace gir
 {
@@ -50,40 +56,12 @@ namespace gir
 
     void Application::Setup()
     {
-        m_viewport.Init(500, 500);
+        m_viewport.Init(INITIAL_VIEWPORT_WIDTH, INITIAL_VIEWPORT_HEIGHT);
 
-        Model* sponza = ModelLoader::Load(FileSystem::GetAssetsDir() + "sponza.obj");
-
-        unsigned width  = m_viewport.GetFramebuffer()->GetTexture(0)->GetWidth();
-        unsigned height = m_viewport.GetFramebuffer()->GetTexture(0)->GetHeight();
-
-        Mat4f cameraTransform(1.f);
-        cameraTransform[3] = {0.f, 5.f, 0.f, 1.f};
-        Camera camera("Main camera", cameraTransform, width, height);
-
-        std::vector<std::unique_ptr<Light>> lights;
-        Mat4f lightTransform(glm::rotate(-53.5f * PI / 180, Vec3f(1.f, 0.f, 0.f)));
-
-        lightTransform[3] = {0.f, 6.5f, 0.f, 1.f};
-        // lights.emplace_back(std::make_unique<PointLight>("Pointlight", lightTransform, Vec3f(60.f, 40.f, 30.f)));*/
-
-        lightTransform[3] = {0.f, 20.1f, 0.f, 1.f};
-        // lights.emplace_back(std::make_unique<DirectionalLight>("Sunlight", lightTransform, Vec3f(5.f, 3.2f, 1.5f)));
-
-        lightTransform    = glm::rotate(-PI / 2, Vec3f(0.f, 1.f, 0.f));
-        lightTransform[3] = {1.8f, 1.5f, -0.4f, 1.f};
-        lights.emplace_back(
-            std::make_unique<SpotLight>("Spotlight", lightTransform, Vec3f(55.f, 34.f, 18.f), PI / 16, PI / 8));
-
-        std::vector<std::unique_ptr<Entity>> entities;
-        Mat4f entityTransform(0.0085f);
-        entityTransform[3] = {0.f, 0.f, 0.05f, 1.f};
-        entities.emplace_back(std::make_unique<Entity>("Sponza", sponza, entityTransform));
-
-        m_scene = std::make_unique<Scene>(camera, std::move(lights), std::move(entities));
-
-        m_renderer =
-            std::make_unique<Renderer>(static_cast<ERenderMode>(m_lightingWidget.GetLightingMode()), width, height);
+        m_scene    = SceneLoader::Load(FileSystem::GetProjectDir() + "/Scenes/Sponza.json");
+        m_renderer = std::make_unique<Renderer>(static_cast<ERenderMode>(m_lightingWidget.GetLightingMode()),
+                                                INITIAL_VIEWPORT_WIDTH,
+                                                INITIAL_VIEWPORT_HEIGHT);
     }
 
     void Application::Shutdown() { m_viewport.Shutdown(); }
@@ -114,6 +92,14 @@ namespace gir
             m_renderer =
                 std::make_unique<Renderer>(static_cast<ERenderMode>(m_lightingWidget.GetLightingMode()), width, height);
         }
+
+        if (m_input.IsKeyPressed(GLFW_KEY_F6))
+        {
+            Framebuffer* framebuffer = m_viewport.GetFramebuffer();
+            framebuffer->Bind();
+            ImageWriter::Save(framebuffer);
+            framebuffer->Unbind();
+        }
     }
 
     void Application::Draw(float deltaTime)
@@ -142,6 +128,7 @@ namespace gir
 
         m_sceneWidget.SetScene(m_scene.get());
         m_transformEditor.SetSceneComponent(selectedComponent);
+        m_lightingWidget.SetLight(dynamic_cast<Light*>(selectedComponent));
         m_viewport.DrawGizmo(camera.GetProjectionMatrix(), camera.GetViewMatrix(), selectedComponent);
 
         m_viewport.Draw();

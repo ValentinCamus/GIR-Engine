@@ -22,7 +22,7 @@ set(ICON_RESOURCE "")
 if (WIN32) #windows icon resource file, provided from /Packaging directory
     set(ICON_RESOURCE "${PROJECT_BINARY_DIR}/GIR_Engine.icon.rc")
 elseif (APPLE) #osx icon ressource file, provided from /Packaging directory
-    set(ICON_RESOURCE "${PROJECT_SOURCE_DIR}/Packaging/GIR_Engine.icns" IO/Loader/TextureLoader.cpp IO/Loader/TextureLoader.hpp IO/FileSystem/FileSystem.hpp IO/Input/Input.cpp IO/Input/Input.hpp IO/Loader/ModelLoader.cpp IO/Loader/ModelLoader.hpp Engine/Camera/CameraController.cpp Engine/Camera/CameraController.hpp Engine/Renderer/Quad.hpp Engine/Renderer/Quad.cpp Engine/OpenGL/OpenGL.hpp ImGui/Widget/TransformEditorWidget.cpp)
+    set(ICON_RESOURCE "${PROJECT_SOURCE_DIR}/Packaging/GIR_Engine.icns" IO/Loader/TextureLoader.cpp IO/Loader/TextureLoader.hpp IO/FileSystem/FileSystem.hpp IO/Input/Input.cpp IO/Input/Input.hpp IO/Loader/ModelLoader.cpp IO/Loader/ModelLoader.hpp Engine/Camera/CameraController.cpp Engine/Camera/CameraController.hpp Engine/Renderer/Quad.hpp Engine/Renderer/Quad.cpp Engine/OpenGL/OpenGL.hpp ImGui/Widget/TransformEditorWidget.cpp IO/Loader/SceneLoader.cpp IO/Loader/SceneLoader.hpp IO/Saver/ImageWriter.cpp IO/Saver/ImageWriter.hpp)
 endif ()
 
 file(GLOB_RECURSE ENGINE_SRCS "*.cpp" "*.hpp" ".inl")
@@ -64,6 +64,7 @@ target_link_libraries (GIR_Engine imgui)
 target_link_libraries (GIR_Engine imguizmo)
 target_link_libraries (GIR_Engine spdlog)
 target_link_libraries (GIR_Engine assimp)
+target_link_libraries (GIR_Engine json)
 
 target_link_libraries(GIR_Engine ${OPENGL_gl_LIBRARY})
 target_link_libraries(GIR_Engine ${OPENGL_glu_LIBRARY})

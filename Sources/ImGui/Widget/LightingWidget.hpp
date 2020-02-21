@@ -5,6 +5,10 @@
 #include <Core/Core.hpp>
 #include <ImGui/Widget/ImGuiWidget.hpp>
 
+#include <Engine/Light/DirectionalLight.hpp>
+#include <Engine/Light/SpotLight.hpp>
+#include <Engine/Light/PointLight.hpp>
+
 namespace gir
 {
     enum class ELightingMode
@@ -24,14 +28,12 @@ namespace gir
 
         void Draw() override;
 
-        inline int GetSelectedIndex() const { return m_selectedIndex - 1; }
-
-        inline bool IsSelectedIndexValid() const { return m_selectedIndex > 0; }
-
         inline ELightingMode GetLightingMode() const { return static_cast<ELightingMode>(m_selectedLightingMode); }
 
+        inline void SetLight(Light* light) { m_light = light; }
+
     private:
-        int m_selectedIndex = 0;
+        Light* m_light = nullptr;
 
         int m_selectedLightingMode = 1;
     };

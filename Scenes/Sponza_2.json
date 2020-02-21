@@ -1,0 +1,60 @@
+{
+  "Camera": {
+    "Name": "MainCamera",
+    "WorldLocation": {
+      "X": 0.0,
+      "Y": 10.0,
+      "Z": 0.0
+    },
+    "WorldRotation": {
+      "Roll": 0.0,
+      "Pitch": 0.0,
+      "Yaw": 0.0
+    },
+    "Width": 500,
+    "Height": 500
+  },
+  "Lights": [
+    {
+      "Type": "DirectionalLight",
+      "Name": "Sunlight",
+      "WorldLocation": {
+        "X": 0.0,
+        "Y": 20.1,
+        "Z": 0.0
+      },
+      "WorldRotation": {
+        "Pitch": -53.5,
+        "Yaw": 0.0,
+        "Roll": 0.0
+      },
+      "Color": {
+        "Red": 5.0,
+        "Green": 3.2,
+        "Blue": 3.0
+      }
+    }
+  ],
+  "Entities": [
+    {
+      "UseProjectSourceDirectory": true,
+      "Filename": "/Assets/sponza.obj",
+      "Name": "Sponza",
+      "WorldLocation": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.05
+      },
+      "WorldRotation": {
+        "Pitch": 0.0,
+        "Yaw": 0.0,
+        "Roll": 0.0
+      },
+      "WorldScale": {
+        "X": 0.0085,
+        "Y": 0.0085,
+        "Z": 0.0085
+      }
+    }
+  ]
+}
