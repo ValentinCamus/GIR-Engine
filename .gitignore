@@ -19,3 +19,6 @@ External/*
 *.DS_Store
 *.vs
 *.json
+
+CMakeLists.txt.user
+Data/ImGui.ini
