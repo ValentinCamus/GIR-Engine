@@ -45,4 +45,22 @@ namespace gir
                 return GL_RGBA;
         }
     }
+    
+    // TODO: Watch out for normal maps
+    int TextureLoader::GetInternalFormat(unsigned nChannels)
+    {
+        GIR_ASSERT(nChannels <= 4, "TextureLoader: More than 4 channels is not supported");
+
+        switch (nChannels)
+        {
+            case 1:
+                return GL_RED;
+            case 2:
+                return GL_RG;
+            case 3:
+                return GL_SRGB;
+            default:
+                return GL_SRGB_ALPHA;
+        }
+    }
 } // namespace gir

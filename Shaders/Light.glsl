@@ -9,7 +9,7 @@
 #define FAR_Z 45.f
 
 #define MAX_LIGHTS 3
-#define RSM_MAX_SAMPLE_COUNT 400
+#define RSM_MAX_SAMPLE_COUNT 650
 
 struct Light {
     uint type;
@@ -144,7 +144,7 @@ vec3 indirect(Light light, vec4 position, vec3 normal, uint sampleCount, vec3 sa
 
                 vec3 lightVector = vplPosition - position.xyz;
 
-                result += samples[i].z * vplFlux * max(dot(vplNormal, lightVector), 0.f) * max(-dot(normal, lightVector), 0.f) / pow(length(lightVector), 4.f);
+                result += (-dot(lightVector, light.direction) > 0 ? 1 : 0) * samples[i].z * vplFlux * max(-dot(vplNormal, lightVector), 0.f) * max(dot(normal, lightVector), 0.f) / pow(length(lightVector), 4.f);
             }
 
             result /= sampleCount;

@@ -15,6 +15,8 @@ namespace gir
 
     private:
         static int GetFormat(unsigned nChannels);
+
+        static int GetInternalFormat(unsigned nChannels);
     };
 }
 

@@ -85,8 +85,8 @@ namespace gir
 
             Vec3f color {
                 light["Color"]["Red"].get<float>(),
-                light["Color"]["Blue"].get<float>(),
-                light["Color"]["Green"].get<float>()
+                light["Color"]["Green"].get<float>(),
+                light["Color"]["Blue"].get<float>()
             };
 
             if (type == "DirectionalLight")
