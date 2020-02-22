@@ -42,7 +42,7 @@ namespace gir
             texture->Unbind();
         }
 
-        m_shadowmap.Resize(4000, 2800);
+        m_shadowmap.Resize(6000, 3800);
 
         GIR_ASSERT(m_shadowmap.IsComplete(), "Incomplete directional light framebuffer");
 

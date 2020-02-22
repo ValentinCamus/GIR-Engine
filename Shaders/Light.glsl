@@ -132,6 +132,7 @@ vec3 indirect(Light light, vec4 position, vec3 normal, uint sampleCount, vec3 sa
         case SPOT_LIGHT:
         case DIRECTIONAL_LIGHT: 
             vec4 textureCoord = light.viewProjection * position;
+
             textureCoord /= textureCoord.w;
             textureCoord = textureCoord * 0.5f + 0.5f;
 
@@ -144,7 +145,7 @@ vec3 indirect(Light light, vec4 position, vec3 normal, uint sampleCount, vec3 sa
 
                 vec3 lightVector = vplPosition - position.xyz;
 
-                result += (-dot(lightVector, light.direction) > 0 ? 1 : 0) * samples[i].z * vplFlux * max(-dot(vplNormal, lightVector), 0.f) * max(dot(normal, lightVector), 0.f) / pow(length(lightVector), 4.f);
+                result += samples[i].z * vplFlux * max(-dot(vplNormal, lightVector), 0.f) * max(dot(normal, lightVector), 0.f) / pow(length(lightVector), 4.f);
             }
 
             result /= sampleCount;

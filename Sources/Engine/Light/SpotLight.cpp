@@ -45,7 +45,7 @@ namespace gir
             texture->Unbind();
         }
 
-        m_shadowmap.Resize(1200, 1200);
+        m_shadowmap.Resize(2400, 2400);
 
         GIR_ASSERT(m_shadowmap.IsComplete(), "Incomplete spotlight framebuffer");
 

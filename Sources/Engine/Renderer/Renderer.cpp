@@ -6,7 +6,7 @@
 #include <random>
 
 #define RSM_MAX_SAMPLE_COUNT 650 // Make sure it matches the Light.glsl's #define
-#define RSM_SAMPLE_COUNT 650
+#define RSM_SAMPLE_COUNT 80
 
 namespace gir
 {
@@ -99,7 +99,7 @@ namespace gir
 
     void Renderer::GenerateRSMSamples(int count)
     {
-        GIR_ASSERT(count < RSM_MAX_SAMPLE_COUNT, "Invalid RSM sample count");
+        GIR_ASSERT(count <= RSM_MAX_SAMPLE_COUNT, "Invalid RSM sample count");
 
         auto* shader = m_shaderManager.GetShader(EShaderType::DEFERRED_LIGHTING);
         shader->Bind();
@@ -109,7 +109,7 @@ namespace gir
         std::default_random_engine gen;
         std::uniform_real_distribution<float> distribution(0.f, 1.f);
 
-        const float rmax = 0.052f;
+        const float rmax = 0.06f;
         std::vector<Vec3f> samples(count);
 
         for (int i = 0; i < count; ++i)
