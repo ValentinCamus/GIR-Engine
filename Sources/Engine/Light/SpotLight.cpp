@@ -31,8 +31,8 @@ namespace gir
         auto* texture = m_shadowmap.GetTexture(0);
 
         texture->Bind();
-        texture->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        texture->SetParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        texture->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        texture->SetParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
         texture->SetParameter(GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
         texture->Unbind();
 
@@ -40,8 +40,8 @@ namespace gir
         {
             texture = m_shadowmap.GetTexture(i);
             texture->Bind();
-            texture->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            texture->SetParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            texture->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+            texture->SetParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
             texture->Unbind();
         }
 

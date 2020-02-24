@@ -2,7 +2,7 @@
 
 namespace gir
 {
-    const Mat4f DirectionalLight::m_projection = glm::ortho(-25.f, 25.f, -20.f, 5.f, NEAR_Z, FAR_Z);
+    const Mat4f DirectionalLight::m_projection = glm::ortho(-25.f, 25.f, -30.f, 10.f, NEAR_Z, FAR_Z);
 
     DirectionalLight::DirectionalLight(const std::string &name, const Mat4f &transform, const Vec3f &color) :
             Light(name, transform, color)
@@ -28,8 +28,8 @@ namespace gir
         auto *texture = m_shadowmap.GetTexture(0);
 
         texture->Bind();
-        texture->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        texture->SetParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        texture->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        texture->SetParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
         texture->SetParameter(GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
         texture->Unbind();
 
@@ -37,8 +37,8 @@ namespace gir
         {
             texture = m_shadowmap.GetTexture(i);
             texture->Bind();
-            texture->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            texture->SetParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            texture->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+            texture->SetParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
             texture->Unbind();
         }
 

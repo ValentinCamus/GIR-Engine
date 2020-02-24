@@ -103,6 +103,7 @@ float shadow(Light light, vec4 position, vec3 normal) {
             position = light.viewProjection * position;
             position /= position.w;
             position = position * 0.5f + 0.5f;
+
             vec2 texelSize = 1.f / textureSize(light.depthSM, 0);
 
             for(int i = 0; i < 4; ++i) {
@@ -132,8 +133,10 @@ vec3 indirect(Light light, vec4 position, vec3 normal, uint sampleCount, vec3 sa
         case SPOT_LIGHT:
         case DIRECTIONAL_LIGHT: 
             vec4 textureCoord = light.viewProjection * position;
-
             textureCoord /= textureCoord.w;
+
+            if(textureCoord.z > 1) break;
+
             textureCoord = textureCoord * 0.5f + 0.5f;
 
             for(int i = 0; i < sampleCount; ++i) {
