@@ -12,7 +12,9 @@ layout (location = 2) out vec3 outFlux;
 
 uniform Light light;
 
-uniform sampler2D albedo;
+uniform bool hasAlbedoMap;
+uniform sampler2D albedoMap;
+uniform vec3 albedo;
 
 void main() {
     outPosition = position;
@@ -20,5 +22,5 @@ void main() {
 
     float attenuation = (light.type == SPOT_LIGHT ? radialAttenuation(light, lightVector(light, position)) : 1.f);
 
-    outFlux = light.color * texture(albedo, textureCoordinates).rgb * attenuation;
+    outFlux = light.color * (hasAlbedoMap ? texture(albedoMap, textureCoordinates).rgb : albedo) * attenuation;
 }
