@@ -58,7 +58,7 @@ namespace gir
     {
         m_viewport.Init(INITIAL_VIEWPORT_WIDTH, INITIAL_VIEWPORT_HEIGHT);
 
-        m_scene    = SceneLoader::Load(FileSystem::GetProjectDir() + "/Scenes/BreakfastRoom.json");
+        m_scene    = SceneLoader::Load(FileSystem::GetProjectDir() + "/Scenes/Sponza.json");
         m_renderer = std::make_unique<Renderer>(static_cast<ERenderMode>(m_lightingWidget.GetLightingMode()),
                                                 INITIAL_VIEWPORT_WIDTH,
                                                 INITIAL_VIEWPORT_HEIGHT);
