@@ -1,0 +1,62 @@
+{
+  "Camera": {
+    "Name": "MainCamera",
+    "WorldLocation": {
+      "X": 0.0,
+      "Y": 2.0,
+      "Z": 0.0
+    },
+    "WorldRotation": {
+      "Roll": 0.0,
+      "Pitch": 0.0,
+      "Yaw": 0.0
+    },
+    "Width": 500,
+    "Height": 500
+  },
+  "Lights": [
+    {
+      "Type": "SpotLight",
+      "Name": "SpotLight1",
+      "WorldLocation": {
+        "X": 8.6,
+        "Y": 3.4,
+        "Z": 1.0
+      },
+      "WorldRotation": {
+        "Pitch": 0.0,
+        "Yaw": 90.0,
+        "Roll": 0.0
+      },
+      "Color": {
+        "Red": 11.0,
+        "Green": 8.0,
+        "Blue": 7.2
+      },
+      "InnerAngle": 22.0,
+      "OuterAngle": 35.0
+    }
+  ],
+  "Entities": [
+    {
+      "UseProjectSourceDirectory": true,
+      "Filename": "/Assets/breakfast_room.obj",
+      "Name": "BreakfastRoom",
+      "WorldLocation": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "WorldRotation": {
+        "Pitch": 0.0,
+        "Yaw": 0.0,
+        "Roll": 0.0
+      },
+      "WorldScale": {
+        "X": 0.65,
+        "Y": 0.65,
+        "Z": 0.65
+      }
+    }
+  ]
+}
