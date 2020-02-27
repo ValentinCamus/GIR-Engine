@@ -22,7 +22,7 @@ namespace gir
 
         const int slot = 0;
         SetUniforms("light", shader, slot, false);
-        shader->SetUniform("albedo", slot);
+        shader->SetUniform("albedoMap", slot);
 
         Mat4f vp(GetProjection() * GetView());
         shader->SetUniform("viewProjection", vp);
@@ -38,6 +38,7 @@ namespace gir
 
                 // We only need to bind the albedo from the material
                 auto attribute = material->GetAttribute(Material::EAttribute::ALBEDO);
+                shader->SetUniform("hasAlbedoMap", bool(attribute.texture));
                 if (attribute.texture)
                     attribute.texture->Bind(slot);
                 else
